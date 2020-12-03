@@ -1,0 +1,20 @@
+{
+  "name": "@oddx/reactive",
+  "private": false,
+  "version": "0.1.0",
+  "description": "UI Reactive library",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc --declaration",
+    "sim": "sh simulate.sh",
+    "example":  "parcel example/index.html --out-dir=.tests"
+  },
+  "author": "Oddx Team",
+  "license": "ISC",
+  "dependencies": {
+    "parcel-bundler": "^1.12.4"
+  },
+  "devDependencies": {
+    "typescript": "^4.1.2"
+  }
+}

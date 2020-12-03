@@ -1,0 +1,13 @@
+node_modules
+.github
+.idea
+.cache
+src
+.git
+tests
+.gitignore
+.npmignore
+README.md
+package-lock.json
+.tests
+example
