@@ -1,7 +1,12 @@
 type Handler = () => void
-const used: Handler[] = []
 
-export const useEffect = (fn: () => void) => {
+let used: Handler[] = []
+
+export function clearEffect() {
+  used = []
+}
+
+export function useEffect (fn: () => void) {
   setTimeout(() => {
     if (!used.some(e => e === fn)) {
       used.push(fn)

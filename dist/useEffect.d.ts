@@ -1,1 +1,2 @@
-export declare const useEffect: (fn: () => void) => void;
+export declare function clearEffect(): void;
+export declare function useEffect(fn: () => void): void;

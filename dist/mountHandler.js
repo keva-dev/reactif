@@ -9,6 +9,11 @@ function on(selector) {
             if (!used.some(function (e) { return e === handler; })) {
                 $(selector).addEventListener('click', handler);
             }
+        },
+        event: function (type, handler) {
+            if (!used.some(function (e) { return e === handler; })) {
+                $(selector).addEventListener(type, handler);
+            }
         }
     };
 }

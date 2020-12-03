@@ -3,6 +3,7 @@ import { createState } from './state'
 import { createComponent } from './createComponent'
 import { on } from './mountHandler'
 import { useEffect } from './useEffect'
+import { Router } from './router'
 
 interface OddxReactive {
   $: any,
@@ -10,6 +11,7 @@ interface OddxReactive {
   mountComponent: (selector: string, fn: () => string) => void
   on: (selector: string) => object
   useEffect: (func: () => void) => void
+  router: Router
 }
 
 export const OddxReactive: OddxReactive = {
@@ -18,4 +20,5 @@ export const OddxReactive: OddxReactive = {
   mountComponent: createComponent,
   on,
   useEffect,
+  router: new Router()
 }

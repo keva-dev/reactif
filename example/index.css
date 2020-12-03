@@ -1,0 +1,24 @@
+* {
+    font-family: Montserrat, sans-serif;
+}
+
+a {
+    text-decoration: none;
+    color: black;
+}
+
+button {
+    background: green;
+    color: white;
+    padding: 0.25rem 1rem;
+    border: 0;
+    border-radius: 0.25rem;
+    cursor: pointer;
+}
+
+img {
+    width: unset;
+    height: unset;
+    max-width: 100%;
+    margin: auto;
+}

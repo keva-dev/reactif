@@ -1,6 +1,8 @@
-import render from "./components";
+import { OddxReactive as ReOdd } from '@oddx/reactive'
 
-render()
-window.addEventListener('hashchange', () => {
-  render()
-}, false);
+import Index from './components/Index'
+import Post from "./components/Post";
+
+ReOdd.router.route('/', Index)
+ReOdd.router.route('/posts/:id', Post)
+ReOdd.router.render('app')
