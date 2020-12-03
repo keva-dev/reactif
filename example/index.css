@@ -7,6 +7,12 @@ a {
     color: black;
 }
 
+a:hover {
+    font-weight: bolder;
+    color: red;
+    text-decoration: underline;
+}
+
 button {
     background: green;
     color: white;
@@ -21,4 +27,19 @@ img {
     height: unset;
     max-width: 100%;
     margin: auto;
+}
+
+ul {
+    border: 1px solid green;
+    background-color: #f1f1f1;
+    list-style-type: none;
+    padding: 20px 20px;
+}
+
+li {
+    padding: 0.5rem 0;
+}
+
+.copyright {
+    text-align: center;
 }

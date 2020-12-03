@@ -1,11 +1,17 @@
 import { OddxReactive as ReOdd } from '@oddx/reactive'
-import state from '../store/state'
 import { getAllArticles } from '../services/fuhcm'
+
+const state = ReOdd.useState({
+  limit: 20,
+  isLoading: false,
+  data: []
+})
 
 async function loadData() {
   state.isLoading = true
   state.data = await getAllArticles(state.limit)
   state.isLoading = false
+  document.title = 'ReOdd Demo Homepage'
 }
 
 async function loadMore() {
@@ -23,15 +29,17 @@ function Index() {
   const list = state.data.map(i => {
     const id = i.guid.replace('https://daihoc.fpt.edu.vn/?p=', '')
     return `
-        <a href="#/posts/${id}"><li>${i.title}</li></a>
+        <a href="#/posts/${id}"><li>${i.title} (at ${i.pubDate})</li></a>
     `
   }).join('')
 
   return `
-    <h2>FUHCM RSS ${state.limit}</h2>
-    <button id="reload" style="margin-bottom: 1rem;">Reload</button> ${(state.isLoading) ? "Loading..." : ""}
-    ${list}
-    <div style="margin-top: 1rem;">
+    <h2>FUHCM RSS (${state.limit})</h2>
+    <button id="reload">Reload</button> ${(state.isLoading) ? "Loading..." : ""}
+    <ul>
+        ${list}
+    </ul>
+    <div>
         <button id="load-more" ${state.isLoading ? 'hidden' : ''}>Load more...</button> ${(state.isLoading) ? "Loading..." : ""}
     </div>
   `

@@ -12,6 +12,7 @@ async function loadData() {
   state.isLoading = true
   state.data = await getArticle(id)
   state.isLoading = false
+  document.title = state.data.title
 }
 
 function Post() {
