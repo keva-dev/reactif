@@ -10,4 +10,4 @@ npm install @oddx/reactive
 
 ## Example
 
-See Example.
+See [Example](https://github.com/oddx-team/reactive/tree/master/example).
