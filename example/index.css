@@ -30,10 +30,8 @@ img {
 }
 
 ul {
-    border: 1px solid green;
-    background-color: #f1f1f1;
     list-style-type: none;
-    padding: 20px 20px;
+    padding: 0 0;
 }
 
 li {
@@ -42,4 +40,5 @@ li {
 
 .copyright {
     text-align: center;
+    padding: 1rem;
 }
