@@ -1,8 +1,10 @@
 # ReOdd Example
 
 - Please use Parcel to bundle
-- Run from root dir: `parcel example/index.html`
+- Run from root dir: `parcel index.html`
 
 ## Screenshot
 
-![](./screenshot.png)
+![](./screenshot/screenshot1.png)
+
+![](./screenshot/screenshot2.png)

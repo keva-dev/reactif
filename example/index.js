@@ -1,27 +1,14 @@
 import { OddxReactive as ReOdd } from '@oddx/reactive'
-
-const state = ReOdd.useState({
-  limit: 10,
-  isLoading: false,
-  data: []
-})
-
-function getData() {
-  state.isLoading = true
-  fetch(`https://api.fuhcm.com/api/v1/crawl/fpt?load=${state.limit}`)
-    .then(result => result.json())
-    .then(data => {
-      state.data = data.reverse()
-      state.isLoading = false
-    })
-}
+import state from './state'
+import { getData } from './service'
+import Post from './post'
 
 function loadMore() {
   state.limit = state.limit + 10
   getData()
 }
 
-function App() {
+function Index() {
   ReOdd.useEffect(getData)
   ReOdd.useEffect(() => {
     ReOdd.on('reload').click(getData)
@@ -30,7 +17,7 @@ function App() {
 
   const list = state.data.map(i => {
     return `
-        <a href="${i.link}" target="_blank"><li>${i.title}</li></a>
+        <a href="#${i._id}"><li>${i.title}</li></a>
     `
   }).join('')
 
@@ -46,4 +33,11 @@ function App() {
   `
 }
 
-ReOdd.mountComponent('app', App)
+export default function render() {
+  const isRoot = !location.hash.includes('#') || location.hash.length === 1
+  if (isRoot) {
+    ReOdd.mountComponent('app', Index)
+  } else {
+    ReOdd.mountComponent('app', Post)
+  }
+}
