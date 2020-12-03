@@ -1,7 +1,7 @@
 import { OddxReactive as ReOdd } from '@oddx/reactive'
-import state from './state'
-import { getData } from './service'
-import Post from './post'
+import state from '../state'
+import { getData } from '../service'
+import Post from './Post'
 
 function loadMore() {
   state.limit = state.limit + 10
@@ -23,13 +23,11 @@ function Index() {
 
   return `
     <h2>FUHCM RSS ${state.limit}</h2>
-    <button id="reload" style="margin-bottom: 1rem;">Reload</button>
-    <div>
-        ${(state.isLoading && !state.data.length) ? "Loading..." : list}
-    </div>
-    <div>
+    <button id="reload" style="margin-bottom: 1rem;">Reload</button> ${(state.isLoading) ? "Loading..." : ""}
+    ${list} 
+    ${!state.isLoading ? `<div>
         <button id="load-more" style="margin-top: 1rem;">Load more...</button>
-    </div>
+    </div>` : ""}
   `
 }
 

@@ -1,5 +1,5 @@
-import state from './state'
-import { getData } from './service'
+import state from '../state'
+import { getData } from '../service'
 
 function getPost(id) {
   if (!state.data.length) {

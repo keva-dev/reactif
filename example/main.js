@@ -1,4 +1,4 @@
-import render from "./index";
+import render from "./components";
 
 render()
 window.addEventListener('hashchange', () => {
