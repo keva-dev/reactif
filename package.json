@@ -7,15 +7,14 @@
   "scripts": {
     "build": "tsc --declaration",
     "sim": "sh simulate.sh",
-    "example": "parcel example/index.html --out-dir=.tests"
+    "example": "parcel example/index.html --out-dir=.tests",
+    "netlify": "npm run sim && parcel build example/index.html --out-dir=public"
   },
   "author": "Oddx Team",
   "license": "ISC",
   "devDependencies": {
+    "parcel-bundler": "^1.12.4",
     "typescript": "^4.1.2"
-  },
-  "dependencies": {
-    "parcel-bundler": "^1.12.4"
   },
   "browserslist": [
     "since 2017-06"
