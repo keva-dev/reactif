@@ -2,6 +2,7 @@ import { ComponentFunc, HandlerFunc } from './types'
 import { createState } from './createState'
 import { createComponent } from './createComponent'
 import { on } from './mountHandler'
+import { component } from './component'
 import { mounted } from './mounted'
 import { getParams, useRouter } from './router'
 import { nextTick } from './asyncUpdateQueue'
@@ -12,6 +13,7 @@ interface ReOdd {
   render: (selector: string, componentFunc: ComponentFunc) => void
   mounted: (func: HandlerFunc) => void
   on: (selector: string) => object
+  component: (selector: string, componentFunc: ComponentFunc) => void
   Router: any,
   nextTick: () => void
   readonly: (state: object) => object
@@ -22,6 +24,7 @@ const ReOdd: ReOdd = {
   render: createComponent,
   mounted,
   on,
+  component,
   Router: {
     getParams,
     useRouter

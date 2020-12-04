@@ -145,19 +145,13 @@ function Book() {
 }
 ```
 
-### Component partial re-render:
-
-- This feature is use for middle-sized apps only, where partial re-render (which re-mounting based on component's DOM node) is performance matter.
-- For small and tiny apps, global re-mount on a single DOM node (usually `#app`) is acceptable to reduce the complexity (and thus the size) of runtime.
+### Component Register
 
 (working on improvements)
 
 ```javascript
 function ParentComponent() {
-  // Manually bind the child component
-  ReOdd.mounted(() => {
-    ReOdd.render('child-component', ChildComponent)
-  })
+  ReOdd.component('#child-component', ChildComponent)
   
   return () => `
     <div>Parent Component</div>
@@ -166,6 +160,8 @@ function ParentComponent() {
 }
 
 function ChildComponent() {
+  ReOdd.mounted(() => console.log('Child mounted!'))
+
   return () => `
     <div>This is child</div>
     <div>${state.data}</div>

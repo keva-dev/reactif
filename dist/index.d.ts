@@ -4,6 +4,7 @@ interface ReOdd {
     render: (selector: string, componentFunc: ComponentFunc) => void;
     mounted: (func: HandlerFunc) => void;
     on: (selector: string) => object;
+    component: (selector: string, componentFunc: ComponentFunc) => void;
     Router: any;
     nextTick: () => void;
     readonly: (state: object) => object;
