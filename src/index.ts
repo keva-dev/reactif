@@ -2,14 +2,14 @@ import { createState } from './createState'
 import { createComponent } from './createComponent'
 import { on } from './mountHandler'
 import { useEffect } from './useEffect'
-import { Router } from './router'
+import { getParams, useRouter } from './router'
 
 interface ReOdd {
   useState: (newState: object) => object
   render: (selector: string, fn: () => string) => void
   useEffect: (func: () => void) => void
   on: (selector: string) => object
-  Router: typeof Router
+  Router: any
 }
 
 const ReOdd: ReOdd = {
@@ -17,7 +17,10 @@ const ReOdd: ReOdd = {
   render: createComponent,
   useEffect,
   on,
-  Router: Router
+  Router: {
+    getParams,
+    useRouter
+  }
 }
 
 export default ReOdd

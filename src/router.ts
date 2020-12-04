@@ -1,35 +1,45 @@
 import { createComponent } from './createComponent'
 import { clearEffect } from './useEffect'
 
-export class Router {
-  private routes: Record<string, () => string> = Object.create(null)
-  static params: Record<string, string> = Object.create(null)
+type Handler = () => string
 
-  route(path: string, fn: () => string): void {
+let params: Record<string, string> = Object.create(null)
+
+export function getParams() {
+  return params
+}
+
+export function useRouter() {
+  const routes: Record<string, Handler> = Object.create(null)
+
+  function route(path: string, fn: () => string): void {
     while(path.startsWith('/')) {
       path = path.substring(1);
     }
-    this.routes[path] = fn
+    routes[path] = fn
   }
 
-  private static getPath(): string {
-    Router.params = {}
+  function getPath(): string {
+    params = {}
     clearEffect()
 
     let path = location.hash
     while(path.startsWith('/') || path.startsWith('#')) {
       path = path.substring(1);
     }
+    while(path.endsWith('/')) {
+      path = path.substring(0, path.length - 1);
+    }
     return path
   }
 
-  private match(path: string, selector: string): void {
-    if (typeof this.routes[path] === "function") {
-      createComponent(selector, this.routes[path])
+  function match(path: string, selector: string): void {
+    if (typeof routes[path] === "function") {
+      createComponent(selector, routes[path])
       return
     }
 
-    const paths = Object.keys(this.routes)
+    const paths = Object.keys(routes)
 
     for (const p of paths) {
       if (p.includes(':')) {
@@ -47,34 +57,36 @@ export class Router {
         if (current.join('/') === p) {
           const currentGroup = path.split('/')
           pathParamsPos.forEach(i => {
-            Router.params[pathGroups[i].substring(1)] = currentGroup[i]
+            params[pathGroups[i].substring(1)] = currentGroup[i]
           })
-          createComponent(selector, this.routes[p])
+          createComponent(selector, routes[p])
           return
         }
       }
       if (p.endsWith('**')) {
         const matchAllPath = p.slice(0, -2);
         if (path.startsWith(matchAllPath)) {
-          createComponent(selector, this.routes[p])
+          createComponent(selector, routes[p])
           return
         }
       }
     }
 
     // 404
-    if (typeof this.routes['*'] === "function") {
-      createComponent(selector, this.routes['*'])
+    if (typeof routes['*'] === "function") {
+      createComponent(selector, routes['*'])
       return
     }
 
     createComponent(selector, () => `<p>404 Not Found</p>`)
   }
 
-  render(selector: string): void {
+  function render(selector: string): void {
     window.addEventListener('hashchange', () => {
-      this.match(Router.getPath(), selector)
+      match(getPath(), selector)
     }, false);
-    this.match(Router.getPath(), selector)
+    match(getPath(), selector)
   }
+  
+  return { route, render }
 }

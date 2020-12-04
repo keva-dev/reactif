@@ -10,7 +10,7 @@ const state = ReOdd.useState({
 })
 
 async function loadData() {
-  const id = ReOdd.Router.params.id
+  const id = ReOdd.Router.getParams().id
   state.data = null
   await sleep(1000)
   state.isLoading = true

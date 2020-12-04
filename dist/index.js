@@ -10,6 +10,9 @@ var ReOdd = {
     render: createComponent_1.createComponent,
     useEffect: useEffect_1.useEffect,
     on: mountHandler_1.on,
-    Router: router_1.Router
+    Router: {
+        getParams: router_1.getParams,
+        useRouter: router_1.useRouter
+    }
 };
 exports.default = ReOdd;
