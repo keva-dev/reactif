@@ -6,12 +6,12 @@ function on(selector) {
     return {
         click: function (handler) {
             if (!used.some(function (e) { return e === handler; })) {
-                document.querySelector(selector).addEventListener('click', handler, false);
+                setTimeout(function () { return document.querySelector(selector).addEventListener('click', handler, false); }, 0);
             }
         },
         event: function (type, handler) {
             if (!used.some(function (e) { return e === handler; })) {
-                document.querySelector(selector).addEventListener(type, handler, false);
+                setTimeout(function () { return document.querySelector(selector).addEventListener(type, handler, false); }, 0);
             }
         },
         removeEvent: function (type, handler) {

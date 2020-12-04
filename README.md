@@ -106,9 +106,7 @@ Also, please don't forget to pass your loadData (which is a side-effect function
 ```javascript
 function Data() {
   return () => {
-    ReOdd.mounted(() => {
-      ReOdd.on('#reload').click(loadData)
-    })
+    ReOdd.on('#reload').click(loadData)
     return `
       <div>Data Book</div>
       <div>${state.data}</div>

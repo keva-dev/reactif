@@ -42,10 +42,8 @@ function Index() {
   }
 
   return () => {
-    ReOdd.mounted(() => {
-      ReOdd.on('#reload').click(loadData)
-      ReOdd.on('#load-more').click(loadMore)
-    })
+    ReOdd.on('#reload').click(loadData)
+    ReOdd.on('#load-more').click(loadMore)
     return `
       ${Loading(state.isLoading)}
         <h2>FUHCM RSS (${state.limit})</h2>
