@@ -4,6 +4,7 @@ interface ReOdd {
     useEffect: (func: () => void) => void;
     on: (selector: string) => object;
     Router: any;
+    nextTick: () => void;
 }
 declare const ReOdd: ReOdd;
 export default ReOdd;

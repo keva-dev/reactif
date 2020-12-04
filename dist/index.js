@@ -5,6 +5,7 @@ var createComponent_1 = require("./createComponent");
 var mountHandler_1 = require("./mountHandler");
 var useEffect_1 = require("./useEffect");
 var router_1 = require("./router");
+var asyncUpdateQueue_1 = require("./asyncUpdateQueue");
 var ReOdd = {
     useState: createState_1.createState,
     render: createComponent_1.createComponent,
@@ -13,6 +14,7 @@ var ReOdd = {
     Router: {
         getParams: router_1.getParams,
         useRouter: router_1.useRouter
-    }
+    },
+    nextTick: asyncUpdateQueue_1.nextTick
 };
 exports.default = ReOdd;

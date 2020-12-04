@@ -1,29 +1,26 @@
 type Handler = () => void
 
-export function useAsyncUpdateQueue() {
-  const queue: Set<Handler> = new Set<Handler>()
-  let sleeping: boolean = true
+const queue: Set<Handler> = new Set<Handler>()
+let sleeping: boolean = true
 
-  function add(fn: Handler) {
-    if (queue.has(fn)) {
-      return
-    }
-    queue.add(fn)
-    if (sleeping === true) {
-      sleeping = false
-      setTimeout(run, 0)
-    }
+export function add(fn: Handler) {
+  if (queue.has(fn)) {
+    return
   }
-
-  function run() {
-    if (queue.size) {
-      queue.forEach(fn => {
-        fn()
-      })
-      queue.clear()
-      sleeping = true
-    }
+  queue.add(fn)
+  if (sleeping === true) {
+    sleeping = false
+    setTimeout(nextTick, 0)
   }
-
-  return { add, nextTick: run }
 }
+
+export function nextTick() {
+  if (queue.size) {
+    queue.forEach(fn => {
+      fn()
+    })
+    queue.clear()
+    sleeping = true
+  }
+}
+
