@@ -2,6 +2,10 @@
 
 Lightweight (~1 KB gzipped runtime) Reactive UI library written in TypeScript
 
+![Lines of code](https://img.shields.io/tokei/lines/github/oddx-team/reactive?style=flat-square)
+![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/oddx-team/reactive?style=flat-square)
+![GitHub](https://img.shields.io/github/license/oddx-team/reactive?style=flat-square)
+
 ## Features
 
 - [React](https://github.com/facebook/react) API like with functional style
@@ -56,7 +60,8 @@ function HelloWorld() {
 ReOdd.render('#app', HelloWorld)
 ```
 
-ReOdd can also be run directly in the browser with no build tool (via UMD import), just take your idea and turn it into reality in no ime!
+ReOdd can also be run directly in the browser with no build tool (via UMD import), just take your idea and turn it 
+into reality in no time!
 
 ### Reactive State:
 
