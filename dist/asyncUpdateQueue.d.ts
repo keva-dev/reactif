@@ -1,4 +1,3 @@
-declare type Handler = () => void;
-export declare function add(fn: Handler): void;
+import { HandlerFunc } from './types';
+export declare function add(fn: HandlerFunc): void;
 export declare function nextTick(): void;
-export {};

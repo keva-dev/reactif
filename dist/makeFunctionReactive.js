@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createComponent = void 0;
+exports.makeFuncReactive = void 0;
 var globalState_1 = require("./globalState");
 function makeFuncReactive(fn) {
     function wrapped() {
@@ -10,10 +10,4 @@ function makeFuncReactive(fn) {
     }
     wrapped();
 }
-function createComponent(selector, componentFunc) {
-    var renderFunc = componentFunc();
-    makeFuncReactive(function () {
-        document.querySelector(selector).innerHTML = renderFunc();
-    });
-}
-exports.createComponent = createComponent;
+exports.makeFuncReactive = makeFuncReactive;

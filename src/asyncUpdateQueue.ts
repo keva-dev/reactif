@@ -1,9 +1,9 @@
-type Handler = () => void
+import { HandlerFunc } from './types'
 
-const queue: Set<Handler> = new Set<Handler>()
+const queue: Set<HandlerFunc> = new Set<HandlerFunc>()
 let sleeping: boolean = true
 
-export function add(fn: Handler) {
+export function add(fn: HandlerFunc) {
   if (queue.has(fn)) {
     return
   }

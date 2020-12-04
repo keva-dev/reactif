@@ -2,7 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.useRouter = exports.getParams = void 0;
 var createComponent_1 = require("./createComponent");
-var useEffect_1 = require("./useEffect");
 var params = Object.create(null);
 function getParams() {
     return params;
@@ -18,7 +17,6 @@ function useRouter() {
     }
     function getPath() {
         params = {};
-        useEffect_1.clearEffect();
         var path = location.hash;
         while (path.startsWith('/') || path.startsWith('#')) {
             path = path.substring(1);
@@ -75,7 +73,7 @@ function useRouter() {
             createComponent_1.createComponent(selector, routes['*']);
             return;
         }
-        createComponent_1.createComponent(selector, function () { return "<p>404 Not Found</p>"; });
+        createComponent_1.createComponent(selector, function () { return function () { return "<p>404 Not Found</p>"; }; });
     }
     function render(selector) {
         window.addEventListener('hashchange', function () {

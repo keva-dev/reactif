@@ -2,26 +2,9 @@ import ReOdd from '@oddx/reactive'
 import { getAllArticles } from '../services/fuhcm'
 import sleep from '../utils/sleep'
 
+import useStore from '../store/store'
+
 import Loading from './Loading'
-
-const state = ReOdd.useState({
-  limit: 20,
-  isLoading: true,
-  data: []
-})
-
-async function loadData() {
-  state.isLoading = true
-  await sleep(1000)
-  state.data = await getAllArticles(state.limit)
-  state.isLoading = false
-  document.title = 'ReOdd Demo Homepage'
-}
-
-async function loadMore() {
-  state.limit = state.limit + 10
-  await loadData()
-}
 
 function List(data) {
   const listRender = data.map(i => {
@@ -38,21 +21,41 @@ function List(data) {
 }
 
 function Index() {
-  ReOdd.useEffect(loadData)
-  ReOdd.useEffect(() => {
-    ReOdd.on('#reload').click(loadData)
-    ReOdd.on('#load-more').click(loadMore)
+  const { state, mutations } = useStore()
+  const { setLimit, setIsLoading, setData } = mutations
+
+  ReOdd.mounted(() => {
+    loadData().catch(err => console.error(err))
   })
 
-  return `
-    ${Loading(state.isLoading)}
-    <h2>FUHCM RSS (${state.limit})</h2>
-    <button id="reload">Reload</button> ${(state.isLoading) ? "Loading..." : ""}
-    ${List(state.data)}
-    <div>
-      <button id="load-more">Load more...</button> ${(state.isLoading) ? "Loading..." : ""}
-    </div>
-  `
+  async function loadData() {
+    setIsLoading(true)
+    await sleep(500)
+    setData(await getAllArticles(state.limit))
+    setIsLoading(false)
+    document.title = 'ReOdd Demo Homepage'
+  }
+
+  async function loadMore() {
+    setLimit(state.limit + 10)
+    await loadData()
+  }
+
+  return () => {
+    ReOdd.mounted(() => {
+      ReOdd.on('#reload').click(loadData)
+      ReOdd.on('#load-more').click(loadMore)
+    })
+    return `
+      ${Loading(state.isLoading)}
+        <h2>FUHCM RSS (${state.limit})</h2>
+        <button id="reload">Reload</button> ${(state.isLoading) ? "Loading..." : ""}
+        ${List(state.data)}
+        <div>
+          <button id="load-more">Load more...</button> ${(state.isLoading) ? "Loading..." : ""}
+        </div>
+    `
+  }
 }
 
 export default Index

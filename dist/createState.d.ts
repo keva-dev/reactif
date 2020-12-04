@@ -1,1 +1,1 @@
-export declare function createState(state: object): object;
+export declare function createState<T extends object>(state: T): object;

@@ -1,8 +1,5 @@
+import { ComponentFunc } from './types'
 import { createComponent } from './createComponent'
-import { clearEffect } from './useEffect'
-
-type Handler = () => string
-
 let params: Record<string, string> = Object.create(null)
 
 export function getParams() {
@@ -10,9 +7,9 @@ export function getParams() {
 }
 
 export function useRouter() {
-  const routes: Record<string, Handler> = Object.create(null)
+  const routes: Record<string, ComponentFunc> = Object.create(null)
 
-  function route(path: string, fn: () => string): void {
+  function route(path: string, fn: ComponentFunc): void {
     while(path.startsWith('/')) {
       path = path.substring(1);
     }
@@ -21,7 +18,6 @@ export function useRouter() {
 
   function getPath(): string {
     params = {}
-    clearEffect()
 
     let path = location.hash
     while(path.startsWith('/') || path.startsWith('#')) {
@@ -78,7 +74,7 @@ export function useRouter() {
       return
     }
 
-    createComponent(selector, () => `<p>404 Not Found</p>`)
+    createComponent(selector, () => () => `<p>404 Not Found</p>`)
   }
 
   function render(selector: string): void {

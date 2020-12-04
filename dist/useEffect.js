@@ -1,18 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.useEffect = exports.clearEffect = void 0;
-var closure_1 = require("./closure");
-var used = closure_1.useState([]);
-function clearEffect() {
-    used.set([]);
-}
-exports.clearEffect = clearEffect;
+exports.useEffect = void 0;
+var globalState_1 = require("./globalState");
 function useEffect(fn) {
+    if (typeof fn !== "function")
+        return;
     setTimeout(function () {
-        if (!used.get().some(function (e) { return e === fn; })) {
-            used.get().push(fn);
-            fn();
-        }
+        globalState_1.globalState.currentFn = fn;
+        fn();
+        globalState_1.globalState.currentFn = undefined;
     }, 0);
 }
 exports.useEffect = useEffect;

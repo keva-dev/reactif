@@ -1,10 +1,12 @@
+import { ComponentFunc, HandlerFunc } from './types';
 interface ReOdd {
-    useState: (newState: object) => object;
-    render: (selector: string, fn: () => string) => void;
-    useEffect: (func: () => void) => void;
+    reactive: (state: object) => object;
+    render: (selector: string, componentFunc: ComponentFunc) => void;
+    mounted: (func: HandlerFunc) => void;
     on: (selector: string) => object;
     Router: any;
     nextTick: () => void;
+    readonly: (state: object) => object;
 }
 declare const ReOdd: ReOdd;
 export default ReOdd;

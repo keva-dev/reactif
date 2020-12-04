@@ -1,9 +1,8 @@
+import { HandlerFunc } from './types'
 import { globalState } from './globalState'
 
-type Handler = () => void
-
 export function useDependency() {
-  const dependants: Set<Handler> = new Set()
+  const dependants: Set<HandlerFunc> = new Set()
 
   window.addEventListener('hashchange', () => {
     dependants.clear()

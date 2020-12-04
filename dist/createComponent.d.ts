@@ -1,1 +1,2 @@
-export declare function createComponent(selector: string, fn: () => string): void;
+import { ComponentFunc } from './types';
+export declare function createComponent(selector: string, componentFunc: ComponentFunc): void;
