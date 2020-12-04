@@ -5,7 +5,7 @@ Lightweight (~1 KB gzipped runtime) Reactive UI library written in TypeScript
 ## Features
 
 - [React](https://github.com/facebook/react) API like with functional style
-- Two-way data binding which uses Vue's [Reactive](https://vuejs.org/v2/guide/reactivity.html) instead of React's 
+- Two-way data binding which uses Vue.js's [Reactive](https://v3.vuejs.org/guide/reactivity.html) instead of React.js's 
   [Reconciliation](https://reactjs.org/docs/reconciliation.html)
 - No dependency, no JSX, no need to transpile, no virtual DOM overhead
 - Tiny size, just 335 Bytes minified and gzipped runtime size

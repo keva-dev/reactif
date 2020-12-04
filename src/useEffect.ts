@@ -1,5 +1,4 @@
 type Handler = () => void
-
 let used: Handler[] = []
 
 export function clearEffect() {
