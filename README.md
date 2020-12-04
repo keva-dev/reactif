@@ -6,19 +6,37 @@ in TypeScript
 
 ## Features
 
-- [React](https://github.com/facebook/react) like API with functional style
-- Reactive via Dependency Tracking (Vue.js's methodology)
+- [React](https://github.com/facebook/react) API like with functional style
+- Two-way binding which uses [Reactive](https://vuejs.org/v2/guide/reactivity.html) instead of React's 
+  [Reconciliation](https://reactjs.org/docs/reconciliation.html)
 - No dependency, no JSX, no virtual DOM overhead
-- Tiny size, just 335 Bytes (less than 1KB) minified and gzipped runtime size
-- Embeddable and suitable for tiny-size single page applications
+- Tiny size, just 335 Bytes minified and gzipped runtime size
+- Embeddable and perfectly suitable for tiny-size single page applications
 - TypeScript with static types
 
 ## Install
 
-Via NPM:
+- Via NPM:
 
 ```
 npm install @oddx/reactive
+```
+
+- Via CDN:
+
+First, import CDN JS file to your HTML:
+
+```html
+<script crossorigin src="https://raw.githubusercontent.com/oddx-team/reactive/master/umd/index.js"></script>
+```
+
+Then you can use it:
+
+```html
+<script>
+const HelloWorld = () => "Hello World"
+reodd.OddxReactive.render('#app', HelloWorld)
+</script>
 ```
 
 ## Usage
@@ -59,6 +77,8 @@ ReOdd.render('#book', Book)
 ```
 
 Event Binding:
+
+(working on improvements)
 
 ```javascript
 function Data() {
