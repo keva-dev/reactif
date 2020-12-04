@@ -9,7 +9,7 @@ var Router = /** @class */ (function () {
         this.params = {};
     }
     Router.prototype.route = function (path, fn) {
-        if (path.startsWith('/')) {
+        while (path.startsWith('/')) {
             path = path.substring(1);
         }
         this.routes[path] = fn;

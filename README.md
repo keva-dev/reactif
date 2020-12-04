@@ -32,8 +32,9 @@ Then you can use it:
 
 ```html
 <script>
-const HelloWorld = () => "Hello World"
-reodd.OddxReactive.render('#app', HelloWorld)
+var ReOdd = ReOdd.default 
+var HelloWorld = () => "Hello World"
+ReOdd.render('#app', HelloWorld)
 </script>
 ```
 
@@ -98,7 +99,7 @@ Also, please don't forget to pass your loadData (which is a side-effect function
 ```javascript
 function Data() {
   ReOdd.useEffect(() => {
-    ReOdd.on('reload').click(loadData)
+    ReOdd.on('#reload').click(loadData)
   })
 
   return `

@@ -1,4 +1,4 @@
-import { OddxReactive as ReOdd } from '@oddx/reactive'
+import ReOdd from '@oddx/reactive'
 
 const trackLoad = () => console.log('It gonna load again, hah!')
 

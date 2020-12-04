@@ -1,11 +1,10 @@
 import { Router } from './router';
-interface OddxReactive {
-    $: any;
+interface ReOdd {
     useState: (newState: Record<string, any>) => Record<string, any>;
     render: (selector: string, fn: () => string) => void;
-    on: (selector: string) => object;
     useEffect: (func: () => void) => void;
+    on: (selector: string) => object;
     router: Router;
 }
-export declare const OddxReactive: OddxReactive;
-export default OddxReactive;
+declare const ReOdd: ReOdd;
+export default ReOdd;

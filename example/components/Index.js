@@ -1,4 +1,4 @@
-import { OddxReactive as ReOdd } from '@oddx/reactive'
+import ReOdd from '@oddx/reactive'
 import { getAllArticles } from '../services/fuhcm'
 import sleep from '../utils/sleep'
 
@@ -40,8 +40,8 @@ function List(data) {
 function Index() {
   ReOdd.useEffect(loadData)
   ReOdd.useEffect(() => {
-    ReOdd.on('reload').click(loadData)
-    ReOdd.on('load-more').click(loadMore)
+    ReOdd.on('#reload').click(loadData)
+    ReOdd.on('#load-more').click(loadMore)
   })
 
   return `

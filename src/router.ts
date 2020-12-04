@@ -6,7 +6,7 @@ export class Router {
   private params: Record<string, string> = {}
 
   route(path: string, fn: () => string): void {
-    if (path.startsWith('/')) {
+    while(path.startsWith('/')) {
       path = path.substring(1);
     }
     this.routes[path] = fn

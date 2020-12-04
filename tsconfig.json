@@ -12,7 +12,10 @@
     "lib": [
       "dom",
       "es6"
-    ]
+    ],
+    "paths": {
+      "@oddx/reactive/*": ["src/*"]
+    }
   },
   "include": [
     "src/**/*"

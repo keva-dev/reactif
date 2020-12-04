@@ -1,4 +1,4 @@
-import { OddxReactive as ReOdd } from '@oddx/reactive'
+import ReOdd from '@oddx/reactive'
 import { getArticle } from '../services/fuhcm'
 import sleep from '../utils/sleep'
 

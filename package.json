@@ -5,7 +5,7 @@
   "description": "UI Reactive library",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc --declaration && parcel build src/index.ts --out-dir=umd --no-source-maps --no-cache --global reodd",
+    "build": "tsc --declaration && parcel build src/index.ts --out-dir=umd --no-source-maps --no-cache --global ReOdd",
     "sim": "sh simulate.sh",
     "example": "parcel example/index.html --out-dir=.tests",
     "netlify": "npm run sim && parcel build example/index.html --out-dir=public"
