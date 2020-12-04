@@ -2,8 +2,8 @@ import { createComponent } from './createComponent'
 import { clearEffect } from './useEffect'
 
 export class Router {
-  private routes: Record<string, () => string> = {}
-  private params: Record<string, string> = {}
+  private routes: Record<string, () => string> = Object.create(null)
+  static params: Record<string, string> = Object.create(null)
 
   route(path: string, fn: () => string): void {
     while(path.startsWith('/')) {
@@ -12,12 +12,8 @@ export class Router {
     this.routes[path] = fn
   }
 
-  param(key: string): string {
-    return this.params[key]
-  }
-
-  private getPath(): string {
-    this.params = {}
+  private static getPath(): string {
+    Router.params = {}
     clearEffect()
 
     let path = location.hash
@@ -51,7 +47,7 @@ export class Router {
         if (current.join('/') === p) {
           const currentGroup = path.split('/')
           pathParamsPos.forEach(i => {
-            this.params[pathGroups[i].substring(1)] = currentGroup[i]
+            Router.params[pathGroups[i].substring(1)] = currentGroup[i]
           })
           createComponent(selector, this.routes[p])
           return
@@ -77,8 +73,8 @@ export class Router {
 
   render(selector: string): void {
     window.addEventListener('hashchange', () => {
-      this.match(this.getPath(), selector)
+      this.match(Router.getPath(), selector)
     }, false);
-    this.match(this.getPath(), selector)
+    this.match(Router.getPath(), selector)
   }
 }

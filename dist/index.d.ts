@@ -4,7 +4,7 @@ interface ReOdd {
     render: (selector: string, fn: () => string) => void;
     useEffect: (func: () => void) => void;
     on: (selector: string) => object;
-    router: Router;
+    Router: typeof Router;
 }
 declare const ReOdd: ReOdd;
 export default ReOdd;

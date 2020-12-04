@@ -1,11 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Router = void 0;
-var createComponent_1 = require("./createComponent");
-var useEffect_1 = require("./useEffect");
+var createComponent_1 = require("@oddx/reactive/createComponent");
+var useEffect_1 = require("@oddx/reactive/useEffect");
 var Router = /** @class */ (function () {
     function Router() {
-        this.routes = Object.create(null);
+        this.routes = {};
+        this.params = {};
     }
     Router.prototype.route = function (path, fn) {
         while (path.startsWith('/')) {
@@ -13,8 +14,11 @@ var Router = /** @class */ (function () {
         }
         this.routes[path] = fn;
     };
-    Router.getPath = function () {
-        Router.params = {};
+    Router.prototype.param = function (key) {
+        return this.params[key];
+    };
+    Router.prototype.getPath = function () {
+        this.params = {};
         useEffect_1.clearEffect();
         var path = location.hash;
         while (path.startsWith('/') || path.startsWith('#')) {
@@ -23,6 +27,7 @@ var Router = /** @class */ (function () {
         return path;
     };
     Router.prototype.match = function (path, selector) {
+        var _this = this;
         if (typeof this.routes[path] === "function") {
             createComponent_1.createComponent(selector, this.routes[path]);
             return;
@@ -44,7 +49,7 @@ var Router = /** @class */ (function () {
                 if (current_1.join('/') === p) {
                     var currentGroup_1 = path.split('/');
                     pathParamsPos_1.forEach(function (i) {
-                        Router.params[pathGroups_1[i].substring(1)] = currentGroup_1[i];
+                        _this.params[pathGroups_1[i].substring(1)] = currentGroup_1[i];
                     });
                     createComponent_1.createComponent(selector, this_1.routes[p]);
                     return { value: void 0 };
@@ -75,11 +80,10 @@ var Router = /** @class */ (function () {
     Router.prototype.render = function (selector) {
         var _this = this;
         window.addEventListener('hashchange', function () {
-            _this.match(Router.getPath(), selector);
+            _this.match(_this.getPath(), selector);
         }, false);
-        this.match(Router.getPath(), selector);
+        this.match(this.getPath(), selector);
     };
-    Router.params = Object.create(null);
     return Router;
 }());
 exports.Router = Router;

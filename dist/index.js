@@ -10,6 +10,6 @@ var ReOdd = {
     render: createComponent_1.createComponent,
     useEffect: useEffect_1.useEffect,
     on: mountHandler_1.on,
-    router: new router_1.Router()
+    Router: router_1.Router
 };
 exports.default = ReOdd;

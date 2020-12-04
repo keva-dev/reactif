@@ -1,8 +1,9 @@
 export declare class Router {
     private routes;
-    static params: Record<string, string>;
+    private params;
     route(path: string, fn: () => string): void;
-    private static getPath;
+    param(key: string): string;
+    private getPath;
     private match;
     render(selector: string): void;
 }

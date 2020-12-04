@@ -121,11 +121,25 @@ import HelloWorld from './components/Index'
 import Book from './components/Post'
 import NotFound from './components/NotFound'
 
-ReOdd.router.route('/', HelloWorld)
-ReOdd.router.route('/books/:id', Book)
-ReOdd.router.route('*', NotFound)
+const router = new ReOdd.Router()
 
-ReOdd.router.render('#app')
+router.route('/', HelloWorld)
+router.route('/books/:id', Book)
+router.route('*', NotFound)
+
+router.render('#app')
+```
+
+Inside component Book, you can access `:id` param like this:
+
+```javascript
+function Book() {
+  const id = Router.params.id
+
+  return `
+    <div>Book ID: ${id}</div>
+  `
+}
 ```
 
 ### Component partial re-render:

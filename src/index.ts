@@ -9,7 +9,7 @@ interface ReOdd {
   render: (selector: string, fn: () => string) => void
   useEffect: (func: () => void) => void
   on: (selector: string) => object
-  router: Router
+  Router: typeof Router
 }
 
 const ReOdd: ReOdd = {
@@ -17,7 +17,7 @@ const ReOdd: ReOdd = {
   render: createComponent,
   useEffect,
   on,
-  router: new Router()
+  Router: Router
 }
 
 export default ReOdd
