@@ -171,6 +171,57 @@ function ChildComponent() {
 ReOdd.render('#app', ParentComponent)
 ```
 
+### Redux/Vuex like Store
+
+You can use `.reactive` hook to create a Store, such as:
+
+```javascript
+const state = ReOdd.reactive({
+  limit: 20,
+  isLoading: false,
+  data: []
+})
+
+const mutations = {
+  setLimit(limit) {
+    state.limit = limit
+  },
+  setIsLoading(isLoading) {
+    state.isLoading = isLoading
+  },
+  setData(data) {
+    state.data = data
+  }
+}
+
+export default function useStore() {
+  return {
+    state: ReOdd.readonly(state),
+    mutations
+  }
+}
+```
+
+And then use in components:
+
+```javascript
+function Index() {
+  const { state, mutations } = useStore()
+  const { setLimit, setIsLoading, setData } = mutations
+  
+  ReOdd.mounted(() => {
+    loadData().catch(err => console.error(err))
+  })
+
+  async function loadData() {
+    setIsLoading(true)
+    setData(await getAllArticles(state.limit))
+    setIsLoading(false)
+  }
+  
+  // ...
+```
+
 ## Example
 
 An example small single page application built by `@oddx/reactive`
