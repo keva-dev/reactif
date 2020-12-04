@@ -70,7 +70,7 @@ var Router = /** @class */ (function () {
             createComponent_1.createComponent(selector, this.routes['*']);
             return;
         }
-        createComponent_1.createComponent(selector, function () { return "404 Not Found"; });
+        createComponent_1.createComponent(selector, function () { return "<p>404 Not Found</p>"; });
     };
     Router.prototype.render = function (selector) {
         var _this = this;

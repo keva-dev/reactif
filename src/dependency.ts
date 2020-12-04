@@ -8,7 +8,7 @@ class Dependency {
   }
 
   depend(): void {
-    if (globalState.currentFn) {
+    if (typeof globalState.currentFn === "function") {
       this.deps.add(globalState.currentFn)
     }
   }

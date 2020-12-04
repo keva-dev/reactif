@@ -6,7 +6,7 @@ var Dependency = /** @class */ (function () {
         this.deps = new Set();
     }
     Dependency.prototype.depend = function () {
-        if (globalState_1.globalState.currentFn) {
+        if (typeof globalState_1.globalState.currentFn === "function") {
             this.deps.add(globalState_1.globalState.currentFn);
         }
     };

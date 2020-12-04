@@ -68,7 +68,7 @@ export class Router {
       return
     }
 
-    createComponent(selector, () => `404 Not Found`)
+    createComponent(selector, () => `<p>404 Not Found</p>`)
   }
 
   render(selector: string): void {
