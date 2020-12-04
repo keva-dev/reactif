@@ -33,7 +33,7 @@ Then you can use it:
 ```html
 <script>
 var ReOdd = ReOdd.default 
-var HelloWorld = () => "Hello World"
+var HelloWorld = () => () => "Hello World"
 ReOdd.render('#app', HelloWorld)
 </script>
 ```
@@ -48,8 +48,8 @@ The React-like APIs are easy to understand and work with (especially if you're c
 import ReOdd from '@oddx/reactive'
 
 function HelloWorld() {
-  return `
-      <div>Hello World</div>
+  return () => `
+    <div>Hello World</div>
   `
 }
 
@@ -63,16 +63,18 @@ ReOdd can also be run directly in the browser with no build tool (via UMD import
 ```javascript
 import ReOdd from '@oddx/reactive'
 
-const state = ReOdd.useState({
-  data: null
-})
-
 function Book() {
-  ReOdd.useEffect(loadData)
+  const state = ReOdd.reactive({
+    data: null
+  })
 
-  return `
-      <h2>List Books</h2>
-      <div>${data ? data : 'Loading...'}</div>
+  ReOdd.mounted(() => {
+    loadData()
+  })
+
+  return () => `
+    <h2>List Books</h2>
+    <div>${data ? data : 'Loading...'}</div>
   `
 }
 
@@ -90,7 +92,7 @@ async function loadData() {
 }
 ```
 
-Also, please don't forget to pass your loadData (which is a side-effect function) to the `.useEffect` function like in the above code.
+Also, please don't forget to pass your loadData (which is a side-effect function) to the `.mounted` function like in the above code.
 
 ### Event Binding:
 
@@ -98,15 +100,16 @@ Also, please don't forget to pass your loadData (which is a side-effect function
 
 ```javascript
 function Data() {
-  ReOdd.useEffect(() => {
-    ReOdd.on('#reload').click(loadData)
-  })
-
-  return `
-    <div>Data Book</div>
-    <div>${state.data}</div>
-    <button id="reload">Reload Data</button>
-  `
+  return () => {
+    ReOdd.mounted(() => {
+      ReOdd.on('#reload').click(loadData)
+    })
+    return `
+      <div>Data Book</div>
+      <div>${state.data}</div>
+      <button id="reload">Reload Data</button>
+    `
+  }
 }
 
 ReOdd.render('#data', Data)
@@ -136,7 +139,7 @@ Inside component Book, you can access `:id` param like this:
 function Book() {
   const id = ReOdd.Router.getParams().id
 
-  return `
+  return () => `
     <div>Book ID: ${id}</div>
   `
 }
@@ -152,18 +155,18 @@ function Book() {
 ```javascript
 function ParentComponent() {
   // Manually bind the child component
-  ReOdd.useEffect(() => {
+  ReOdd.mounted(() => {
     ReOdd.render('child-component', ChildComponent)
   })
   
-  return `
+  return () => `
     <div>Parent Component</div>
     <div id="child-component"></div>
   `
 }
 
 function ChildComponent() {
-  return `
+  return () => `
     <div>This is child</div>
     <div>${state.data}</div>
   `
