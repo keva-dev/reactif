@@ -3,17 +3,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.useDependency = void 0;
 var globalState_1 = require("./globalState");
 function useDependency() {
-    var dependents = new Set();
+    var dependants = new Set();
     window.addEventListener('hashchange', function () {
-        dependents.clear();
+        dependants.clear();
     });
     function depend() {
         if (typeof globalState_1.globalState.currentFn === "function") {
-            dependents.add(globalState_1.globalState.currentFn);
+            dependants.add(globalState_1.globalState.currentFn);
         }
     }
     function notify() {
-        dependents.forEach(function (fn) { return fn(); });
+        dependants.forEach(function (fn) { return fn(); });
     }
     return { depend: depend, notify: notify };
 }

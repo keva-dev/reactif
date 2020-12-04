@@ -1,6 +1,6 @@
 import { globalState } from './globalState'
 
-function makeFuncReactive(fn: () => void) {
+function makeFuncReactiveAndExecute(fn: () => void) {
   function wrapped() {
     globalState.currentFn = fn;
     fn();
@@ -10,7 +10,7 @@ function makeFuncReactive(fn: () => void) {
 }
 
 export function createComponent(selector: string, fn: () => string): void {
-  makeFuncReactive(() => {
+  makeFuncReactiveAndExecute(() => {
     document.querySelector(selector).innerHTML = fn()
   })
 }

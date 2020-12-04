@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createComponent = void 0;
 var globalState_1 = require("./globalState");
-function makeFuncReactive(fn) {
+function makeFuncReactiveAndExecute(fn) {
     function wrapped() {
         globalState_1.globalState.currentFn = fn;
         fn();
@@ -11,7 +11,7 @@ function makeFuncReactive(fn) {
     wrapped();
 }
 function createComponent(selector, fn) {
-    makeFuncReactive(function () {
+    makeFuncReactiveAndExecute(function () {
         document.querySelector(selector).innerHTML = fn();
     });
 }

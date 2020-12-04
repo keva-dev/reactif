@@ -3,19 +3,19 @@ import { globalState } from './globalState'
 type Handler = () => void
 
 export function useDependency() {
-  const dependents: Set<Handler> = new Set()
+  const dependants: Set<Handler> = new Set()
 
   window.addEventListener('hashchange', () => {
-    dependents.clear()
+    dependants.clear()
   })
 
   function depend(): void {
     if (typeof globalState.currentFn === "function") {
-      dependents.add(globalState.currentFn)
+      dependants.add(globalState.currentFn)
     }
   }
   function notify(): void {
-    dependents.forEach(fn => fn())
+    dependants.forEach(fn => fn())
   }
   return { depend, notify }
 }

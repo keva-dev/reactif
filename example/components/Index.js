@@ -6,7 +6,7 @@ import Loading from './Loading'
 
 const state = ReOdd.useState({
   limit: 20,
-  isLoading: false,
+  isLoading: true,
   data: []
 })
 

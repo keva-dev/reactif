@@ -1,5 +1,5 @@
 declare type Handler = () => void;
-export declare function useUpdateQueue(): {
+export declare function useAsyncUpdateQueue(): {
     add: (fn: Handler) => void;
     nextTick: () => void;
 };

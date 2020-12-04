@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.useUpdateQueue = void 0;
-function useUpdateQueue() {
+exports.useAsyncUpdateQueue = void 0;
+function useAsyncUpdateQueue() {
     var queue = new Set();
     var sleeping = true;
     function add(fn) {
@@ -25,4 +25,4 @@ function useUpdateQueue() {
     }
     return { add: add, nextTick: run };
 }
-exports.useUpdateQueue = useUpdateQueue;
+exports.useAsyncUpdateQueue = useAsyncUpdateQueue;
