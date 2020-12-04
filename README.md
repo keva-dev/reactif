@@ -1,17 +1,15 @@
 # Reactive UI library
 
-Lightweight (~1 KB gzipped runtime) [React](https://github.com/facebook/react)-like API naive Reactive UI library 
-written 
-in TypeScript
+Lightweight (~1 KB gzipped runtime) Reactive UI library written in TypeScript
 
 ## Features
 
 - [React](https://github.com/facebook/react) API like with functional style
-- Two-way binding which uses [Reactive](https://vuejs.org/v2/guide/reactivity.html) instead of React's 
+- Two-way data binding which uses Vue's [Reactive](https://vuejs.org/v2/guide/reactivity.html) instead of React's 
   [Reconciliation](https://reactjs.org/docs/reconciliation.html)
-- No dependency, no JSX, no virtual DOM overhead
+- No dependency, no JSX, no need to transpile, no virtual DOM overhead
 - Tiny size, just 335 Bytes minified and gzipped runtime size
-- Embeddable and perfectly suitable for tiny-size single page applications
+- Embeddable and perfectly suitable for small-and-tiny-sized single page applications
 - TypeScript with static types
 
 ## Install
@@ -41,7 +39,9 @@ reodd.OddxReactive.render('#app', HelloWorld)
 
 ## Usage
 
-Basic Render:
+### Basic Render:
+
+The React-like APIs are easy to understand and work with (especially if you're coming from an React.js background)
 
 ```javascript
 import ReOdd from '@oddx/reactive'
@@ -55,7 +55,9 @@ function HelloWorld() {
 ReOdd.render('#app', HelloWorld)
 ```
 
-Reactive State:
+ReOdd can also be run directly in the browser with no build tool (via UMD import), just take your idea and turn it into reality in no ime!
+
+### Reactive State:
 
 ```javascript
 import ReOdd from '@oddx/reactive'
@@ -76,7 +78,20 @@ function Book() {
 ReOdd.render('#book', Book)
 ```
 
-Event Binding:
+You don't need to manually call `setState` because the state is already reactive!
+
+For example, you can write a load data function like this:
+
+```javascript
+async function loadData() {
+  const data = await getDataFromServer()
+  state.data = data
+}
+```
+
+Also, please don't forget to pass your loadData (which is a side-effect function) to the `.useEffect` function like in the above code.
+
+### Event Binding:
 
 (working on improvements)
 
@@ -96,7 +111,7 @@ function Data() {
 ReOdd.render('#data', Data)
 ```
 
-Router:
+### Router:
 
 ```javascript
 import ReOdd from '@oddx/reactive'
@@ -112,14 +127,18 @@ ReOdd.router.route('*', NotFound)
 ReOdd.router.render('#app')
 ```
 
-Component-based:
+### Component partial re-render:
+
+- This feature is use for middle-sized apps only, where partial re-render (which re-mounting based on component's DOM node) is performance matter.
+- For small and tiny apps, global re-mount on a single DOM node (usually `#app`) is acceptable to reduce the complexity (and thus the size) of runtime.
 
 (working on improvements)
 
 ```javascript
-function ComponentA() {
+function ParentComponent() {
+  // Manually bind the child component
   ReOdd.useEffect(() => {
-    ReOdd.render('child-component', ComponentB)
+    ReOdd.render('child-component', ChildComponent)
   })
   
   return `
@@ -128,14 +147,20 @@ function ComponentA() {
   `
 }
 
-function ComponentB() {
+function ChildComponent() {
   return `
     <div>This is child</div>
     <div>${state.data}</div>
   `
 }
+
+ReOdd.render('#app', ParentComponent)
 ```
 
 ## Example
 
-See [Example](https://github.com/oddx-team/reactive/tree/master/example).
+An example small single page application built by `@oddx/reactive`
+
+See [Example](https://github.com/oddx-team/reactive/tree/master/example)
+
+Live preview: [https://reodd.netlify.app](https://reodd.netlify.app/)

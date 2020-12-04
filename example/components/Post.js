@@ -1,5 +1,8 @@
 import { OddxReactive as ReOdd } from '@oddx/reactive'
 import { getArticle } from '../services/fuhcm'
+import sleep from '../utils/sleep'
+
+import Loading from './Loading'
 
 const state = ReOdd.useState({
   data: null,
@@ -9,6 +12,7 @@ const state = ReOdd.useState({
 async function loadData() {
   const id = ReOdd.router.param('id')
   state.data = null
+  await sleep(1000)
   state.isLoading = true
   state.data = await getArticle(id)
   state.isLoading = false
@@ -29,6 +33,7 @@ function Post() {
   }
 
   return `
+    ${Loading(true)}
     <a href="#"><button>Back to home</button></a>
     <h2>Loading...</h2>
   `
