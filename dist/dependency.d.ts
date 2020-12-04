@@ -1,7 +1,4 @@
-declare class Dependency {
-    private deps;
-    constructor();
-    depend(): void;
-    notify(): void;
-}
-export default Dependency;
+export declare function useDependency(): {
+    depend: () => void;
+    notify: () => void;
+};

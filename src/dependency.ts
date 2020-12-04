@@ -1,21 +1,21 @@
 import { globalState } from './globalState'
 
-class Dependency {
-  private deps: Set<() => void>
+type Handler = () => void
 
-  constructor() {
-    this.deps = new Set()
-  }
+export function useDependency() {
+  const dependents: Set<Handler> = new Set()
 
-  depend(): void {
+  window.addEventListener('hashchange', () => {
+    dependents.clear()
+  })
+
+  function depend(): void {
     if (typeof globalState.currentFn === "function") {
-      this.deps.add(globalState.currentFn)
+      dependents.add(globalState.currentFn)
     }
   }
-
-  notify(): void {
-    this.deps.forEach(fn => fn())
+  function notify(): void {
+    dependents.forEach(fn => fn())
   }
+  return { depend, notify }
 }
-
-export default Dependency

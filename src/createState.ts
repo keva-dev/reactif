@@ -1,8 +1,8 @@
-import Dependency from './dependency'
+import { useDependency } from "./dependency";
 
-export function makeObjectReactive(obj: Record<string, any>): Record<string, any> {
-  const dep = new Dependency();
-  return new Proxy(obj, {
+export function createState(state: object): object {
+  const dep = useDependency()
+  return new Proxy(state, {
     get(target: Record<string, any>, p: PropertyKey, receiver: any): any {
       dep.depend()
       return Reflect.get(target, p, receiver)

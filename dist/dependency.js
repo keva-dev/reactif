@@ -1,18 +1,20 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.useDependency = void 0;
 var globalState_1 = require("./globalState");
-var Dependency = /** @class */ (function () {
-    function Dependency() {
-        this.deps = new Set();
-    }
-    Dependency.prototype.depend = function () {
+function useDependency() {
+    var dependents = new Set();
+    window.addEventListener('hashchange', function () {
+        dependents.clear();
+    });
+    function depend() {
         if (typeof globalState_1.globalState.currentFn === "function") {
-            this.deps.add(globalState_1.globalState.currentFn);
+            dependents.add(globalState_1.globalState.currentFn);
         }
-    };
-    Dependency.prototype.notify = function () {
-        this.deps.forEach(function (fn) { return fn(); });
-    };
-    return Dependency;
-}());
-exports.default = Dependency;
+    }
+    function notify() {
+        dependents.forEach(function (fn) { return fn(); });
+    }
+    return { depend: depend, notify: notify };
+}
+exports.useDependency = useDependency;

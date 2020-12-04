@@ -1,9 +1,17 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createComponent = void 0;
-var makeFuncReactive_1 = require("./makeFuncReactive");
+var globalState_1 = require("./globalState");
+function makeFuncReactive(fn) {
+    function wrapped() {
+        globalState_1.globalState.currentFn = fn;
+        fn();
+        globalState_1.globalState.currentFn = undefined;
+    }
+    wrapped();
+}
 function createComponent(selector, fn) {
-    makeFuncReactive_1.makeFuncReactive(function () {
+    makeFuncReactive(function () {
         document.querySelector(selector).innerHTML = fn();
     });
 }

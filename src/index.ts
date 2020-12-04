@@ -1,11 +1,11 @@
-import { createState } from './state'
+import { createState } from './createState'
 import { createComponent } from './createComponent'
 import { on } from './mountHandler'
 import { useEffect } from './useEffect'
 import { Router } from './router'
 
 interface ReOdd {
-  useState: (newState: Record<string, any>) => Record<string, any>
+  useState: (newState: object) => object
   render: (selector: string, fn: () => string) => void
   useEffect: (func: () => void) => void
   on: (selector: string) => object

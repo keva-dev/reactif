@@ -1,14 +1,16 @@
+import { useState } from './closure'
+
 type Handler = () => void
-let used: Handler[] = []
+const used = useState<Handler[]>([])
 
 export function clearEffect() {
-  used = []
+  used.set([])
 }
 
 export function useEffect (fn: () => void) {
   setTimeout(() => {
-    if (!used.some(e => e === fn)) {
-      used.push(fn)
+    if (!used.get().some(e => e === fn)) {
+      used.get().push(fn)
       fn()
     }
   }, 0)
