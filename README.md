@@ -121,7 +121,7 @@ import HelloWorld from './components/Index'
 import Book from './components/Post'
 import NotFound from './components/NotFound'
 
-const router = new ReOdd.Router()
+const router = ReOdd.Router.useRouter()
 
 router.route('/', HelloWorld)
 router.route('/books/:id', Book)
@@ -134,7 +134,7 @@ Inside component Book, you can access `:id` param like this:
 
 ```javascript
 function Book() {
-  const id = Router.params.id
+  const id = ReOdd.Router.getParams().id
 
   return `
     <div>Book ID: ${id}</div>
