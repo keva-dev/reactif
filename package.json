@@ -5,7 +5,8 @@
   "description": "UI Reactive library",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc --declaration && parcel build src/index.ts --out-dir=umd --no-source-maps --no-cache --global ReOdd",
+    "umd": "NODE_ENV=production parcel build src/index.ts --out-dir=umd --no-source-maps --global ReOdd --experimental-scope-hoisting",
+    "build": "tsc --declaration && npm run umd",
     "test": "jest",
     "sim": "sh simulate.sh",
     "example": "parcel example/index.html --out-dir=.tests",
