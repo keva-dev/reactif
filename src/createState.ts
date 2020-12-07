@@ -1,9 +1,9 @@
 import { useDependency } from "./dependency";
 import { asyncUpdateQueue }  from './asyncUpdateQueue'
 
-export function createState<T extends object>(state: T): object {
+export function createState<T extends object>(state: T): T {
   const dep = useDependency()
-  return new Proxy(state, {
+  return new Proxy<T>(state, {
     get(target: object, p: PropertyKey, receiver: any): any {
       dep.depend()
       return Reflect.get(target, p, receiver)
