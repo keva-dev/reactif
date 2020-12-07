@@ -9,7 +9,7 @@
     "build": "tsc --declaration && npm run umd --experimental-scope-hoisting",
     "test": "jest",
     "sim": "sh simulate.sh",
-    "example": "parcel example/index.html --out-dir=.tests",
+    "example": "parcel example/index.html --no-source-maps --out-dir=.tests --experimental-scope-hoisting",
     "netlify": "npm run sim && parcel build example/index.html --out-dir=public"
   },
   "author": "Oddx Team",
