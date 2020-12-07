@@ -1,6 +1,6 @@
 # Reactive UI library
 
-Lightweight (~1 KB gzipped runtime) Reactive UI library written in TypeScript
+Reactive (`ReOdd`) is a lightweight (~1 KB runtime) Reactive library for building UI on the web, written in TypeScript.
 
 ![Lines of code](https://img.shields.io/tokei/lines/github/oddx-team/reactive?style=flat-square)
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/oddx-team/reactive?style=flat-square)
@@ -17,6 +17,23 @@ Note: I'm working on Reactive integrate with Virtual DOM (Snabbdom based) on bra
 - ~300 SLOC, tiny size, just 1 KB minified and gzipped runtime size
 - Embeddable and perfectly suitable for small-and-tiny-sized single page applications
 - TypeScript with static types
+
+## Table of Contents
+
+<details>
+<summary>Table of Contents</summary>
+
+- [Install](#install)
+- [Usage](#usage)
+  * [Basic Render](#basic-render)
+  * [Reactive State](#reactive-state)
+  * [Event Binding](#event-binding)
+  * [Lifecycle Hooks](#lifecycle-hooks)
+  * [Router](#router)
+  * [Component Register](#component-register)
+  * [Global Store](#reduxvuex-like-store)
+- [Example](#example)
+</details>
 
 ## Install
 
@@ -48,7 +65,7 @@ ReOdd.render('#app', HelloWorld);
 
 ## Usage
 
-### Basic Render:
+### Basic Render
 
 At the core of `@oddx/reactive` is a system that enables you to declaratively render data to the DOM using straightforward HTML syntax:
 
@@ -66,7 +83,12 @@ ReOdd.render('#app', HelloWorld)
 
 The React-like APIs are easy to understand and work with (especially if you're coming from an React.js background)
 
-### Reactive State:
+### Reactive State
+
+To create a reactive state from a JavaScript object, we can use a reactive method.
+
+Thanks to [ES6 Proxy](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy), the 
+reactive conversion is "deep" - it affects all nested properties of the passed object.
 
 ```javascript
 import ReOdd from '@oddx/reactive'
@@ -89,7 +111,8 @@ function Book() {
 ReOdd.render('#book', Book)
 ```
 
-You don't need to manually call `setState` because the state is already reactive!
+You don't need to manually call `setState` because the state is already reactive, thanks to dependency tracking, the 
+view automatically updates when reactive state changes.
 
 For example, you can write a load data function like this:
 
@@ -102,7 +125,7 @@ async function loadData() {
 
 Also, please don't forget to pass your loadData (which is a side-effect function) to the `.onMounted` function like in the above code.
 
-### Event Binding:
+### Event Binding
 
 (working on improvements)
 
@@ -121,7 +144,7 @@ function Data() {
 ReOdd.render('#data', Data)
 ```
 
-### Lifecycle Hooks:
+### Lifecycle Hooks
 
 Per component, `@oddx/reactive` supports injecting hooks like `onMounted` and `onUnmounted`, these functions accept a callback that will be executed when the hook is called by the component:
 
@@ -145,7 +168,7 @@ function HelloWorld() {
 ReOdd.render('#app', HelloWorld)
 ```
 
-### Router:
+### Router
 
 ```javascript
 import ReOdd from '@oddx/reactive'
@@ -201,7 +224,7 @@ function ChildComponent() {
 ReOdd.render('#app', ParentComponent)
 ```
 
-### Redux/Vuex like Store
+### Global Store
 
 You can use `.reactive` hook to create a Store, such as:
 
