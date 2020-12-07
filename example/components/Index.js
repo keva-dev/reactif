@@ -25,7 +25,9 @@ function Index() {
   const { setLimit, setIsLoading, setData } = mutations
 
   ReOdd.onMounted(() => {
-    loadData().catch(err => console.error(err))
+    if (!state.data.length) {
+      loadData().catch(err => console.error(err))
+    }
   })
 
   async function loadData() {

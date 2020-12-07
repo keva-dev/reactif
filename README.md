@@ -31,16 +31,16 @@ npm install @oddx/reactive
 First, import CDN JS file to your HTML:
 
 ```html
-<script crossorigin src="https://raw.githubusercontent.com/oddx-team/reactive/master/umd/index.js"></script>
+<script crossorigin src="https://cdn.jsdelivr.net/gh/oddx-team/reactive/umd/index.js"></script>
 ```
 
 Then you can use it:
 
 ```html
 <script>
-var ReOdd = ReOdd.default 
-var HelloWorld = () => "Hello World"
-ReOdd.render('#app', HelloWorld)
+const ReOdd = ReOdd.default;
+const HelloWorld = () => "Hello World";
+ReOdd.render('#app', HelloWorld);
 </script>
 ```
 
@@ -81,7 +81,7 @@ function Book() {
 
   return () => `
     <h2>List Books</h2>
-    <div>${data ? data : 'Loading...'}</div>
+    <div>${state.data ? state.data : 'Loading...'}</div>
   `
 }
 
