@@ -234,3 +234,4 @@ An example small single page application built by `@oddx/reactive`
 See [Example](https://github.com/oddx-team/reactive/tree/master/example)
 
 Live preview: [https://reodd.netlify.app](https://reodd.netlify.app/)
+
