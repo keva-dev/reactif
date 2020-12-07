@@ -1,6 +1,6 @@
-import ReOdd from '@oddx/reactive'
+import { reactive, readonly } from '@oddx/reactive'
 
-const state = ReOdd.reactive({
+const state = reactive({
   limit: 20,
   isLoading: false,
   data: []
@@ -20,7 +20,7 @@ const mutations = {
 
 export default function useStore() {
   return {
-    state: ReOdd.readonly(state),
+    state: readonly(state),
     mutations
   }
 }

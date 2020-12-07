@@ -59,7 +59,6 @@ Just import the CDN JS file to your HTML:
 </html>
 
 <script>
-const ReOdd = ReOdd.default;
 const HelloWorld = () => "Hello World";
 ReOdd.render('#app', HelloWorld);
 </script>
@@ -72,7 +71,7 @@ ReOdd.render('#app', HelloWorld);
 At the core of `@oddx/reactive` is a system that enables you to declaratively render data to the DOM using straightforward HTML syntax:
 
 ```javascript
-import ReOdd from '@oddx/reactive'
+import { render }  from '@oddx/reactive'
 
 function HelloWorld() {
   return `
@@ -80,7 +79,7 @@ function HelloWorld() {
   `
 }
 
-ReOdd.render('#app', HelloWorld)
+render('#app', HelloWorld)
 ```
 
 The React-like APIs are easy to understand and work with (especially if you're coming from an React.js background)
@@ -93,14 +92,14 @@ Thanks to [ES6 Proxy](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Re
 reactive conversion is "deep" - it affects all nested properties of the passed object.
 
 ```javascript
-import ReOdd from '@oddx/reactive'
+import { state, onMounted, render } from '@oddx/reactive'
 
 function Book() {
-  const state = ReOdd.reactive({
+  const state = reactive({
     data: null
   })
 
-  ReOdd.onMounted(() => {
+  onMounted(() => {
     loadData()
   })
 
@@ -110,7 +109,7 @@ function Book() {
   `
 }
 
-ReOdd.render('#book', Book)
+render('#book', Book)
 ```
 
 You don't need to manually call `setState` because the state is already reactive, thanks to dependency tracking, the 
@@ -132,9 +131,11 @@ Also, please don't forget to pass your loadData (which is a side-effect function
 (working on improvements)
 
 ```javascript
+import { on, render } from '@oddx/reactive'
+
 function Data() {
   return () => {
-    ReOdd.on('#reload').click(loadData)
+    on('#reload').click(loadData)
     return `
       <div>Data Book</div>
       <div>${state.data}</div>
@@ -143,7 +144,7 @@ function Data() {
   }
 }
 
-ReOdd.render('#data', Data)
+render('#data', Data)
 ```
 
 ### Lifecycle Hooks
@@ -151,14 +152,14 @@ ReOdd.render('#data', Data)
 Per component, `@oddx/reactive` supports injecting hooks like `onMounted` and `onUnmounted`, these functions accept a callback that will be executed when the hook is called by the component:
 
 ```javascript
-import ReOdd from '@oddx/reactive'
+import { onMounted, onUnmounted, render } from '@oddx/reactive'
 
 function HelloWorld() {
-  ReOdd.onMounted(() => {
+  onMounted(() => {
     console.log("Mounted, I'm gonna binding some event to the DOM")
   }
   
-  ReOdd.onMounted(() => {
+  onMounted(() => {
     console.log("Unmounted, I'm gonna do some cleanup job here")
   }
   
@@ -167,19 +168,19 @@ function HelloWorld() {
   `
 }
 
-ReOdd.render('#app', HelloWorld)
+render('#app', HelloWorld)
 ```
 
 ### Router
 
 ```javascript
-import ReOdd from '@oddx/reactive'
+import { Router } from '@oddx/reactive'
 
 import HelloWorld from './components/Index'
 import Book from './components/Post'
 import NotFound from './components/NotFound'
 
-const router = ReOdd.Router.useRouter()
+const router = Router.useRouter()
 
 router.route('/', HelloWorld)
 router.route('/books/:id', Book)
@@ -191,8 +192,10 @@ router.render('#app')
 Inside component Book, you can access `:id` param like this:
 
 ```javascript
+import { Router } from '@oddx/reactive'
+
 function Book() {
-  const id = ReOdd.Router.getParams().id
+  const id = Router.getParams().id
 
   return `
     <div>Book ID: ${id}</div>
@@ -205,8 +208,10 @@ function Book() {
 (working on improvements)
 
 ```javascript
+import { component, onMounted, render } from '@oddx/reactive'
+
 function ParentComponent() {
-  ReOdd.component('#child-component', ChildComponent)
+  component('#child-component', ChildComponent)
   
   return () => `
     <div>Parent Component</div>
@@ -215,7 +220,7 @@ function ParentComponent() {
 }
 
 function ChildComponent() {
-  ReOdd.onMounted(() => console.log('Child mounted!'))
+  onMounted(() => console.log('Child mounted!'))
 
   return () => `
     <div>This is child</div>
@@ -223,7 +228,7 @@ function ChildComponent() {
   `
 }
 
-ReOdd.render('#app', ParentComponent)
+render('#app', ParentComponent)
 ```
 
 ### Global Store
@@ -231,7 +236,9 @@ ReOdd.render('#app', ParentComponent)
 You can use `.reactive` hook to create a Store, such as:
 
 ```javascript
-const state = ReOdd.reactive({
+import { reactive, readonly } from '@oddx/reactive'
+
+const state = reactive({
   limit: 20,
   isLoading: false,
   data: []
@@ -251,7 +258,7 @@ const mutations = {
 
 export default function useStore() {
   return {
-    state: ReOdd.readonly(state),
+    state: readonly(state),
     mutations
   }
 }
@@ -264,7 +271,7 @@ function Index() {
   const { state, mutations } = useStore()
   const { setLimit, setIsLoading, setData } = mutations
   
-  ReOdd.onMounted(() => {
+  onMounted(() => {
     loadData().catch(err => console.error(err))
   })
 

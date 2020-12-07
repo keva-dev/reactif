@@ -1,7 +1,7 @@
-import ReOdd from '@oddx/reactive'
+import { component } from '@oddx/reactive'
 
 export default function Parent() {
-  ReOdd.component('#child-component', Child)
+  component('#child-component', Child)
 
   return () => `
     <h2>Parent</h2>

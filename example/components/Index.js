@@ -1,4 +1,4 @@
-import ReOdd from '@oddx/reactive'
+import { onMounted, on } from '@oddx/reactive'
 import { getAllArticles } from '../services/fuhcm'
 import sleep from '../utils/sleep'
 
@@ -24,7 +24,7 @@ function Index() {
   const { state, mutations } = useStore()
   const { setLimit, setIsLoading, setData } = mutations
 
-  ReOdd.onMounted(() => {
+  onMounted(() => {
     if (!state.data.length) {
       loadData().catch(err => console.error(err))
     }
@@ -44,8 +44,8 @@ function Index() {
   }
 
   return () => {
-    ReOdd.on('#reload').click(loadData)
-    ReOdd.on('#load-more').click(loadMore)
+    on('#reload').click(loadData)
+    on('#load-more').click(loadMore)
     return `
       ${Loading(state.isLoading)}
         <h2>FUHCM RSS (${state.limit})</h2>

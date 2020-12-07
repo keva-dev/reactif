@@ -1,21 +1,21 @@
-import ReOdd from '@oddx/reactive'
+import { reactive, onMounted, Router } from '@oddx/reactive'
 import { getArticle } from '../services/fuhcm'
 import sleep from '../utils/sleep'
 
 import Loading from './Loading'
 
 function Post() {
-  const state = ReOdd.reactive({
+  const state = reactive({
     data: null,
     isLoading: false,
   })
 
-  ReOdd.onMounted(() => {
+  onMounted(() => {
     loadData().catch(err => console.error(err))
   })
 
   async function loadData() {
-    const id = ReOdd.Router.getParams().id
+    const id = Router.getParams().id
     await sleep(500)
     state.isLoading = true
     state.data = await getArticle(id)
