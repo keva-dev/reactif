@@ -3,9 +3,11 @@
 @Oddx/Reactive (`ReOdd`) is a lightweight (~1 KB runtime) Reactive library for building UI on the web, written in 
 TypeScript.
 
+![Travis (.org)](https://img.shields.io/travis/oddx-team/reactive?style=flat-square)
 ![Lines of code](https://img.shields.io/tokei/lines/github/oddx-team/reactive?style=flat-square)
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/oddx-team/reactive?style=flat-square)
 ![GitHub](https://img.shields.io/github/license/oddx-team/reactive?style=flat-square)
+![npm](https://img.shields.io/npm/v/@oddx/reactive?style=flat-square)
 
 Note: I'm working on Reactive integrate with Virtual DOM (Snabbdom based) on branch [feat/vdom](https://github.com/oddx-team/reactive/tree/feat/vdom).
 

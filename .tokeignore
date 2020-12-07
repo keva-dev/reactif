@@ -8,3 +8,5 @@ README.md
 LICENSE
 tsconfig.json
 simulate.sh
+jest.config.js
+.travis.yml
