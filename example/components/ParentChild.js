@@ -10,7 +10,7 @@ export default function Parent() {
 }
 
 function Child() {
-  return () => `
+  return `
     <p>Child</p>
   `
 }

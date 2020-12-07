@@ -2,7 +2,8 @@ import { ComponentFunc, HandlerFunc } from './types';
 interface ReOdd {
     reactive: (state: object) => object;
     render: (selector: string, componentFunc: ComponentFunc) => void;
-    mounted: (func: HandlerFunc) => void;
+    onMounted: (func: HandlerFunc) => void;
+    onUnmounted: (func: HandlerFunc) => void;
     on: (selector: string) => object;
     component: (selector: string, componentFunc: ComponentFunc) => void;
     Router: any;

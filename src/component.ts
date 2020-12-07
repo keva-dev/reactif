@@ -1,9 +1,9 @@
 import { ComponentFunc } from './types'
-import { mounted } from './mounted'
+import { onMounted } from './onMounted'
 import { createComponent } from './createComponent'
 
 export function component(selector: string, componentFn: ComponentFunc) {
-  mounted(() => {
+  onMounted(() => {
     createComponent(selector, componentFn)
   })
 }

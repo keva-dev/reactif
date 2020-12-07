@@ -11,3 +11,4 @@ router.route('/posts/:id', Post)
 router.route('/static', Static)
 router.route('/parent-child', Parent)
 router.render('#app')
+

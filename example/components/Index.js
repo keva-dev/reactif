@@ -24,7 +24,7 @@ function Index() {
   const { state, mutations } = useStore()
   const { setLimit, setIsLoading, setData } = mutations
 
-  ReOdd.mounted(() => {
+  ReOdd.onMounted(() => {
     loadData().catch(err => console.error(err))
   })
 

@@ -11,9 +11,9 @@ function makeFuncReactive(fn) {
     wrapped();
 }
 function createComponent(selector, componentFunc) {
-    var renderFunc = componentFunc();
+    var fn = componentFunc();
     makeFuncReactive(function () {
-        document.querySelector(selector).innerHTML = renderFunc();
+        document.querySelector(selector).innerHTML = typeof fn !== 'function' ? fn : fn();
     });
 }
 exports.createComponent = createComponent;

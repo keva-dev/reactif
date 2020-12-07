@@ -1,5 +1,5 @@
-import { ComponentFunc } from './types'
-import { globalState } from './globalState'
+import {ComponentFunc, RenderFunc} from './types'
+import {globalState} from './globalState'
 
 function makeFuncReactive(fn: () => void) {
   function wrapped() {
@@ -10,9 +10,9 @@ function makeFuncReactive(fn: () => void) {
   wrapped();
 }
 
-export function createComponent(selector: string, componentFunc: ComponentFunc): void {
-  const renderFunc = componentFunc()
+export function createComponent(selector: string, componentFunc: ComponentFunc | RenderFunc): void {
+  const fn = componentFunc()
   makeFuncReactive(() => {
-    document.querySelector(selector).innerHTML = renderFunc()
+    document.querySelector(selector).innerHTML = typeof fn !== 'function' ? fn : fn()
   })
 }

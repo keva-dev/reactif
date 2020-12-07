@@ -6,6 +6,8 @@ Lightweight (~1 KB gzipped runtime) Reactive UI library written in TypeScript
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/oddx-team/reactive?style=flat-square)
 ![GitHub](https://img.shields.io/github/license/oddx-team/reactive?style=flat-square)
 
+Note: I'm working on Reactive integrate with Virtual DOM (Snabbdom based) on branch [feat/vdom](https://github.com/oddx-team/reactive/tree/feat/vdom).
+
 ## Features
 
 - [React](https://github.com/facebook/react) API like with functional style
@@ -37,7 +39,7 @@ Then you can use it:
 ```html
 <script>
 var ReOdd = ReOdd.default 
-var HelloWorld = () => () => "Hello World"
+var HelloWorld = () => "Hello World"
 ReOdd.render('#app', HelloWorld)
 </script>
 ```
@@ -52,7 +54,7 @@ The React-like APIs are easy to understand and work with (especially if you're c
 import ReOdd from '@oddx/reactive'
 
 function HelloWorld() {
-  return () => `
+  return `
     <div>Hello World</div>
   `
 }
@@ -73,7 +75,7 @@ function Book() {
     data: null
   })
 
-  ReOdd.mounted(() => {
+  ReOdd.onMounted(() => {
     loadData()
   })
 
@@ -97,7 +99,7 @@ async function loadData() {
 }
 ```
 
-Also, please don't forget to pass your loadData (which is a side-effect function) to the `.mounted` function like in the above code.
+Also, please don't forget to pass your loadData (which is a side-effect function) to the `.onMounted` function like in the above code.
 
 ### Event Binding:
 
@@ -142,7 +144,7 @@ Inside component Book, you can access `:id` param like this:
 function Book() {
   const id = ReOdd.Router.getParams().id
 
-  return () => `
+  return `
     <div>Book ID: ${id}</div>
   `
 }
@@ -163,7 +165,7 @@ function ParentComponent() {
 }
 
 function ChildComponent() {
-  ReOdd.mounted(() => console.log('Child mounted!'))
+  ReOdd.onMounted(() => console.log('Child mounted!'))
 
   return () => `
     <div>This is child</div>
@@ -212,7 +214,7 @@ function Index() {
   const { state, mutations } = useStore()
   const { setLimit, setIsLoading, setData } = mutations
   
-  ReOdd.mounted(() => {
+  ReOdd.onMounted(() => {
     loadData().catch(err => console.error(err))
   })
 

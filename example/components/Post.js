@@ -10,7 +10,7 @@ function Post() {
     isLoading: false,
   })
 
-  ReOdd.mounted(() => {
+  ReOdd.onMounted(() => {
     loadData().catch(err => console.error(err))
   })
 

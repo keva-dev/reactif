@@ -1,15 +1,15 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.nextTick = exports.add = void 0;
+var globalState_1 = require("./globalState");
 var queue = new Set();
-var sleeping = true;
 function add(fn) {
     if (queue.has(fn)) {
         return;
     }
     queue.add(fn);
-    if (sleeping === true) {
-        sleeping = false;
+    if (globalState_1.globalState.isQueueSleep) {
+        globalState_1.globalState.isQueueSleep = false;
         setTimeout(nextTick, 0);
     }
 }
@@ -20,7 +20,7 @@ function nextTick() {
             fn();
         });
         queue.clear();
-        sleeping = true;
+        globalState_1.globalState.isQueueSleep = true;
     }
 }
 exports.nextTick = nextTick;
