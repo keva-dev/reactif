@@ -1,7 +1,7 @@
 # Reactive UI library
 
-@Oddx/Reactive (`ReOdd`) is a lightweight (~1 KB runtime) Reactive library for building UI on the web, written in 
-TypeScript.
+@Oddx/Reactive (`ReOdd`) is a lightweight (~1 KB runtime) Reactive & Functional library for building modern UI on the 
+web, written in TypeScript.
 
 ![Travis (.org)](https://img.shields.io/travis/oddx-team/reactive?style=flat-square)
 ![Lines of code](https://img.shields.io/tokei/lines/github/oddx-team/reactive?style=flat-square)
@@ -19,7 +19,7 @@ Note: I'm working on Reactive integrate with Virtual DOM (Snabbdom based) on bra
 - No dependency, no JSX, no need to transpile, no virtual DOM overhead
 - ~300 SLOC, tiny size, just 1 KB minified and gzipped runtime size
 - Embeddable and perfectly suitable for small-and-tiny-sized single page applications
-- TypeScript with static types
+- Router & Store batteries-includes, TypeScript with static types
 
 ## Table of Contents
 
@@ -50,15 +50,14 @@ npm install @oddx/reactive
 
 ReOdd can also be run directly in the browser with no build tool (via UMD import), just take your idea and turn it into reality in no time!
 
-First, import CDN JS file to your HTML:
+Just import the CDN JS file to your HTML:
 
 ```html
-<script crossorigin src="https://cdn.jsdelivr.net/gh/oddx-team/reactive/umd/index.js"></script>
-```
+<html>
+  <div id="app"></div>
+  <script src="https://cdn.jsdelivr.net/gh/oddx-team/reactive/umd/index.js"></script>
+</html>
 
-Then you can use it:
-
-```html
 <script>
 const ReOdd = ReOdd.default;
 const HelloWorld = () => "Hello World";
