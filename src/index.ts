@@ -6,7 +6,7 @@ import { component } from './component'
 import { onMounted } from './onMounted'
 import { onUnmounted } from './onUnmounted'
 import { getParams, useRouter } from './router'
-import { nextTick } from './asyncUpdateQueue'
+import { asyncUpdateQueue } from './asyncUpdateQueue'
 import { readonly } from './readonly'
 
 interface ReOdd {
@@ -32,7 +32,7 @@ const ReOdd: ReOdd = {
     getParams,
     useRouter
   },
-  nextTick,
+  nextTick: asyncUpdateQueue.nextTick,
   readonly
 }
 

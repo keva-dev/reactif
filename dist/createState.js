@@ -12,7 +12,7 @@ function createState(state) {
         },
         set: function (target, p, value, receiver) {
             var set = Reflect.set(target, p, value, receiver);
-            asyncUpdateQueue_1.add(dep.notify);
+            asyncUpdateQueue_1.asyncUpdateQueue.add(dep.notify);
             return set;
         }
     });

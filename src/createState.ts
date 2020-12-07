@@ -1,5 +1,5 @@
 import { useDependency } from "./dependency";
-import { add }  from './asyncUpdateQueue'
+import { asyncUpdateQueue }  from './asyncUpdateQueue'
 
 export function createState<T extends object>(state: T): object {
   const dep = useDependency()
@@ -10,7 +10,7 @@ export function createState<T extends object>(state: T): object {
     },
     set(target: object, p: PropertyKey, value: any, receiver: any): boolean {
       const set = Reflect.set(target, p, value, receiver)
-      add(dep.notify)
+      asyncUpdateQueue.add(dep.notify)
       return set
     }
   })

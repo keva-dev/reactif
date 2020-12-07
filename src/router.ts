@@ -1,4 +1,4 @@
-import { ComponentFunc } from './types'
+import { ComponentFunc, RenderFunc } from './types'
 import { createComponent } from './createComponent'
 let params: Record<string, string> = Object.create(null)
 
@@ -7,9 +7,9 @@ export function getParams() {
 }
 
 export function useRouter() {
-  const routes: Record<string, ComponentFunc> = Object.create(null)
+  const routes: Record<string, ComponentFunc | RenderFunc> = Object.create(null)
 
-  function route(path: string, fn: ComponentFunc): void {
+  function route(path: string, fn: ComponentFunc | RenderFunc): void {
     while(path.startsWith('/')) {
       path = path.substring(1);
     }

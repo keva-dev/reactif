@@ -1,3 +1,9 @@
 import { HandlerFunc } from './types';
-export declare function add(fn: HandlerFunc): void;
-export declare function nextTick(): void;
+export declare function useAsyncUpdateQueue(): {
+    add: (fn: HandlerFunc) => void;
+    nextTick: () => void;
+};
+export declare const asyncUpdateQueue: {
+    add: (fn: HandlerFunc) => void;
+    nextTick: () => void;
+};

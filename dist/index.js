@@ -20,7 +20,7 @@ var ReOdd = {
         getParams: router_1.getParams,
         useRouter: router_1.useRouter
     },
-    nextTick: asyncUpdateQueue_1.nextTick,
+    nextTick: asyncUpdateQueue_1.asyncUpdateQueue.nextTick,
     readonly: readonly_1.readonly
 };
 exports.default = ReOdd;

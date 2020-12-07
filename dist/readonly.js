@@ -6,8 +6,8 @@ function readonly(state) {
         get: function (target, p, receiver) {
             return Reflect.get(target, p, receiver);
         },
-        set: function (target, p, value, receiver) {
-            return false;
+        set: function () {
+            throw new Error('Cannot set a readonly object');
         }
     });
 }

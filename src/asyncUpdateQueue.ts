@@ -1,25 +1,31 @@
-import { globalState } from './globalState'
 import { HandlerFunc } from './types'
 
-const queue: Set<HandlerFunc> = new Set<HandlerFunc>()
+export function useAsyncUpdateQueue() {
+  const queue: Set<HandlerFunc> = new Set<HandlerFunc>()
+  let isQueueSleep: boolean = true
 
-export function add(fn: HandlerFunc) {
-  if (queue.has(fn)) {
-    return
+  function add(fn: HandlerFunc){
+    if (queue.has(fn)) {
+      return
+    }
+    queue.add(fn)
+    if (isQueueSleep) {
+      isQueueSleep = false
+      setTimeout(nextTick, 0)
+    }
   }
-  queue.add(fn)
-  if (globalState.isQueueSleep) {
-    globalState.isQueueSleep = false
-    setTimeout(nextTick, 0)
+
+  function nextTick() {
+    if (queue.size) {
+      queue.forEach(fn => {
+        fn()
+      })
+      queue.clear()
+      isQueueSleep = true
+    }
   }
+
+  return { add, nextTick }
 }
 
-export function nextTick() {
-  if (queue.size) {
-    queue.forEach(fn => {
-      fn()
-    })
-    queue.clear()
-    globalState.isQueueSleep = true
-  }
-}
+export const asyncUpdateQueue = useAsyncUpdateQueue()
