@@ -14,7 +14,7 @@ Note: I'm working on Reactive integrate with Virtual DOM (Snabbdom based) on bra
 - Two-way data binding which uses Vue.js's [Reactive](https://v3.vuejs.org/guide/reactivity.html) instead of React.js's 
   [Reconciliation](https://reactjs.org/docs/reconciliation.html)
 - No dependency, no JSX, no need to transpile, no virtual DOM overhead
-- Tiny size, just 335 Bytes minified and gzipped runtime size
+- ~300 SLOC, tiny size, just 1 KB minified and gzipped runtime size
 - Embeddable and perfectly suitable for small-and-tiny-sized single page applications
 - TypeScript with static types
 
@@ -27,6 +27,8 @@ npm install @oddx/reactive
 ```
 
 - Via CDN:
+
+ReOdd can also be run directly in the browser with no build tool (via UMD import), just take your idea and turn it into reality in no time!
 
 First, import CDN JS file to your HTML:
 
@@ -48,7 +50,7 @@ ReOdd.render('#app', HelloWorld);
 
 ### Basic Render:
 
-The React-like APIs are easy to understand and work with (especially if you're coming from an React.js background)
+At the core of `@oddx/reactive` is a system that enables you to declaratively render data to the DOM using straightforward HTML syntax:
 
 ```javascript
 import ReOdd from '@oddx/reactive'
@@ -62,8 +64,7 @@ function HelloWorld() {
 ReOdd.render('#app', HelloWorld)
 ```
 
-ReOdd can also be run directly in the browser with no build tool (via UMD import), just take your idea and turn it 
-into reality in no time!
+The React-like APIs are easy to understand and work with (especially if you're coming from an React.js background)
 
 ### Reactive State:
 
@@ -118,6 +119,30 @@ function Data() {
 }
 
 ReOdd.render('#data', Data)
+```
+
+### Lifecycle Hooks:
+
+Per component, `@oddx/reactive` supports injecting hooks like `onMounted` and `onUnmounted`, these functions accept a callback that will be executed when the hook is called by the component:
+
+```javascript
+import ReOdd from '@oddx/reactive'
+
+function HelloWorld() {
+  ReOdd.onMounted(() => {
+    console.log("Mounted, I'm gonna binding some event to the DOM")
+  }
+  
+  ReOdd.onMounted(() => {
+    console.log("Unmounted, I'm gonna do some cleanup job here")
+  }
+  
+  return () => `
+    <div>Hello World</div>
+  `
+}
+
+ReOdd.render('#app', HelloWorld)
 ```
 
 ### Router:
