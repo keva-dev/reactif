@@ -1,7 +1,7 @@
 {
   "name": "@oddx/reactive",
   "private": false,
-  "version": "0.1.3",
+  "version": "0.1.5",
   "description": "UI Reactive library",
   "main": "dist/index.js",
   "scripts": {

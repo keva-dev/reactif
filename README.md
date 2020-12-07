@@ -1,6 +1,7 @@
 # Reactive UI library
 
-Reactive (`ReOdd`) is a lightweight (~1 KB runtime) Reactive library for building UI on the web, written in TypeScript.
+@Oddx/Reactive (`ReOdd`) is a lightweight (~1 KB runtime) Reactive library for building UI on the web, written in 
+TypeScript.
 
 ![Lines of code](https://img.shields.io/tokei/lines/github/oddx-team/reactive?style=flat-square)
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/oddx-team/reactive?style=flat-square)
