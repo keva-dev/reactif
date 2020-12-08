@@ -7,19 +7,10 @@ type ComponentInstance = {
   onUnmountedHooks: HandlerFunc[]
 }
 
-function makeFuncReactiveAndExecuteIt(fn: () => void) {
-  function wrapped() {
-    globalState.currentFn = fn;
-    fn();
-    globalState.currentFn = undefined;
-  }
-  wrapped();
-}
-
 function useLifeCycle() {
   let components: ComponentInstance[] = []
 
-  function addComponent(selector: string, componentFunc: ComponentFunc | RenderFunc) {
+  function addComponent(selector: string, componentFunc: ComponentFunc | RenderFunc, notFromRouter?: boolean) {
     if (!document.querySelector(selector) || components.find(e => e.component === componentFunc)) {
       return
     }
@@ -67,6 +58,16 @@ function useLifeCycle() {
 
     const observer = new MutationObserver(callback);
     observer.observe(targetNode, observerOptions);
+
+    function makeFuncReactiveAndExecuteIt(fn: () => void) {
+      function wrapped() {
+        globalState.notFromRouter = notFromRouter
+        globalState.currentFn = fn;
+        fn();
+        globalState.currentFn = undefined;
+      }
+      wrapped();
+    }
 
     makeFuncReactiveAndExecuteIt(() => {
       document.querySelector(selector).innerHTML = typeof fn !== 'function' ? fn : fn()

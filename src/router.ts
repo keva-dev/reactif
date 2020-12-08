@@ -1,9 +1,16 @@
-import { ComponentFunc, RenderFunc } from './types'
-import { createComponent } from './createComponent'
+import { ComponentFunc, HandlerFunc, RenderFunc } from './types'
+import { createRouterComponent } from './createComponent'
+
 let params: Record<string, string> = Object.create(null)
 
 export function getParams() {
   return params
+}
+
+export function onRouterChange(fn: HandlerFunc) {
+  window.addEventListener('hashchange', () => {
+    fn()
+  })
 }
 
 export function useRouter() {
@@ -31,7 +38,7 @@ export function useRouter() {
 
   function match(path: string, selector: string): void {
     if (typeof routes[path] === "function") {
-      createComponent(selector, routes[path])
+      createRouterComponent(selector, routes[path])
       return
     }
 
@@ -55,14 +62,14 @@ export function useRouter() {
           pathParamsPos.forEach(i => {
             params[pathGroups[i].substring(1)] = currentGroup[i]
           })
-          createComponent(selector, routes[p])
+          createRouterComponent(selector, routes[p])
           return
         }
       }
       if (p.endsWith('**')) {
         const matchAllPath = p.slice(0, -2);
         if (path.startsWith(matchAllPath)) {
-          createComponent(selector, routes[p])
+          createRouterComponent(selector, routes[p])
           return
         }
       }
@@ -70,18 +77,19 @@ export function useRouter() {
 
     // 404
     if (typeof routes['*'] === "function") {
-      createComponent(selector, routes['*'])
+      createRouterComponent(selector, routes['*'])
       return
     }
 
-    createComponent(selector, () => () => `<p>404 Not Found</p>`)
+    createRouterComponent(selector, () => () => `<p>404 Not Found</p>`)
   }
 
   function render(selector: string): void {
-    window.addEventListener('hashchange', () => {
+    onRouterChange(() => {
       document.querySelector(selector).innerHTML = null
       match(getPath(), selector)
-    }, false);
+    })
+
     match(getPath(), selector)
   }
   
