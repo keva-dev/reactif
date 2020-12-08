@@ -33,8 +33,7 @@ Note: I'm working on Reactive integrate with Virtual DOM (Snabbdom based) on bra
   * [Event Binding](#event-binding)
   * [Lifecycle Hooks](#lifecycle-hooks)
   * [Router](#router)
-  * [Component Register](#component-register)
-  * [Global Store](#reduxvuex-like-store)
+  * [Store](#store)
 - [Example](#example)
 </details>
 
@@ -203,35 +202,7 @@ function Book() {
 }
 ```
 
-### Component Register
-
-(working on improvements)
-
-```javascript
-import { component, onMounted, render } from '@oddx/reactive'
-
-function ParentComponent() {
-  component('#child-component', ChildComponent)
-  
-  return () => `
-    <div>Parent Component</div>
-    <div id="child-component"></div>
-  `
-}
-
-function ChildComponent() {
-  onMounted(() => console.log('Child mounted!'))
-
-  return () => `
-    <div>This is child</div>
-    <div>${state.data}</div>
-  `
-}
-
-render('#app', ParentComponent)
-```
-
-### Global Store
+### Store
 
 You can use `.reactive` hook to create a Store, such as:
 

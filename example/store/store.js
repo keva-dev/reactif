@@ -1,7 +1,7 @@
 import { reactive, readonly } from '@oddx/reactive'
 
 const state = reactive({
-  limit: 20,
+  limit: 30,
   isLoading: false,
   data: []
 })

@@ -1,9 +1,9 @@
 import { HandlerFunc } from './types'
+import { globalState } from './globalState'
+import { lifeCycle } from './lifeCycle'
 
 export function onUnmounted(fn: HandlerFunc) {
-  const cleanClosure = function(_: Event) {
-    fn()
-    window.removeEventListener('hashchange', cleanClosure, false)
+  if (globalState.currentComponent) {
+    lifeCycle.addOnUnmountedHook(fn, globalState.currentComponent)
   }
-  window.addEventListener('hashchange', cleanClosure, false)
 }

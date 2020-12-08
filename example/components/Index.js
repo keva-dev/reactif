@@ -1,4 +1,4 @@
-import { onMounted, on } from '@oddx/reactive'
+import { onMounted, onUnmounted, on } from '@oddx/reactive'
 import { getAllArticles } from '../services/fuhcm'
 import sleep from '../utils/sleep'
 
@@ -28,6 +28,11 @@ function Index() {
     if (!state.data.length) {
       loadData().catch(err => console.error(err))
     }
+    window.addEventListener("scroll", onScroll, false);
+  })
+
+  onUnmounted(() => {
+    window.removeEventListener("scroll", onScroll);
   })
 
   async function loadData() {
@@ -41,6 +46,23 @@ function Index() {
   async function loadMore() {
     setLimit(state.limit + 10)
     await loadData()
+  }
+
+  function onScroll() {
+    const scrollTop =
+      (document.documentElement && document.documentElement.scrollTop) ||
+      document.body.scrollTop;
+    const scrollHeight =
+      (document.documentElement && document.documentElement.scrollHeight) ||
+      document.body.scrollHeight;
+    const clientHeight =
+      document.documentElement.clientHeight || window.innerHeight;
+    const scrolledToBottom =
+      Math.ceil(scrollTop + clientHeight) >= scrollHeight;
+
+    if (scrolledToBottom && !state.isLoading) {
+      loadMore().catch(err => console.error(err))
+    }
   }
 
   return () => {

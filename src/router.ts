@@ -79,6 +79,7 @@ export function useRouter() {
 
   function render(selector: string): void {
     window.addEventListener('hashchange', () => {
+      document.querySelector(selector).innerHTML = null
       match(getPath(), selector)
     }, false);
     match(getPath(), selector)
