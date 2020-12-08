@@ -17,7 +17,7 @@ Note: I'm working on Reactive integrate with Virtual DOM (Snabbdom based) on bra
 - Two-way data binding which uses Vue.js's [Reactive](https://v3.vuejs.org/guide/reactivity.html) instead of React.js's 
   [Reconciliation](https://reactjs.org/docs/reconciliation.html)
 - No dependency, no JSX, no need to transpile, no virtual DOM overhead
-- ~300 SLOC, tiny size, just 1 KB minified and gzipped runtime size
+- ~500 SLOC, tiny size, just 3 KB minified and gzipped runtime size
 - Embeddable and perfectly suitable for small-and-tiny-sized single page applications
 - Router & Store batteries-includes, TypeScript with static types
 
@@ -134,7 +134,7 @@ import { on, render } from '@oddx/reactive'
 
 function Data() {
   return () => {
-    on('#reload').click(loadData)
+    on('#reload', 'click', loadData)
     return `
       <div>Data Book</div>
       <div>${state.data}</div>
