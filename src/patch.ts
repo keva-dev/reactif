@@ -5,6 +5,8 @@ export function stringToHTML(str: string): HTMLElement {
 }
 
 const NODE_TYPE_CONST = {
+  ELEMENT_NODE: 1,
+  ATTRIBUTE_NODE: 2,
   TEXT_NODE: 3,
   COMMENT_NODE: 8
 }
@@ -49,7 +51,7 @@ export function patch(template: HTMLElement | Node, elem: Element | HTMLElement 
     }
 
     // If element is empty and shouldn't be, build it up
-    // This uses a document fragment to minimize reflows
+    // This uses a document fragment to minimize reflow
     if (currentDOMNodes[index].childNodes.length < 1 && node.childNodes.length > 0) {
       const fragment = document.createDocumentFragment()
       patch(node, fragment)

@@ -8,10 +8,15 @@ type ComponentInstance = {
   onUnmountedHooks: HandlerFunc[]
 }
 
+// LifeCycle instance will be created by useLifeCycle hook
+// It will manage all component creation and its hooks such as:
+// Mount, Unmount, Update...
 function useLifeCycle() {
   let components: ComponentInstance[] = []
 
+  // Mount component to a selector
   function addComponent(selector: string, componentFunc: ComponentFunc | RenderFunc, notFromRouter?: boolean) {
+    // If the selector is not valid, or the component is already mounted, then skip
     if (!document.querySelector(selector) || components.find(e => e.component === componentFunc)) {
       return
     }
@@ -24,6 +29,8 @@ function useLifeCycle() {
 
     components.push(instance)
 
+    // Run hooks like: onMounted, onUnmounted
+    // Set reactive flag 'currentComponent' to know the hook owner (which component call it)
     globalState.currentComponent = componentFunc
     const fn = componentFunc()
     globalState.currentComponent = undefined
@@ -34,7 +41,7 @@ function useLifeCycle() {
       mutationList.forEach((mutation: any) => {
         if (mutation.removedNodes.length && !mutation.addedNodes.length &&
           mutation.removedNodes.length === nodes) {
-          // Run hooks
+          // Run onUnmounted hooks
           components = components.filter(e => e.component !== componentFunc)
           observer.disconnect();
           instance.onUnmountedHooks.forEach(fn => fn())
@@ -44,7 +51,7 @@ function useLifeCycle() {
 
         if (!firstMount) {
           firstMount = true
-          // Run hooks
+          // Run onMounted hooks
           instance.onMountedHooks.forEach(fn => fn())
         }
 
@@ -52,11 +59,11 @@ function useLifeCycle() {
       });
     }
 
+    // Add listeners to the DOM, to watch it changes
     const targetNode = document.querySelector(selector)
     const observerOptions = {
       childList: true
     }
-
     const observer = new MutationObserver(callback);
     observer.observe(targetNode, observerOptions);
 

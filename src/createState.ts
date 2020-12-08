@@ -4,6 +4,7 @@ import { asyncUpdateQueue }  from './asyncUpdateQueue'
 export function createState<T extends object>(state: T): T {
   const handler = {
     get(target: object, p: PropertyKey, receiver: any): any {
+      // For nested state update
       // @ts-ignore
       if (['[object Object]', '[object Array]'].indexOf(Object.prototype.toString.call(target[p])) > -1) {
         // @ts-ignore
