@@ -10,7 +10,7 @@
     "test": "jest",
     "sim": "sh simulate.sh",
     "example": "parcel example/index.html --no-source-maps --out-dir=.tests",
-    "netlify": "npm run sim && parcel build example/index.html --out-dir=public"
+    "netlify": "npm run build && npm run sim && parcel build example/index.html --out-dir=public"
   },
   "author": "Oddx Team",
   "license": "ISC",

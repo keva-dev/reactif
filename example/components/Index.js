@@ -1,4 +1,4 @@
-import { onMounted, onUnmounted, on } from '@oddx/reactive'
+import { reactive, onMounted, onUnmounted, on } from '@oddx/reactive'
 import { getAllArticles } from '../services/fuhcm'
 import sleep from '../utils/sleep'
 
@@ -23,6 +23,10 @@ function List(data) {
 function Index() {
   const { state, mutations } = useStore()
   const { setLimit, setIsLoading, setData } = mutations
+
+  const input = reactive({
+    data: '222'
+  })
 
   onMounted(() => {
     if (!state.data.length) {
@@ -66,16 +70,16 @@ function Index() {
   }
 
   return () => {
-    on('#reload').click(loadData)
-    on('#load-more').click(loadMore)
+    on('#reload', 'click', loadData)
+    on('#load-more', 'click', loadMore)
     return `
       ${Loading(state.isLoading)}
-        <h2>FUHCM RSS (${state.limit})</h2>
-        <button id="reload">Reload</button> ${(state.isLoading) ? "Loading..." : ""}
-        ${List(state.data)}
-        <div>
-          <button id="load-more">Load more...</button> ${(state.isLoading) ? "Loading..." : ""}
-        </div>
+      <h2>FUHCM RSS (${state.limit})</h2>
+      <button id="reload">Reload</button> ${(state.isLoading) ? "Loading..." : ""}
+      ${List(state.data)}
+      <div>
+        <button id="load-more">Load more...</button> ${(state.isLoading) ? "Loading..." : ""}
+      </div>
     `
   }
 }

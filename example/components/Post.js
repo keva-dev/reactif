@@ -1,4 +1,4 @@
-import { reactive, onMounted, Router } from '@oddx/reactive'
+import { reactive, onMounted, Router, on } from '@oddx/reactive'
 import { getArticle } from '../services/fuhcm'
 import useStore from '../store/store'
 import sleep from '../utils/sleep'
@@ -9,7 +9,6 @@ function Post() {
   const store = useStore()
   const state = reactive({
     data: null,
-    isLoading: false,
   })
 
   onMounted(() => {
@@ -26,19 +25,18 @@ function Post() {
   }
 
   return () => {
-    if (state.data) {
-      return `
-        <a href="#"><button>Back to home</button></a>
+    on('#reload', 'click', loadData)
+
+    return `
+      ${Loading(store.state.isLoading)}
+      <a href="#"><button>Back to home</button></a>
+      <button id="reload" style="float: right;">Reload</button>
+      ${state.data ? `<div>
         <h2>${state.data.title}</h2>
         <div>
             ${state.data.content}
         </div>
-      `
-    }
-
-    return `
-      ${Loading(true)}
-      <a href="#"><button>Back to home</button></a>
+      </div>` : ''}
     `
   }
 }

@@ -2,9 +2,14 @@ import { useDependency } from "./dependency";
 import { asyncUpdateQueue }  from './asyncUpdateQueue'
 
 export function createState<T extends object>(state: T): T {
-  const dep = useDependency()
-  return new Proxy<T>(state, {
+  const handler = {
     get(target: object, p: PropertyKey, receiver: any): any {
+      // @ts-ignore
+      if (['[object Object]', '[object Array]'].indexOf(Object.prototype.toString.call(target[p])) > -1) {
+        // @ts-ignore
+        return new Proxy(target[p], handler);
+      }
+
       dep.depend()
       return Reflect.get(target, p, receiver)
     },
@@ -13,5 +18,7 @@ export function createState<T extends object>(state: T): T {
       asyncUpdateQueue.add(dep.notify)
       return set
     }
-  })
+  }
+  const dep = useDependency()
+  return new Proxy<T>(state, handler)
 }

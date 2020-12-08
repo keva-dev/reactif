@@ -1,5 +1,6 @@
 import { ComponentFunc, RenderFunc, HandlerFunc } from './types'
 import { globalState } from './globalState'
+import { stringToHTML, patch } from './patch'
 
 type ComponentInstance = {
   component: ComponentFunc | RenderFunc,
@@ -70,7 +71,9 @@ function useLifeCycle() {
     }
 
     makeFuncReactiveAndExecuteIt(() => {
-      document.querySelector(selector).innerHTML = typeof fn !== 'function' ? fn : fn()
+      const templateHTML = stringToHTML(typeof fn !== 'function' ? fn : fn());
+      const elem = document.querySelector(selector)
+      patch(templateHTML, elem);
     })
   }
 
