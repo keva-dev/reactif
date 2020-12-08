@@ -1,7 +1,6 @@
 # Reactive UI library
 
-@Oddx/Reactive (`ReOdd`) is a lightweight (~1 KB runtime) Reactive & Functional library for building modern UI on the 
-web, written in TypeScript.
+![](./example/screenshots/reactive.png)
 
 ![Travis (.org)](https://img.shields.io/travis/oddx-team/reactive?style=flat-square)
 ![Lines of code](https://img.shields.io/tokei/lines/github/oddx-team/reactive?style=flat-square)
@@ -9,17 +8,14 @@ web, written in TypeScript.
 ![GitHub](https://img.shields.io/github/license/oddx-team/reactive?style=flat-square)
 ![npm](https://img.shields.io/npm/v/@oddx/reactive?style=flat-square)
 
-Note: I'm working on Reactive integrate with Virtual DOM (Snabbdom based) on branch [feat/vdom](https://github.com/oddx-team/reactive/tree/feat/vdom).
-
 ## Features
 
 - [React](https://github.com/facebook/react) API like with functional style
-- Two-way data binding which uses Vue.js's [Reactive](https://v3.vuejs.org/guide/reactivity.html) instead of React.js's 
-  [Reconciliation](https://reactjs.org/docs/reconciliation.html)
+- Two-way data binding which similar to Vue.js's [Reactive System](https://v3.vuejs.org/guide/reactivity.html)
 - No dependency, no JSX, no need to transpile, no virtual DOM overhead
-- ~500 SLOC, tiny size, just 3 KB minified and gzipped runtime size
+- ~500 SLOC, tiny in size, just 3 KB minified and gzipped runtime size
 - Embeddable and perfectly suitable for small-and-tiny-sized single page applications
-- Router & Store batteries-includes, TypeScript with static types
+- Router & Store are batteries-included, support TypeScript hinting with static types
 
 ## Table of Contents
 
@@ -58,8 +54,15 @@ Just import the CDN JS file to your HTML:
 </html>
 
 <script>
-const HelloWorld = () => "Hello World";
-ReOdd.render('#app', HelloWorld);
+function CountApp() {
+  const state = ReOdd.reactive({ count: 0 })
+  const increase = () => state.count++
+  return () => {
+    ReOdd.on('#count-btn', 'click', increase)
+    return `<button id="count-btn">${state.count}</button>`
+  }
+}
+ReOdd.render('#app', CountApp);
 </script>
 ```
 
@@ -256,6 +259,45 @@ function Index() {
 ```
 
 ## Example
+
+- Todo List Example:
+
+```javascript
+import { reactive, on, render } from '@oddx/reactive'
+
+function TodoList() {
+  const state = reactive({
+    todos: [],
+    text: ''
+  })
+
+  function addTodo() {
+    state.todos.push(state.text)
+    state.text = ''
+  }
+
+  return () => {
+    on('#form', 'submit', e => e.preventDefault())
+    on('#input', 'input', e => state.text = e.target.value)
+    on('#add-btn', 'click', addTodo)
+    return `
+      <form id="form">
+          <label>
+            <span>Add Todo</span>
+            <input id="input" value="${state.text}" />
+          </label>
+          <button id="add-btn" type="submit">Add</button>
+          <ul>
+              ${state.todos.map(todo => `<li>${todo}</li>`).join('')}
+          </ul>
+      </form>
+    `
+  }
+}
+
+render('#app', TodoList)
+```
+
 
 An example small single page application built by `@oddx/reactive`
 
