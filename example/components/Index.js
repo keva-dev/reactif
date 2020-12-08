@@ -1,4 +1,4 @@
-import { reactive, onMounted, onUnmounted, on } from '@oddx/reactive'
+import { onMounted, onUnmounted, on } from '@oddx/reactive'
 import { getAllArticles } from '../services/fuhcm'
 import sleep from '../utils/sleep'
 
@@ -23,10 +23,6 @@ function List(data) {
 function Index() {
   const { state, mutations } = useStore()
   const { setLimit, setIsLoading, setData } = mutations
-
-  const input = reactive({
-    data: '222'
-  })
 
   onMounted(() => {
     if (!state.data.length) {
