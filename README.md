@@ -1,6 +1,6 @@
 # Reactive UI library
 
-![](./example/screenshots/reactive.png)
+![](https://i.imgur.com/kFKPtvO.png)
 
 ![Travis (.org)](https://img.shields.io/travis/oddx-team/reactive?style=flat-square)
 ![Lines of code](https://img.shields.io/tokei/lines/github/oddx-team/reactive?style=flat-square)
