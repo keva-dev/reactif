@@ -48,7 +48,7 @@ function Form() {
             <option value="usa">United States</option>
           </select>` : '' }
         
-          ${state.form.firstName.length && state.form.lastName.length ? '<input type="submit" value="Submit">' : '' }
+          <input type="submit" value="Submit" ${state.form.firstName.length && state.form.lastName.length ? '' : 'hidden' }>
         </form>
       </div>
     `
