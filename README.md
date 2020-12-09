@@ -94,7 +94,7 @@ Thanks to [ES6 Proxy](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Re
 reactive conversion is "deep" - it affects all nested properties of the passed object.
 
 ```javascript
-import { state, onMounted, render } from '@oddx/reactive'
+import { reactive, onMounted, render } from '@oddx/reactive'
 
 function Book() {
   const state = reactive({
