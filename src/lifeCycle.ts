@@ -37,8 +37,8 @@ function useLifeCycle() {
 
     let firstMount: boolean = false
     let nodes: number = 0
-    function callback(mutationList: any, observer: any) {
-      mutationList.forEach((mutation: any) => {
+    function mutationHandler(mutationList: MutationRecord[], observer: MutationObserver) {
+      mutationList.forEach((mutation) => {
         if (mutation.removedNodes.length && !mutation.addedNodes.length &&
           mutation.removedNodes.length === nodes) {
           // Run onUnmounted hooks
@@ -64,10 +64,10 @@ function useLifeCycle() {
     const observerOptions = {
       childList: true
     }
-    const observer = new MutationObserver(callback);
+    const observer = new MutationObserver(mutationHandler);
     observer.observe(targetNode, observerOptions);
 
-    function makeFuncReactiveAndExecuteIt(fn: () => void) {
+    function makeFuncReactiveAndExecuteIt(fn: HandlerFunc) {
       function wrapped() {
         globalState.notFromRouter = notFromRouter
         globalState.currentFn = fn;
