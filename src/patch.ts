@@ -13,10 +13,14 @@ const NODE_TYPE_CONST = {
   COMMENT_NODE: 8
 }
 
+function convertToArray(arr: any): any {
+  return Array.prototype.slice.call(arr);
+}
+
 // Patch DOM, diffing with currentDOM
 export function patch(template: HTMLElement, elem: HTMLElement | DocumentFragment): void {
-  const oldNodes = Array.prototype.slice.call(elem.childNodes)
-  const newNodes = Array.prototype.slice.call(template.childNodes)
+  const oldNodes = convertToArray(elem.childNodes)
+  const newNodes = convertToArray(template.childNodes)
 
   // If extra elements in DOM, remove them
   let count = oldNodes.length - newNodes.length
