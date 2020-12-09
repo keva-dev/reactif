@@ -79,7 +79,7 @@ function useLifeCycle() {
 
     makeFuncReactiveAndExecuteIt(() => {
       const templateHTML = stringToHTML(typeof fn !== 'function' ? fn : fn());
-      const elem = document.querySelector(selector)
+      const elem = <HTMLElement>document.querySelector(selector)
       patch(templateHTML, elem);
     })
   }

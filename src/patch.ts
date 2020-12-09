@@ -1,3 +1,5 @@
+import { addDefaultAtts, diffAtts } from './diffAtt'
+
 export function stringToHTML(str: string): HTMLElement {
   const parser = new DOMParser();
   const doc = parser.parseFromString(str, 'text/html');
@@ -12,66 +14,70 @@ const NODE_TYPE_CONST = {
 }
 
 // Patch DOM, diffing with currentDOM
-export function patch(template: HTMLElement | Node, elem: Element | HTMLElement | DocumentFragment) {
-  const currentDOMNodes = Array.prototype.slice.call(elem.childNodes)
-  const templateNodes = Array.prototype.slice.call(template.childNodes)
+export function patch(template: HTMLElement, elem: HTMLElement | DocumentFragment): void {
+  const oldNodes = Array.prototype.slice.call(elem.childNodes)
+  const newNodes = Array.prototype.slice.call(template.childNodes)
 
   // If extra elements in DOM, remove them
-  let count = currentDOMNodes.length - templateNodes.length
+  let count = oldNodes.length - newNodes.length
   if (count > 0) {
     for (; count > 0; count--) {
-      currentDOMNodes[currentDOMNodes.length - count].parentNode.removeChild(currentDOMNodes[currentDOMNodes.length - count])
+      oldNodes[oldNodes.length - count].parentNode.removeChild(oldNodes[oldNodes.length - count])
     }
   }
 
-  // Diff each item in the templateNodes
-  templateNodes.forEach(function(node: Node, index: number) {
+  // Diff each item in the newNodes
+  newNodes.forEach((node: HTMLElement, index: number) => {
     // If element doesn't exist, create it
-    if (!currentDOMNodes[index]) {
+    if (!oldNodes[index]) {
+      addDefaultAtts(node)
       elem.appendChild(node.cloneNode(true))
       return
     }
 
     // If element is not the same type, replace it with new element
-    if (getNodeType(node) !== getNodeType(currentDOMNodes[index])) {
-      currentDOMNodes[index].parentNode.replaceChild(node.cloneNode(true), currentDOMNodes[index])
+    if (getNodeType(node) !== getNodeType(oldNodes[index])) {
+      oldNodes[index].parentNode.replaceChild(node.cloneNode(true), oldNodes[index])
       return
     }
 
+    // If attributes are different, update them
+    diffAtts(node, oldNodes[index]);
+
     // If content is different, update it
     const templateContent = getNodeContent(node)
-    if (templateContent && templateContent !== getNodeContent(currentDOMNodes[index])) {
-      currentDOMNodes[index].textContent = templateContent
+    if (templateContent && templateContent !== getNodeContent(oldNodes[index])) {
+      oldNodes[index].textContent = templateContent
     }
 
     // If target element should be empty, wipe it
-    if (currentDOMNodes[index].childNodes.length > 0 && node.childNodes.length < 1) {
-      currentDOMNodes[index].innerHTML = ''
+    if (oldNodes[index].childNodes.length > 0 && node.childNodes.length < 1) {
+      oldNodes[index].innerHTML = ''
       return
     }
 
     // If element is empty and shouldn't be, build it up
     // This uses a document fragment to minimize reflow
-    if (currentDOMNodes[index].childNodes.length < 1 && node.childNodes.length > 0) {
+    if (oldNodes[index].childNodes.length < 1 && node.childNodes.length > 0) {
       const fragment = document.createDocumentFragment()
       patch(node, fragment)
-      currentDOMNodes[index].appendChild(fragment)
+      oldNodes[index].appendChild(fragment)
       return
     }
 
     // If there are existing child elements that need to be modified, diff them
     if (node.childNodes.length > 0) {
-      patch(node, currentDOMNodes[index])
+      patch(node, oldNodes[index])
     }
   })
 
-  function getNodeType(node: Node | HTMLElement) {
+  function getNodeType(node: HTMLElement): string {
     if (node.nodeType === NODE_TYPE_CONST.TEXT_NODE) return 'text'
     if (node.nodeType === NODE_TYPE_CONST.COMMENT_NODE) return 'comment'
-    return "tagName" in node ? node.tagName.toLowerCase() : null
+    return node.tagName.toLowerCase()
   }
 
-  function getNodeContent(node: Node | HTMLElement) {
+  function getNodeContent(node: HTMLElement): string {
     return node.childNodes && node.childNodes.length > 0 ? null : node.textContent
   }
 }
