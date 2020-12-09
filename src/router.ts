@@ -13,14 +13,22 @@ export function onRouterChange(fn: HandlerFunc) {
   })
 }
 
-export function useRouter() {
-  const routes: Record<string, ComponentFunc | RenderFunc> = Object.create(null)
+export interface Route {
+  path: string,
+  component: ComponentFunc | RenderFunc
+}
 
-  function route(path: string, fn: ComponentFunc | RenderFunc): void {
-    while(path.startsWith('/')) {
-      path = path.substring(1);
+export interface Router {
+  renderer: (selector: string) => void
+}
+
+export function useRouter(routesArray: Route[]): Router {
+  const routes: Record<string, ComponentFunc | RenderFunc> = Object.create(null)
+  for (const r of routesArray) {
+    while(r.path.startsWith('/')) {
+      r.path = r.path.substring(1);
     }
-    routes[path] = fn
+    routes[r.path] = r.component
   }
 
   function getPath(): string {
@@ -84,7 +92,7 @@ export function useRouter() {
     createRouterComponent(selector, () => () => `<p>404 Not Found</p>`)
   }
 
-  function render(selector: string): void {
+  function renderer(selector: string): void {
     onRouterChange(() => {
       document.querySelector(selector).innerHTML = null
       match(getPath(), selector)
@@ -93,5 +101,5 @@ export function useRouter() {
     match(getPath(), selector)
   }
   
-  return { route, render }
+  return { renderer }
 }

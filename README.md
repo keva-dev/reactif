@@ -184,13 +184,14 @@ import HelloWorld from './components/Index'
 import Book from './components/Post'
 import NotFound from './components/NotFound'
 
-const router = Router.useRouter()
+const routes = [
+  { path: '/', component: HelloWorld },
+  { path: '/posts/:id', component: Book },
+  { path: '/*', component: NotFound }
+]
 
-router.route('/', HelloWorld)
-router.route('/books/:id', Book)
-router.route('*', NotFound)
-
-router.render('#app')
+const router = Router.useRouter(routes)
+router.render('#app', router)
 ```
 
 Inside component Book, you can access `:id` param like this:

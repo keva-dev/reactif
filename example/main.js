@@ -6,12 +6,12 @@ import Form from './components/Form'
 import TodoList from './components/TodoList'
 import CopyRight from './components/Copyright'
 
-const router = Router.useRouter()
-router.route('/', Index)
-router.route('/posts/:id', Post)
-router.route('/form', Form)
-router.route('/todo', TodoList)
-
-router.render('#app')
-
+const routes = [
+  { path: '/', component: Index },
+  { path: '/posts/:id', component: Post },
+  { path: '/form', component: Form },
+  { path: '/todo', component: TodoList }
+]
+const router = Router.useRouter(routes)
+render('#app', router)
 render('#copyright', CopyRight)
