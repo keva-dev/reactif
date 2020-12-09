@@ -10,12 +10,14 @@
 
 ## Features
 
-- [React](https://github.com/facebook/react) API like with functional style
-- Two-way data binding which similar to Vue.js's [Reactive System](https://v3.vuejs.org/guide/reactivity.html)
-- No dependency, no JSX, no need to transpile, no virtual DOM overhead
-- ~500 SLOC, tiny in size, just 3 KB minified and gzipped runtime size
+~700 SLOC, tiny in size, just 3 KB minified and gzipped runtime size
+- Functional style with simple JavaScript string templating (JSX-like)
+- Zero dependencies, no JSX, no need to transpile, no virtual DOM overhead
+- Two-way data binding which is similar to Vue.js's [Reactive System](https://v3.vuejs.org/guide/reactivity.html)
+- Uses an efficient native/real DOM diffing algorithm to update only the things that have changed
+- Has Redux/Vuex-like data stores and Router is out-of-the-box
 - Embeddable and perfectly suitable for small-and-tiny-sized single page applications
-- Router & Store are batteries-included, support TypeScript hinting with static types
+- TypeScript ready
 
 ## Table of Contents
 
