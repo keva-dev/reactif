@@ -1,7 +1,5 @@
 function Loading(isLoading) {
-  return isLoading ? `
-    <div class="loading-overlay"></div>
-  ` : ``
+  return `<div class="loading-overlay ${isLoading ? '' : 'hide'}"></div>`
 }
 
 export default Loading

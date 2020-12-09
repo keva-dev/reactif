@@ -7,6 +7,10 @@
 
 Visit: [https://reodd.netlify.app](https://reodd.netlify.app/)
 
+## Native DOM diffing
+
+[https://s8.gifyu.com/images/diffing.gif](https://s8.gifyu.com/images/diffing.gif)
+
 ## Screenshot
 
 ![](./screenshots/screenshot1.png)

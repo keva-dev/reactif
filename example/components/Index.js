@@ -71,10 +71,10 @@ function Index() {
     return `
       ${Loading(state.isLoading)}
       <h2>FUHCM RSS (${state.limit})</h2>
-      <button id="reload">Reload</button> ${(state.isLoading) ? "Loading..." : ""}
+      <button id="reload">Reload</button> <span>${(state.isLoading) ? "Loading..." : ""}</span>
       ${List(state.data)}
       <div>
-        <button id="load-more">Load more...</button> ${(state.isLoading) ? "Loading..." : ""}
+        <button id="load-more">Load more...</button> <span>${(state.isLoading) ? "Loading..." : ""}</span>
       </div>
     `
   }

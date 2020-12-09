@@ -11,13 +11,12 @@
 ## Features
 
 ~700 SLOC, tiny in size, just 3 KB minified and gzipped runtime size
-- Functional style with simple JavaScript string templating (JSX-like)
 - Zero dependencies, no JSX, no need to transpile, no virtual DOM overhead
 - Two-way data binding which is similar to Vue.js's [Reactive System](https://v3.vuejs.org/guide/reactivity.html)
-- Uses an efficient native/real DOM diffing algorithm to update only the things that have changed
-- Has Redux/Vuex-like data stores and Router is out-of-the-box
+- Uses an efficient native/real DOM diffing algorithm to [update only the things that have changed](https://s8.gifyu.com/images/diffing.gif)
+- Has an "out-of-the-box" Redux/Vuex-like data store and Router
 - Embeddable and perfectly suitable for small-and-tiny-sized single page applications
-- TypeScript ready
+- Functional style with TypeScript ready
 
 ## Table of Contents
 
