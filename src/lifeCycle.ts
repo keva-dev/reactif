@@ -16,8 +16,10 @@ function useLifeCycle() {
 
   // Mount component to a selector
   function addComponent(selector: string, componentFunc: ComponentFunc | RenderFunc, notFromRouter?: boolean) {
+    const elem = <HTMLElement>document.querySelector(selector)
+
     // If the selector is not valid, or the component is already mounted, then skip
-    if (!document.querySelector(selector) || components.find(e => e.component === componentFunc)) {
+    if (!elem || components.find(e => e.component === componentFunc)) {
       return
     }
 
@@ -79,7 +81,6 @@ function useLifeCycle() {
 
     makeFuncReactiveAndExecuteIt(() => {
       const templateHTML = stringToHTML(typeof fn !== 'function' ? fn : fn());
-      const elem = <HTMLElement>document.querySelector(selector)
       patch(templateHTML, elem);
     })
   }
