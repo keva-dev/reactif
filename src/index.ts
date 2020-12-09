@@ -17,6 +17,17 @@ export const Router = {
   getParams,
   useRouter
 }
-
 export const nextTick = _asyncUpdateQueue.nextTick
 export const readonly = _readonly
+
+export default {
+  reactive,
+  render,
+  onMounted,
+  onUnmounted,
+  on,
+  removeOn,
+  Router,
+  nextTick,
+  readonly
+}

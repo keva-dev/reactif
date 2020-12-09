@@ -36,35 +36,37 @@
 
 ## Install
 
-- Via NPM:
-
-```
-npm install @oddx/reactive
-```
-
 - Via CDN:
 
 ReOdd can also be run directly in the browser with no build tool (via UMD import), just take your idea and turn it into reality in no time!
 
-Just import the CDN JS file to your HTML:
+Just import the CDN JS file to your `index.html`:
 
 ```html
 <html>
   <div id="app"></div>
-  <script src="https://cdn.jsdelivr.net/gh/oddx-team/reactive/umd/index.js"></script>
 </html>
 
-<script>
+<script type="module">
+import ReOdd from 'https://cdn.jsdelivr.net/gh/oddx-team/reactive/umd/index.js';
+
 function CountApp() {
   const state = ReOdd.reactive({ count: 0 })
   const increase = () => state.count++
   return () => {
     ReOdd.on('#count-btn', 'click', increase)
-    return `<button id="count-btn">${state.count}</button>`
+    return `<button id="count-btn">Click Me to increase ${state.count}</button>`
   }
 }
+
 ReOdd.render(CountApp, '#app');
 </script>
+```
+
+- Via NPM:
+
+```
+npm install @oddx/reactive
 ```
 
 ## Usage
