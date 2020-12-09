@@ -48,7 +48,7 @@ Just import the CDN JS file to your `index.html`:
 </html>
 
 <script type="module">
-import ReOdd from 'https://cdn.jsdelivr.net/gh/oddx-team/reactive/umd/index.js';
+import ReOdd from 'https://cdn.jsdelivr.net/gh/oddx-team/reactive/umd/index.js'
 
 function CountApp() {
   const state = ReOdd.reactive({ count: 0 })
@@ -59,7 +59,7 @@ function CountApp() {
   }
 }
 
-ReOdd.render(CountApp, '#app');
+ReOdd.render(CountApp, '#app')
 </script>
 ```
 
