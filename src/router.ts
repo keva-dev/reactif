@@ -46,7 +46,7 @@ export function useRouter(routesArray: Route[]): Router {
 
   function match(path: string, selector: string): void {
     if (typeof routes[path] === "function") {
-      createRouterComponent(selector, routes[path])
+      createRouterComponent(routes[path], selector)
       return
     }
 
@@ -70,14 +70,14 @@ export function useRouter(routesArray: Route[]): Router {
           pathParamsPos.forEach(i => {
             params[pathGroups[i].substring(1)] = currentGroup[i]
           })
-          createRouterComponent(selector, routes[p])
+          createRouterComponent(routes[p], selector)
           return
         }
       }
       if (p.endsWith('**')) {
         const matchAllPath = p.slice(0, -2);
         if (path.startsWith(matchAllPath)) {
-          createRouterComponent(selector, routes[p])
+          createRouterComponent(routes[p], selector)
           return
         }
       }
@@ -85,11 +85,11 @@ export function useRouter(routesArray: Route[]): Router {
 
     // 404
     if (typeof routes['*'] === "function") {
-      createRouterComponent(selector, routes['*'])
+      createRouterComponent(routes['*'], selector)
       return
     }
 
-    createRouterComponent(selector, () => () => `<p>404 Not Found</p>`)
+    createRouterComponent(() => () => `<p>404 Not Found</p>`, selector)
   }
 
   function renderer(selector: string): void {

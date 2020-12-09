@@ -2,11 +2,11 @@ import { ComponentFunc, RenderFunc } from './types'
 import { Router } from './router'
 import { lifeCycle } from './lifeCycle'
 
-export function createRouterComponent(selector: string, componentFunc: ComponentFunc | RenderFunc): void {
+export function createRouterComponent(componentFunc: ComponentFunc | RenderFunc, selector: string): void {
   lifeCycle.addComponent(selector, componentFunc)
 }
 
-export function createComponent(selector: string, componentFunc: ComponentFunc | RenderFunc | Router): void {
+export function createComponent(componentFunc: ComponentFunc | RenderFunc | Router, selector: string): void {
   if ("renderer" in componentFunc) {
     componentFunc.renderer(selector)
     return

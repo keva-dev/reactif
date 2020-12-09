@@ -13,5 +13,5 @@ const routes = [
   { path: '/todo', component: TodoList }
 ]
 const router = Router.useRouter(routes)
-render('#app', router)
-render('#copyright', CopyRight)
+render(router, '#app')
+render(CopyRight, '#copyright')

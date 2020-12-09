@@ -64,7 +64,7 @@ function CountApp() {
     return `<button id="count-btn">${state.count}</button>`
   }
 }
-ReOdd.render('#app', CountApp);
+ReOdd.render(CountApp, '#app');
 </script>
 ```
 
@@ -83,7 +83,7 @@ function HelloWorld() {
   `
 }
 
-render('#app', HelloWorld)
+render(HelloWorld, '#app')
 ```
 
 The React-like APIs are easy to understand and work with (especially if you're coming from an React.js background)
@@ -113,7 +113,7 @@ function Book() {
   `
 }
 
-render('#book', Book)
+render(Book, '#book')
 ```
 
 You don't need to manually call `setState` because the state is already reactive, thanks to dependency tracking, the 
@@ -148,7 +148,7 @@ function Data() {
   }
 }
 
-render('#data', Data)
+render(Data, '#data')
 ```
 
 ### Lifecycle Hooks
@@ -172,7 +172,7 @@ function HelloWorld() {
   `
 }
 
-render('#app', HelloWorld)
+render(HelloWorld, '#app')
 ```
 
 ### Router
@@ -191,7 +191,7 @@ const routes = [
 ]
 
 const router = Router.useRouter(routes)
-router.render('#app', router)
+router.render(router, '#app')
 ```
 
 Inside component Book, you can access `:id` param like this:
@@ -298,7 +298,7 @@ function TodoList() {
   }
 }
 
-render('#app', TodoList)
+render(TodoList, '#app')
 ```
 
 
