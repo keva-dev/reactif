@@ -13,6 +13,6 @@ Visit: [https://reodd.netlify.app](https://reodd.netlify.app/)
 
 ## Screenshot
 
-![](./screenshots/screenshot1.png)
+![](./src/screenshots/screenshot1.png)
 
-![](./screenshots/screenshot2.png)
+![](./src/screenshots/screenshot2.png)
