@@ -2,8 +2,8 @@
   "name": "oddx",
   "private": true,
   "workspaces": [
-    "packages/core",
-    "packages/example"
+    "packages/*",
+    "example"
   ],
   "resolutions": {
     "@oddx/reactive": "workspace:*"
