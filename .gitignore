@@ -1,5 +1,5 @@
 coverage
-node_modules/
+node_modules
 
 .DS_Store
 .idea
@@ -7,4 +7,4 @@ node_modules/
 .tests
 .cache
 
-dist/
+dist
