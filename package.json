@@ -1,29 +1,11 @@
 {
-  "name": "@oddx/reactive",
-  "private": false,
-  "version": "0.1.11",
-  "description": "UI Reactive library",
-  "main": "dist/index.js",
-  "scripts": {
-    "test": "jest",
-    "build:es": "tsc --declaration",
-    "build:umd": "NODE_ENV=development parcel build src/index.ts --no-minify --out-file=dist/reodd.js --no-source-maps --global ReOdd",
-    "build:umd:min": "NODE_ENV=production parcel build src/index.ts --out-file=dist/reodd.min.js --no-source-maps --global ReOdd --experimental-scope-hoisting --detailed-report",
-    "build": "rm -rf dist && npm run build:es && npm run build:umd && npm run build:umd:min",
-    "example": "npm run build:es && sh example.sh && parcel example/index.html --out-dir=.tests",
-    "netlify": "npm run build && npm run sim && parcel build example/index.html --no-source-maps  --out-dir=public"
-  },
-  "author": "Oddx Team",
-  "license": "ISC",
-  "devDependencies": {
-    "@types/jest": "^26.0.16",
-    "jest": "^26.6.3",
-    "parcel-bundler": "^1.12.4",
-    "sass": "^1.29.0",
-    "ts-jest": "^26.4.4",
-    "typescript": "^4.1.2"
-  },
-  "browserslist": [
-    "since 2017-06"
-  ]
+  "name": "oddx",
+  "private": true,
+  "workspaces": [
+    "packages/core",
+    "packages/example"
+  ],
+  "resolutions": {
+    "@oddx/reactive": "workspace:*"
+  }
 }

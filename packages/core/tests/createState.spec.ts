@@ -1,4 +1,4 @@
-import { createState } from '../createState'
+import { createState } from '../src/createState'
 
 interface TestObject {
   count: number

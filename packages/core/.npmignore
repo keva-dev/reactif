@@ -8,7 +8,4 @@ tests
 .gitignore
 .npmignore
 package-lock.json
-.tests
-example
-umd
-simulate.sh
+yarn.lock
