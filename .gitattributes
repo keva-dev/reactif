@@ -1,4 +1,1 @@
-example/**/* linguist-vendored
-dist/**/* linguist-vendored
-umd/**/* linguist-vendored
-jest.config.js linguist-vendored
+packages/example/**/* linguist-vendored
