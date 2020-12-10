@@ -5,7 +5,7 @@
   "description": "Example for Reactive UI",
   "scripts": {
     "start": "parcel src/index.html",
-    "build": "parcel build src/index.html"
+    "build": "rm -rf dist && NODE_ENV=production parcel build src/index.html --experimental-scope-hoisting --detailed-report"
   },
   "devDependencies": {
     "parcel-bundler": "^1.12.4",
