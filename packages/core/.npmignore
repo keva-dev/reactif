@@ -9,3 +9,5 @@ tests
 .npmignore
 package-lock.json
 yarn.lock
+tsconfig.json
+jest.config.js
