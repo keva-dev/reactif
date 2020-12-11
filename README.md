@@ -47,9 +47,8 @@ Just import the CDN JS file to your `index.html`:
   <div id="app"></div>
 </html>
 
-<script type="module">
-import ReOdd from 'https://cdn.jsdelivr.net/npm/@oddx/reactive@latest/dist/reodd.min.js'
-
+<script src="https://cdn.jsdelivr.net/npm/@oddx/reactive@latest/dist/reodd.min.js"></script>
+<script>
 function CountApp() {
   const state = ReOdd.reactive({ count: 0 })
   const increase = () => state.count++
@@ -93,7 +92,7 @@ The React-like APIs are easy to understand and work with (especially if you're c
 
 To create a reactive state from a JavaScript object, we can use a reactive method.
 
-Thanks to [ES6 Proxy](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy), the 
+Thanks to [ES6 Proxy](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy), the
 reactive conversion is "deep" - it affects all nested properties of the passed object.
 
 ```javascript
@@ -117,7 +116,7 @@ function Book() {
 render(Book, '#book')
 ```
 
-You don't need to manually call `setState` because the state is already reactive, thanks to dependency tracking, the 
+You don't need to manually call `setState` because the state is already reactive, thanks to dependency tracking, the
 view automatically updates when reactive state changes.
 
 For example, you can write a load data function like this:
@@ -163,11 +162,11 @@ function HelloWorld() {
   onMounted(() => {
     console.log("Mounted, I'm gonna binding some event to the DOM")
   }
-  
+
   onMounted(() => {
     console.log("Unmounted, I'm gonna do some cleanup job here")
   }
-  
+
   return () => `
     <div>Hello World</div>
   `
@@ -248,7 +247,7 @@ And then use in components:
 function Index() {
   const { state, mutations } = useStore()
   const { setLimit, setIsLoading, setData } = mutations
-  
+
   onMounted(() => {
     loadData().catch(err => console.error(err))
   })
@@ -258,7 +257,7 @@ function Index() {
     setData(await getAllArticles(state.limit))
     setIsLoading(false)
   }
-  
+
   // ...
 ```
 
