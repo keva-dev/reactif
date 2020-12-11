@@ -26,19 +26,12 @@ export function useAsyncUpdateQueue() {
   }
 
   function nextTick(callback?: () => void): Promise<void> {
-    if (isQueueSleep) {
-      if (!callback) {
-        return Promise.resolve()
-      }
-      callback()
-    } else {
-      if (!callback) {
-        return new Promise<void>((resolve) => {
-          document.addEventListener('renderDone', () => resolve(), { once: true })
-        })
-      }
-      document.addEventListener('renderDone', callback)
+    if (!callback) {
+      return new Promise<void>((resolve) => {
+        document.addEventListener('renderDone', () => resolve(), { once: true })
+      })
     }
+    document.addEventListener('renderDone', callback)
   }
 
   return { add, nextTick }
