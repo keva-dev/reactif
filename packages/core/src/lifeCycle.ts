@@ -74,6 +74,7 @@ function useLifeCycle() {
         globalState.notFromRouter = notFromRouter
         globalState.currentFn = fn;
         fn();
+        document.dispatchEvent(new Event('renderDone'))
         globalState.currentFn = undefined;
       }
       wrapped();

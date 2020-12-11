@@ -11,17 +11,33 @@ export function useAsyncUpdateQueue() {
     queue.add(fn)
     if (isQueueSleep) {
       isQueueSleep = false
-      setTimeout(nextTick, 0)
+      setTimeout(processRenderPhase, 0)
     }
   }
 
-  function nextTick() {
+  function processRenderPhase() {
     if (queue.size) {
       queue.forEach(fn => {
         fn()
       })
       queue.clear()
       isQueueSleep = true
+    }
+  }
+
+  function nextTick(callback?: () => void): Promise<void> {
+    if (isQueueSleep) {
+      if (!callback) {
+        return Promise.resolve()
+      }
+      callback()
+    } else {
+      if (!callback) {
+        return new Promise<void>((resolve) => {
+          document.addEventListener('renderDone', () => resolve(), { once: true })
+        })
+      }
+      document.addEventListener('renderDone', callback)
     }
   }
 
