@@ -1,6 +1,6 @@
 import { reactive, onMounted, nextTick } from '@oddx/reactive'
 
-function NextTick() {
+function NextTickDemo() {
   const state = reactive({
     a: 0,
     b: 0,
@@ -10,14 +10,13 @@ function NextTick() {
   onMounted(() => {
     const el = document.querySelector('#nextTick')
     console.log(el.textContent)
-
-    state.a = 1
+    state.a = 1;
     nextTick(() => {
       console.log(el.textContent)
-      state.b = 2
+      state.b = 2;
     })
-    state.b = 3
-    state.c = 4
+    state.b = 3;
+    state.c = 4;
   })
 
   return () => `
@@ -27,4 +26,4 @@ function NextTick() {
   `
 }
 
-export default NextTick
+export default NextTickDemo

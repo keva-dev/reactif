@@ -82,7 +82,6 @@ function useLifeCycle() {
     makeFuncReactiveAndExecuteIt(() => {
       const templateHTML = stringToHTML(typeof fn !== 'function' ? fn : fn());
       patch(templateHTML, elem);
-      document.dispatchEvent(new Event('renderDone'))
     })
   }
 

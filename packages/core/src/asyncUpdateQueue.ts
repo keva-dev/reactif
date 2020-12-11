@@ -25,13 +25,13 @@ export function useAsyncUpdateQueue() {
     }
   }
 
-  function nextTick(callback?: () => void): Promise<void> {
+  function nextTick(callback?: () => void): Promise<void> | void {
     if (!callback) {
       return new Promise<void>((resolve) => {
-        document.addEventListener('renderDone', () => resolve(), { once: true })
+        setTimeout(resolve, 0)
       })
     }
-    document.addEventListener('renderDone', callback)
+    setTimeout(callback, 0)
   }
 
   return { add, nextTick }
