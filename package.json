@@ -7,8 +7,5 @@
   ],
   "resolutions": {
     "@oddx/reactive": "workspace:*"
-  },
-  "dependencies": {
-    "@oddx/reactive": "^0.1.12"
   }
 }

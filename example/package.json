@@ -15,6 +15,6 @@
     "since 2017-06"
   ],
   "dependencies": {
-    "@oddx/reactive": "^0.1.12"
+    "@oddx/reactive": "^0.1.13"
   }
 }
