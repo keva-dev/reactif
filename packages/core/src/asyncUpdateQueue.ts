@@ -11,11 +11,11 @@ export function useAsyncUpdateQueue() {
     queue.add(fn)
     if (isQueueSleep) {
       isQueueSleep = false
-      setTimeout(nextTick, 0)
+      setTimeout(processRenderPhase, 0)
     }
   }
 
-  function nextTick() {
+  function processRenderPhase() {
     if (queue.size) {
       queue.forEach(fn => {
         fn()
@@ -23,6 +23,15 @@ export function useAsyncUpdateQueue() {
       queue.clear()
       isQueueSleep = true
     }
+  }
+
+  function nextTick(callback?: () => void): Promise<void> | void {
+    if (!callback) {
+      return new Promise<void>((resolve) => {
+        setTimeout(resolve, 0)
+      })
+    }
+    setTimeout(callback, 0)
   }
 
   return { add, nextTick }
