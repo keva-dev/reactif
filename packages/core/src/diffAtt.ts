@@ -7,26 +7,20 @@ interface Attribute {
   value: string
 }
 
-function find(arr: any, callback: any) {
-  const matches = arr.filter(callback)
-  if (matches.length < 1) return null
-  return matches[0]
-}
-
 export function diffAtts(template: HTMLElement, el: HTMLElement): void {
   const templateAtts = getAttributes(template, true)
   const elAtts = getAttributes(el)
 
   const remove = elAtts.filter((att: Attribute) => {
     if (dynamicAttributes.indexOf(att.att) > -1) return false
-    const getAtt = find(templateAtts, (newAtt: Attribute) => {
+    const getAtt = templateAtts.find((newAtt: Attribute) => {
       return att.att === newAtt.att
     })
     return getAtt === null
   })
 
   const change = templateAtts.filter((att: Attribute) => {
-    const getAtt = find(elAtts, (elAtt: Attribute) => {
+    const getAtt = elAtts.find((elAtt: Attribute) => {
       return att.att === elAtt.att
     })
     return getAtt === null || getAtt.value !== att.value
@@ -113,7 +107,7 @@ export function addDefaultAtts(node: HTMLElement): void {
 
   // If there are child nodes, recursively check them
   if (node.childNodes) {
-    Array.prototype.forEach.call(node.childNodes, (childNode: HTMLElement) => {
+    node.childNodes.forEach((childNode: HTMLElement) => {
       addDefaultAtts(childNode)
     })
   }
@@ -146,7 +140,7 @@ function diffStyles(el: HTMLElement, styles: string) {
 
   // Get styles to remove
   const remove = Array.prototype.filter.call(el.style, (style: any) => {
-    const findStyle = find(styleMap, function(newStyle: any) {
+    const findStyle = styleMap.find((newStyle: any) => {
       return newStyle.name === style && newStyle.value === el.style[style]
     })
     return findStyle === null
