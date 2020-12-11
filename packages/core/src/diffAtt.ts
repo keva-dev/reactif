@@ -13,11 +13,11 @@ function find(arr: any, callback: any) {
   return matches[0]
 }
 
-export function diffAtts(template: HTMLElement, elem: HTMLElement): void {
+export function diffAtts(template: HTMLElement, el: HTMLElement): void {
   const templateAtts = getAttributes(template, true)
-  const elemAtts = getAttributes(elem)
+  const elAtts = getAttributes(el)
 
-  const remove = elemAtts.filter((att: Attribute) => {
+  const remove = elAtts.filter((att: Attribute) => {
     if (dynamicAttributes.indexOf(att.att) > -1) return false
     const getAtt = find(templateAtts, (newAtt: Attribute) => {
       return att.att === newAtt.att
@@ -26,14 +26,14 @@ export function diffAtts(template: HTMLElement, elem: HTMLElement): void {
   })
 
   const change = templateAtts.filter((att: Attribute) => {
-    const getAtt = find(elemAtts, (elemAtt: Attribute) => {
-      return att.att === elemAtt.att
+    const getAtt = find(elAtts, (elAtt: Attribute) => {
+      return att.att === elAtt.att
     })
     return getAtt === null || getAtt.value !== att.value
   })
 
-  addAttributes(elem, change)
-  removeAttributes(elem, remove)
+  addAttributes(el, change)
+  removeAttributes(el, remove)
 }
 
 function getDynamicAttributes(node: HTMLElement, atts: Attribute, isTemplate?: boolean) {
@@ -71,29 +71,29 @@ function getAttributes(node: HTMLElement, isTemplate?: boolean) {
   return atts
 }
 
-function addAttributes(elem: HTMLElement, atts: Attribute[]) {
+function addAttributes(el: HTMLElement, atts: Attribute[]) {
   atts.forEach((attribute) => {
     // If the attribute is a class, use className
     // Else if it's style, diff and update styles
     // Otherwise, set the attribute
     if (attribute.att === 'class') {
-      elem.className = attribute.value
+      el.className = attribute.value
     } else if (attribute.att === 'style') {
-      diffStyles(elem, attribute.value);
+      diffStyles(el, attribute.value);
     } else {
-      if (attribute.att in elem) {
+      if (attribute.att in el) {
         try {
           // @ts-ignore
-          elem[attribute.att] = attribute.value
+          el[attribute.att] = attribute.value
           // @ts-ignore
-          if (!elem[attribute.att] && elem[attribute.att] !== 0) {
+          if (!el[attribute.att] && el[attribute.att] !== 0) {
             // @ts-ignore
-            elem[attribute.att] = true
+            el[attribute.att] = true
           }
         } catch (e) {}
       }
       try {
-        elem.setAttribute(attribute.att, attribute.value)
+        el.setAttribute(attribute.att, attribute.value)
       } catch (e) {}
     }
   })
@@ -119,45 +119,50 @@ export function addDefaultAtts(node: HTMLElement): void {
   }
 }
 
-function removeAttributes(elem: HTMLElement, atts: Attribute[]) {
+function removeAttributes(el: HTMLElement, atts: Attribute[]) {
   atts.forEach((attribute) => {
     // If the attribute is a class, use className
     // Else if it's style, remove all styles
     // Otherwise, use removeAttribute()
     if (attribute.att === 'class') {
-      elem.className = ''
+      el.className = ''
     } else {
-      if (attribute.att in elem) {
+      if (attribute.att in el) {
         try {
           // @ts-ignore
-          elem[attribute.att] = ''
+          el[attribute.att] = ''
         } catch (e) {}
       }
       try {
-        elem.removeAttribute(attribute.att)
+        el.removeAttribute(attribute.att)
       } catch (e) {}
     }
   })
 }
 
-function diffStyles(elem: HTMLElement, styles: any) {
+function diffStyles(el: HTMLElement, styles: string) {
   // Get style map
   const styleMap = getStyleMap(styles)
 
   // Get styles to remove
-  const remove = Array.prototype.filter.call(elem.style, (style: any) => {
+  const remove = Array.prototype.filter.call(el.style, (style: any) => {
     const findStyle = find(styleMap, function(newStyle: any) {
-      return newStyle.name === style && newStyle.value === elem.style[style]
+      return newStyle.name === style && newStyle.value === el.style[style]
     })
     return findStyle === null
   })
 
   // Add and remove styles
-  removeStyles(elem, remove)
-  changeStyles(elem, styleMap)
+  removeStyles(el, remove)
+  changeStyles(el, styleMap)
 }
 
-function getStyleMap(styles: any) {
+interface Style {
+  name: string
+  value: string
+}
+
+function getStyleMap(styles: string): Style[] {
   return styles.split('').reduce((arr: any, style: any) => {
     const col = style.indexOf(':')
     if (col) {
@@ -170,14 +175,14 @@ function getStyleMap(styles: any) {
   }, [])
 }
 
-function removeStyles(elem: HTMLElement, styles: any) {
+function removeStyles(el: HTMLElement, styles: Style[]) {
   styles.forEach((style: any) => {
-    elem.style[style] = ''
+    el.style[style] = ''
   })
 }
 
-function changeStyles(elem: HTMLElement, styles: any) {
+function changeStyles(el: HTMLElement, styles: Style[]) {
   styles.forEach((style: any) => {
-    elem.style[style.name] = style.value
+    el.style[style.name] = style.value
   })
 }
