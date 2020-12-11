@@ -5,6 +5,7 @@ import Post from './components/Post'
 import Form from './components/Form'
 import TodoList from './components/TodoList'
 import NextTickDemo from './components/NextTick'
+import WhatAMole from './components/WhatAMole'
 import CopyRight from './components/Copyright'
 
 const routes = [
@@ -12,7 +13,8 @@ const routes = [
   { path: '/posts/:id', component: Post },
   { path: '/form', component: Form },
   { path: '/todo', component: TodoList },
-  { path: '/nextTick', component: NextTickDemo }
+  { path: '/nextTick', component: NextTickDemo },
+  { path: '/what-a-mole', component: WhatAMole }
 ]
 const router = Router.useRouter(routes)
 render(router, '#app')
