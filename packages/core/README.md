@@ -1,3 +1,5 @@
 # Reactive UI core
 
-- Please visit main `README.md`
+![](https://i.imgur.com/kFKPtvO.png)
+
+- Please check the main document [here](https://github.com/oddx-team/reactive)
