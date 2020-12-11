@@ -13,15 +13,12 @@
 ~700 SLOC, tiny in size, just 3 KB minified and gzipped runtime size
 - Zero dependencies, no JSX, no need to transpile, no virtual DOM overhead
 - Two-way data binding which is similar to Vue.js's [Reactive System](https://v3.vuejs.org/guide/reactivity.html)
-- Uses an efficient native/real DOM diffing algorithm to [update only the things that have changed](https://s8.gifyu.com/images/diffing.gif)
+- Uses an efficient native DOM diffing algorithm to [update only the things that have changed](https://s8.gifyu.com/images/diffing.gif)
 - Has an "out-of-the-box" Redux/Vuex-like data store and Router
 - Embeddable and perfectly suitable for small-and-tiny-sized single page applications
 - Functional style with TypeScript ready
 
 ## Table of Contents
-
-<details>
-<summary>Table of Contents</summary>
 
 - [Install](#install)
 - [Usage](#usage)
@@ -32,7 +29,6 @@
   * [Router](#router)
   * [Store](#store)
 - [Example](#example)
-</details>
 
 ## Install
 
@@ -304,6 +300,6 @@ render(TodoList, '#app')
 
 An example small single page application built by `@oddx/reactive`
 
-See [Example](https://github.com/oddx-team/reactive/tree/master/packages/example)
+See [Example](https://github.com/oddx-team/reactive/tree/master/example)
 
 Live preview: [https://reodd.netlify.app](https://reodd.netlify.app/)
