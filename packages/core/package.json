@@ -1,7 +1,7 @@
 {
   "name": "@oddx/reactive",
   "private": false,
-  "version": "0.1.15",
+  "version": "0.1.16",
   "description": "Lightweight Reactive & Functional library core for building modern UI on the web",
   "homepage": "https://github.com/oddx-team/reactive",
   "repository": {
