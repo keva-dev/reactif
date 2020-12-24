@@ -1,4 +1,4 @@
-import { reactive, on, onMounted, onUnmounted } from '@oddx/reactive'
+import { reactive, on, onMounted, onUnmounted } from 'ractix'
 
 function Form() {
   const state = reactive({

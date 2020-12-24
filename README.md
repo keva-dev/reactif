@@ -71,7 +71,7 @@ npm install @oddx/reactive
 At the core of `@oddx/reactive` is a system that enables you to declaratively render data to the DOM using straightforward HTML syntax:
 
 ```javascript
-import { render }  from '@oddx/reactive'
+import { render }  from 'ractix'
 
 function HelloWorld() {
   return `
@@ -92,7 +92,7 @@ Thanks to [ES6 Proxy](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Re
 reactive conversion is "deep" - it affects all nested properties of the passed object.
 
 ```javascript
-import { reactive, onMounted, render } from '@oddx/reactive'
+import { reactive, onMounted, render } from 'ractix'
 
 function Book() {
   const state = reactive({
@@ -131,7 +131,7 @@ Also, please don't forget to pass your loadData (which is a side-effect function
 (working on improvements)
 
 ```javascript
-import { on, render } from '@oddx/reactive'
+import { on, render } from 'ractix'
 
 function Data() {
   return () => {
@@ -152,7 +152,7 @@ render(Data, '#data')
 Per component, `@oddx/reactive` supports injecting hooks like `onMounted` and `onUnmounted`, these functions accept a callback that will be executed when the hook is called by the component:
 
 ```javascript
-import { onMounted, onUnmounted, render } from '@oddx/reactive'
+import { onMounted, onUnmounted, render } from 'ractix'
 
 function HelloWorld() {
   onMounted(() => {
@@ -174,7 +174,7 @@ render(HelloWorld, '#app')
 ### Router
 
 ```javascript
-import { Router } from '@oddx/reactive'
+import { Router } from 'ractix'
 
 import HelloWorld from './components/Index'
 import Book from './components/Post'
@@ -193,7 +193,7 @@ router.render(router, '#app')
 Inside component Book, you can access `:id` param like this:
 
 ```javascript
-import { Router } from '@oddx/reactive'
+import { Router } from 'ractix'
 
 function Book() {
   const id = Router.getParams().id
@@ -209,7 +209,7 @@ function Book() {
 You can use `.reactive` hook to create a Store, such as:
 
 ```javascript
-import { reactive, readonly } from '@oddx/reactive'
+import { reactive, readonly } from 'ractix'
 
 const state = reactive({
   limit: 20,
@@ -262,7 +262,7 @@ function Index() {
 - Todo List Example:
 
 ```javascript
-import { reactive, on, render } from '@oddx/reactive'
+import { reactive, on, render } from 'ractix'
 
 function TodoList() {
   const state = reactive({

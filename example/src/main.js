@@ -1,4 +1,4 @@
-import { render, Router } from '@oddx/reactive'
+import { render, Router } from 'ractix'
 
 import Index from './components/Index'
 import Post from './components/Post'

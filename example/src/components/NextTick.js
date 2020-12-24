@@ -1,4 +1,4 @@
-import { reactive, onMounted, nextTick } from '@oddx/reactive'
+import { reactive, onMounted, nextTick } from 'ractix'
 
 function NextTickDemo() {
   const state = reactive({

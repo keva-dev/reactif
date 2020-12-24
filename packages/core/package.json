@@ -1,12 +1,12 @@
 {
-  "name": "@oddx/reactive",
+  "name": "ractix",
   "private": false,
-  "version": "0.1.16",
+  "version": "0.1.17",
   "description": "Lightweight Reactive & Functional library core for building modern UI on the web",
-  "homepage": "https://github.com/oddx-team/reactive",
+  "homepage": "https://github.com/tuhuynh27/ractix",
   "repository": {
     "type": "git",
-    "url": "https://github.com/oddx-team/reactive.git",
+    "url": "https://github.com/tuhuynh27/ractix.git",
     "directory": "packages/core"
   },
   "main": "dist/index.js",
@@ -20,7 +20,7 @@
     "build": "rm -rf dist && npm run build:es && npm run build:umd && npm run build:umd:min && npm run build:es:module && npm run build:es:module:min",
     "build:dev": "rm -rf dist && npm run build:es"
   },
-  "author": "Oddx Team",
+  "author": "Tu Huynh",
   "license": "Apache-2.0",
   "devDependencies": {
     "@types/jest": "^26.0.16",

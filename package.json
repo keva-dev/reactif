@@ -1,11 +1,11 @@
 {
-  "name": "oddx",
+  "name": "ractix",
   "private": true,
   "workspaces": [
     "packages/*",
     "example"
   ],
   "resolutions": {
-    "@oddx/reactive": "workspace:*"
+    "ractix": "workspace:*"
   }
 }

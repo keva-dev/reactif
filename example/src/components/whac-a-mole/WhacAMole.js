@@ -1,4 +1,4 @@
-import { reactive, onMounted, onUnmounted } from '@oddx/reactive'
+import { reactive, onMounted, onUnmounted } from 'ractix'
 import './WhacAMole.scss'
 
 function WhacAMole() {

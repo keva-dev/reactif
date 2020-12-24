@@ -1,5 +1,5 @@
 {
-  "name": "@oddx/compiler",
+  "name": "@ractix/compiler",
   "version": "0.1.0",
   "description": "Compiler for Reactive UI library",
   "main": "dist/index.js",
