@@ -1,12 +1,12 @@
 # Reactive UI library
 
-![](https://i.imgur.com/kFKPtvO.png)
+![](https://i.imgur.com/MS3IKww.jpg)
 
-![Travis (.org)](https://img.shields.io/travis/oddx-team/reactive?style=flat-square)
-![Lines of code](https://img.shields.io/tokei/lines/github/oddx-team/reactive?style=flat-square)
-![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/oddx-team/reactive?style=flat-square)
-![GitHub](https://img.shields.io/github/license/oddx-team/reactive?style=flat-square)
-![npm](https://img.shields.io/npm/v/@oddx/reactive?style=flat-square)
+![Travis (.org)](https://img.shields.io/travis/tuhuynh27/ractix?style=flat-square)
+![Lines of code](https://img.shields.io/tokei/lines/github/tuhuynh27/ractix?style=flat-square)
+![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/tuhuynh27/ractix?style=flat-square)
+![GitHub](https://img.shields.io/github/license/tuhuynh27/ractix?style=flat-square)
+![npm](https://img.shields.io/npm/v/ractix?style=flat-square)
 
 ## Features
 
@@ -43,7 +43,7 @@ Just import the CDN JS file to your `index.html`:
   <div id="app"></div>
 </html>
 
-<script src="https://cdn.jsdelivr.net/npm/@oddx/reactive@latest/dist/reodd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/ractix@latest/dist/reodd.min.js"></script>
 <script>
 function CountApp() {
   const state = ReOdd.reactive({ count: 0 })
@@ -61,17 +61,17 @@ ReOdd.render(CountApp, '#app')
 - Via NPM:
 
 ```
-npm install @oddx/reactive
+npm install ractix
 ```
 
 ## Usage
 
 ### Basic Render
 
-At the core of `@oddx/reactive` is a system that enables you to declaratively render data to the DOM using straightforward HTML syntax:
+At the core of `ractix` is a system that enables you to declaratively render data to the DOM using straightforward HTML syntax:
 
 ```javascript
-import { render }  from '@oddx/reactive'
+import { render }  from 'ractix'
 
 function HelloWorld() {
   return `
@@ -92,7 +92,7 @@ Thanks to [ES6 Proxy](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Re
 reactive conversion is "deep" - it affects all nested properties of the passed object.
 
 ```javascript
-import { reactive, onMounted, render } from '@oddx/reactive'
+import { reactive, onMounted, render } from 'ractix'
 
 function Book() {
   const state = reactive({
@@ -131,7 +131,7 @@ Also, please don't forget to pass your loadData (which is a side-effect function
 (working on improvements)
 
 ```javascript
-import { on, render } from '@oddx/reactive'
+import { on, render } from 'ractix'
 
 function Data() {
   return () => {
@@ -149,10 +149,10 @@ render(Data, '#data')
 
 ### Lifecycle Hooks
 
-Per component, `@oddx/reactive` supports injecting hooks like `onMounted` and `onUnmounted`, these functions accept a callback that will be executed when the hook is called by the component:
+Per component, `ractix` supports injecting hooks like `onMounted` and `onUnmounted`, these functions accept a callback that will be executed when the hook is called by the component:
 
 ```javascript
-import { onMounted, onUnmounted, render } from '@oddx/reactive'
+import { onMounted, onUnmounted, render } from 'ractix'
 
 function HelloWorld() {
   onMounted(() => {
@@ -174,7 +174,7 @@ render(HelloWorld, '#app')
 ### Router
 
 ```javascript
-import { Router } from '@oddx/reactive'
+import { Router } from 'ractix'
 
 import HelloWorld from './components/Index'
 import Book from './components/Post'
@@ -193,7 +193,7 @@ router.render(router, '#app')
 Inside component Book, you can access `:id` param like this:
 
 ```javascript
-import { Router } from '@oddx/reactive'
+import { Router } from 'ractix'
 
 function Book() {
   const id = Router.getParams().id
@@ -209,7 +209,7 @@ function Book() {
 You can use `.reactive` hook to create a Store, such as:
 
 ```javascript
-import { reactive, readonly } from '@oddx/reactive'
+import { reactive, readonly } from 'ractix'
 
 const state = reactive({
   limit: 20,
@@ -262,7 +262,7 @@ function Index() {
 - Todo List Example:
 
 ```javascript
-import { reactive, on, render } from '@oddx/reactive'
+import { reactive, on, render } from 'ractix'
 
 function TodoList() {
   const state = reactive({
@@ -298,8 +298,8 @@ render(TodoList, '#app')
 ```
 
 
-An example small single page application built by `@oddx/reactive`
+An example small single page application built by `ractix`
 
-See [Example](https://github.com/oddx-team/reactive/tree/master/example)
+See [Example](https://github.com/tuhuynh27/ractix/tree/master/example)
 
 Live preview: [https://reodd.netlify.app](https://reodd.netlify.app/)

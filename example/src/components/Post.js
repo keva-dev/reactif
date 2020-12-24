@@ -1,4 +1,4 @@
-import { reactive, onMounted, Router, on } from '@oddx/reactive'
+import { reactive, onMounted, Router, on } from 'ractix'
 import { getArticle } from '../services/fuhcm'
 import useStore from '../store/store'
 import sleep from '../utils/sleep'

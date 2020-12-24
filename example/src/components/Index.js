@@ -1,4 +1,4 @@
-import { onMounted, onUnmounted, on } from '@oddx/reactive'
+import { onMounted, onUnmounted, on } from 'ractix'
 import { getAllArticles } from '../services/fuhcm'
 import sleep from '../utils/sleep'
 

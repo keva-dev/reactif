@@ -1,4 +1,4 @@
-import { reactive, on, nextTick } from '@oddx/reactive'
+import { reactive, on, nextTick } from 'ractix'
 
 function TodoList() {
   const state = reactive({

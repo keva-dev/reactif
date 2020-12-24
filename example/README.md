@@ -1,4 +1,4 @@
-# ReOdd Example
+# Ractix Example
 
 - Please use Parcel to bundle
 - Run from root dir: `parcel index.html`

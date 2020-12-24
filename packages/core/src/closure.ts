@@ -1,9 +1,9 @@
 export function useState<T>(initialValue: T) {
   let value = initialValue
-  function get() {
+  function get(): T {
     return value
   }
-  function set(newVal: T) {
+  function set(newVal: T): void {
     value = newVal
   }
   return { get, set }

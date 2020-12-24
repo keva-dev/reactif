@@ -1,5 +1,5 @@
 {
-  "name": "@oddx/example",
+  "name": "@ractix/example",
   "private": true,
   "version": "0.0.0",
   "description": "Example for Reactive UI",
@@ -15,6 +15,6 @@
     "since 2017-06"
   ],
   "dependencies": {
-    "@oddx/reactive": "^0.1.13"
+    "ractix": "^0.1.17"
   }
 }
