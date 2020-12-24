@@ -34,7 +34,8 @@
 
 - Via CDN:
 
-ReOdd can also be run directly in the browser with no build tool (via UMD import), just take your idea and turn it into reality in no time!
+Ractix can also be run directly in the browser with no build tool (via UMD import), just take your idea and turn it 
+into reality in no time!
 
 Just import the CDN JS file to your `index.html`:
 
@@ -43,18 +44,18 @@ Just import the CDN JS file to your `index.html`:
   <div id="app"></div>
 </html>
 
-<script src="https://cdn.jsdelivr.net/npm/ractix@latest/dist/reodd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/ractix@latest/dist/ractix.min.js"></script>
 <script>
 function CountApp() {
-  const state = ReOdd.reactive({ count: 0 })
+  const state = Ractix.reactive({ count: 0 })
   const increase = () => state.count++
   return () => {
-    ReOdd.on('#count-btn', 'click', increase)
+    Ractix.on('#count-btn', 'click', increase)
     return `<button id="count-btn">Click Me to increase ${state.count}</button>`
   }
 }
 
-ReOdd.render(CountApp, '#app')
+Ractix.render(CountApp, '#app')
 </script>
 ```
 
