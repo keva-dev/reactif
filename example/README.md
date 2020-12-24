@@ -5,7 +5,7 @@
 
 ## Live demo
 
-Visit: [https://reodd.netlify.app](https://reodd.netlify.app/)
+Visit: [https://ractix-demo.netlify.app](https://ractix-demo.netlify.app)
 
 ## Native DOM diffing
 

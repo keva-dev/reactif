@@ -302,4 +302,4 @@ An example small single page application built by `ractix`
 
 See [Example](https://github.com/tuhuynh27/ractix/tree/master/example)
 
-Live preview: [https://reodd.netlify.app](https://reodd.netlify.app/)
+Live preview: [ractix-demo.netlify.app](https://ractix-demo.netlify.app)
