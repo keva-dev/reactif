@@ -50,7 +50,7 @@ function CountApp() {
   const state = Ractix.reactive({ count: 0 })
   const increase = () => state.count++
   return () => {
-    Ractix.on('#count-btn', 'click', increase)
+    Ractix.on('#count-btn').click(increase)
     return `<button id="count-btn">Click Me to increase ${state.count}</button>`
   }
 }
@@ -86,6 +86,9 @@ render(HelloWorld, '#app')
 The React-like APIs are easy to understand and work with (especially if you're coming from an React.js background)
 
 ### Reactive State
+
+Reactive State means that the UI “reacts” to changes in your data. Update your data, and the UI automatically renders 
+any required updates based on the new state.
 
 To create a reactive state from a JavaScript object, we can use a reactive method.
 
@@ -127,6 +130,8 @@ async function loadData() {
 
 Also, please don't forget to pass your loadData (which is a side-effect function) to the `.onMounted` function like in the above code.
 
+For better performance, multiple property updates may be batched into a single, asynchronous render.
+
 ### Event Binding
 
 (working on improvements)
@@ -136,7 +141,8 @@ import { on, render } from 'ractix'
 
 function Data() {
   return () => {
-    on('#reload', 'click', loadData)
+    // Mount events to DOMs at the component function's closure
+    on('#reload').click(loadData)
     return `
       <div>Data Book</div>
       <div>${state.data}</div>

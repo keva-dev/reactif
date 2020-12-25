@@ -7,6 +7,7 @@ import Loading from './Loading'
 
 function Post() {
   const store = useStore()
+  const { mutations } = store
   const state = reactive({
     data: null,
   })
@@ -16,16 +17,16 @@ function Post() {
   })
 
   async function loadData() {
-    store.mutations.setIsLoading(true)
+    mutations.setIsLoading(true)
     const id = Router.getParams().id
     await sleep(500)
     state.data = await getArticle(id)
-    store.mutations.setIsLoading(false)
+    mutations.setIsLoading(false)
     document.title = state.data.title
   }
 
   return () => {
-    on('#reload', 'click', loadData)
+    on('#reload').click(loadData)
 
     return `
       ${Loading(store.state.isLoading)}

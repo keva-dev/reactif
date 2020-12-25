@@ -21,13 +21,9 @@ function Form() {
   })
 
   return () => {
-    on('#firstName', 'input', e => {
-      state.form.firstName = e.target.value
-    })
-    on('#lastName', 'input', e => {
-      state.form.lastName = e.target.value
-    })
-    on('#submit', 'submit', e => {
+    on('#firstName').input(e => state.form.firstName = e.target.value)
+    on('#lastName').input(e => state.form.lastName = e.target.value)
+    on('#submit').submit(e => e => {
       e.preventDefault()
       return false
     })

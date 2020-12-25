@@ -24,6 +24,7 @@ export interface Router {
 
 export function useRouter(routesArray: Route[]): Router {
   const routes: Record<string, ComponentFunc | RenderFunc> = Object.create(null)
+
   for (const r of routesArray) {
     while(r.path.startsWith('/')) {
       r.path = r.path.substring(1);
@@ -32,7 +33,7 @@ export function useRouter(routesArray: Route[]): Router {
   }
 
   function getPath(): string {
-    params = {}
+    params = Object.create(null)
 
     let path = location.hash
     while(path.startsWith('/') || path.startsWith('#')) {
@@ -44,46 +45,45 @@ export function useRouter(routesArray: Route[]): Router {
     return path
   }
 
-  function match(path: string, selector: string): void {
-    if (typeof routes[path] === "function") {
-      createRouterComponent(routes[path], selector)
+  function match(browserPath: string, selector: string): void {
+    if (typeof routes[browserPath] === "function") {
+      createRouterComponent(routes[browserPath], selector)
       return
     }
 
-    const paths = Object.keys(routes)
-
-    for (const p of paths) {
-      if (p.includes(':')) {
-        const current = path.split('/')
-        const pathGroups = p.split('/')
-        const pathParamsPos: number[] = []
-        pathGroups.forEach((g, i) => {
+    const routerPaths = Object.keys(routes)
+    for (const routerPath of routerPaths) {
+      if (routerPath.includes(':')) {
+        const browserPathGroup = browserPath.split('/')
+        const routerPathGroups = routerPath.split('/')
+        const listPathParamPositions: number[] = []
+        routerPathGroups.forEach((g, i) => {
           if (g.startsWith(':')) {
-            pathParamsPos.push(i)
+            listPathParamPositions.push(i)
           }
         })
-        pathParamsPos.forEach(i => {
-          current[i] = pathGroups[i]
+        listPathParamPositions.forEach(i => {
+          browserPathGroup[i] = routerPathGroups[i]
         })
-        if (current.join('/') === p) {
-          const currentGroup = path.split('/')
-          pathParamsPos.forEach(i => {
-            params[pathGroups[i].substring(1)] = currentGroup[i]
+        if (browserPathGroup.join('/') === routerPath) {
+          const originalBrowserPathGroup = browserPath.split('/')
+          listPathParamPositions.forEach(i => {
+            params[routerPathGroups[i].substring(1)] = originalBrowserPathGroup[i]
           })
-          createRouterComponent(routes[p], selector)
+          createRouterComponent(routes[routerPath], selector)
           return
         }
       }
-      if (p.endsWith('**')) {
-        const matchAllPath = p.slice(0, -2);
-        if (path.startsWith(matchAllPath)) {
-          createRouterComponent(routes[p], selector)
+      if (routerPath.endsWith('**')) {
+        const matchAllPath = routerPath.slice(0, -2);
+        if (browserPath.startsWith(matchAllPath)) {
+          createRouterComponent(routes[routerPath], selector)
           return
         }
       }
     }
 
-    // 404
+    // Handle 404
     if (typeof routes['*'] === "function") {
       createRouterComponent(routes['*'], selector)
       return

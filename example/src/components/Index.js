@@ -66,8 +66,8 @@ function Index() {
   }
 
   return () => {
-    on('#reload', 'click', loadData)
-    on('#load-more', 'click', loadMore)
+    on('#reload').click(loadData)
+    on('#load-more').click(loadMore)
     return `
       ${Loading(state.isLoading)}
       <h2>FUHCM RSS (${state.limit})</h2>
