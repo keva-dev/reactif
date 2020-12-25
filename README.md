@@ -283,9 +283,9 @@ function TodoList() {
   }
 
   return () => {
-    on('#form', 'submit', e => e.preventDefault())
-    on('#input', 'input', e => state.text = e.target.value)
-    on('#add-btn', 'click', addTodo)
+    on('#form').submit(e => e.preventDefault())
+    on('#input').input(e => state.text = e.target.value)
+    on('#add-btn').click(addTodo)
     return `
       <form id="form">
           <label>
