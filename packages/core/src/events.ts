@@ -1,6 +1,6 @@
 import { HandlerFunc } from './types'
 
-function _on(selector: string, type: string, handler: HandlerFunc) {
+function _on(selector: string, type: string, handler: HandlerFunc): void {
   setTimeout(() => {
     const elem = document.querySelector(selector)
     if (!elem) return
@@ -23,7 +23,7 @@ export function on(selector: string) {
   return generate(selector)
 }
 
-export function removeOn(selector: string, type: string, handler: HandlerFunc) {
+export function removeOn(selector: string, type: string, handler: HandlerFunc): void {
   setTimeout(() => {
     const elem = document.querySelector(selector)
     if (!elem) return
