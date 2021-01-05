@@ -28,11 +28,11 @@ function Index() {
     if (!state.data.length) {
       loadData().catch(err => console.error(err))
     }
-    window.addEventListener("scroll", onScroll, false);
+    window.addEventListener("scroll", onScroll, false)
   })
 
   onUnmounted(() => {
-    window.removeEventListener("scroll", onScroll);
+    window.removeEventListener("scroll", onScroll)
   })
 
   async function loadData() {
@@ -51,14 +51,14 @@ function Index() {
   function onScroll() {
     const scrollTop =
       (document.documentElement && document.documentElement.scrollTop) ||
-      document.body.scrollTop;
+      document.body.scrollTop
     const scrollHeight =
       (document.documentElement && document.documentElement.scrollHeight) ||
-      document.body.scrollHeight;
+      document.body.scrollHeight
     const clientHeight =
-      document.documentElement.clientHeight || window.innerHeight;
+      document.documentElement.clientHeight || window.innerHeight
     const scrolledToBottom =
-      Math.ceil(scrollTop + clientHeight) >= scrollHeight;
+      Math.ceil(scrollTop + clientHeight) >= scrollHeight
 
     if (scrolledToBottom && !state.isLoading) {
       loadMore().catch(err => console.error(err))

@@ -1,9 +1,9 @@
 import { addDefaultAtts, diffAtts } from './diffAtt'
 
 export function stringToHTML(str: string): HTMLElement {
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(str, 'text/html');
-  return doc.body;
+  const parser = new DOMParser()
+  const doc = parser.parseFromString(str, 'text/html')
+  return doc.body
 }
 
 const NODE_TYPE_CONST = {
@@ -14,7 +14,7 @@ const NODE_TYPE_CONST = {
 }
 
 function convertToArray(arr: any): any {
-  return Array.prototype.slice.call(arr);
+  return Array.prototype.slice.call(arr)
 }
 
 // Patch DOM, diffing with currentDOM
@@ -46,7 +46,7 @@ export function patch(template: HTMLElement, elem: HTMLElement | DocumentFragmen
     }
 
     // If attributes are different, update them
-    diffAtts(node, oldNodes[index]);
+    diffAtts(node, oldNodes[index])
 
     // If content is different, update it
     const templateContent = getNodeContent(node)
