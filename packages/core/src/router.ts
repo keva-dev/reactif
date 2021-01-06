@@ -74,18 +74,11 @@ export function useRouter(routesArray: Route[]): Router {
           return
         }
       }
-      if (routerPath.endsWith('**')) {
-        const matchAllPath = routerPath.slice(0, -2);
-        if (browserPath.startsWith(matchAllPath)) {
-          createRouterComponent(routes[routerPath], selector)
-          return
-        }
-      }
     }
 
     // Handle 404
-    if (typeof routes['*'] === "function") {
-      createRouterComponent(routes['*'], selector)
+    if (typeof routes['**'] === "object") {
+      createRouterComponent(routes['**'], selector)
       return
     }
 
