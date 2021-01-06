@@ -172,7 +172,7 @@ import { defineComponent, render, reactive } from 'ractix'
 const Data = defineComponent({
   setup() {
     const state = reactive({ data: null })
-    const reload = () => reloadFunc()
+    const reload = () => someReloadFunc()
     return { reload, state }
   },
   render() {
