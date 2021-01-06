@@ -4,3 +4,6 @@ export interface ComponentObject {
 }
 
 export type HandlerFunc = () => void
+export interface MemoizedHandlerFunc {
+  function: HandlerFunc
+}

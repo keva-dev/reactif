@@ -1,7 +1,7 @@
-import { ComponentObject } from './types'
+import { ComponentObject, HandlerFunc, MemoizedHandlerFunc } from './types'
 
 interface GlobalState {
-  currentFn?: () => void
+  currentFn?: HandlerFunc | MemoizedHandlerFunc
   currentComponent?: ComponentObject
 }
 

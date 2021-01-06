@@ -6,6 +6,7 @@ import { onUnmounted as _onUnmounted } from './onUnmounted'
 import { getParams, useRouter } from './router'
 import { asyncUpdateQueue as _asyncUpdateQueue } from './asyncUpdateQueue'
 import { readonly as _readonly } from './readonly'
+import { watchEffect as _watchEffect } from './watchEffect'
 
 export const defineComponent = _defineComponent
 export const reactive = createState
@@ -18,6 +19,7 @@ export const Router = {
 }
 export const nextTick = _asyncUpdateQueue.nextTick
 export const readonly = _readonly
+export const watchEffect = _watchEffect
 
 export default {
   defineComponent,
@@ -28,4 +30,5 @@ export default {
   Router,
   nextTick,
   readonly,
+  watchEffect
 }

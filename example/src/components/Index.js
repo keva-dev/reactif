@@ -1,4 +1,4 @@
-import { defineComponent, onMounted, onUnmounted } from 'ractix'
+import { defineComponent, onMounted, onUnmounted, watchEffect } from 'ractix'
 import { getAllArticles } from '../services/fuhcm'
 import sleep from '../utils/sleep'
 
@@ -11,6 +11,10 @@ export default defineComponent({
     const { state, mutations } = useStore()
     const { setLimit, setIsLoading, setData } = mutations
 
+    const stopWatcher = watchEffect(() => {
+      console.log(state.isLoading)
+    })
+
     onMounted(() => {
       if (!state.data.length) {
         loadData().catch(err => console.error(err))
@@ -19,6 +23,7 @@ export default defineComponent({
     })
 
     onUnmounted(() => {
+      stopWatcher()
       window.removeEventListener("scroll", onScroll)
     })
 

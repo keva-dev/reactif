@@ -1,4 +1,4 @@
-import { ComponentObject, HandlerFunc } from './types'
+import { ComponentObject, HandlerFunc, MemoizedHandlerFunc } from './types'
 import { globalState } from './globalState'
 import { stringToHTML, patch } from './patch'
 import { createReactiveState } from './createState'
@@ -105,12 +105,19 @@ function useLifeCycle() {
     const instance = components.find(e => e.component === component)
     instance.onUnmountedHooks.push(handler)
   }
+  
+  function addWatchEffect(fn: MemoizedHandlerFunc) {
+    globalState.currentFn = fn;
+    fn.function()
+    globalState.currentFn = undefined
+  }
 
   return {
     addState,
     addComponent,
     addOnMountedHook,
-    addOnUnmountedHook
+    addOnUnmountedHook,
+    addWatchEffect
   }
 }
 
