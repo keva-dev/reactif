@@ -34,6 +34,11 @@ export function compileDirectives(node: HTMLElement, context: object, childCompo
       
       node.remove()
       return
+    } else {
+      // Process else
+      if (node.nextElementSibling?.getAttribute('else') !== null) {
+        node.nextElementSibling.remove()
+      }
     }
   }
 

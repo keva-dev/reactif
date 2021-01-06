@@ -64,7 +64,8 @@ const Parent = {
         <button @click="increaseCoin">+1000 coin</button>
         <p>This is parent component</p>
         <button @click="toggleChild">Toggle Child</button>
-        <child-component if="state.childToggle" heading="This is child" :coin="coin" />
+        <child-component if="state.childToggle" heading="This is child" :coin="coin"></child-component>
+        <div else>Child is unmounted, click "Toggle Child" to re-mount it</div>
       </div>
     `
   }
