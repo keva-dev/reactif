@@ -1,6 +1,6 @@
 import { addDefaultAtts, diffAtts } from './diffAtt'
 import { compileDirectives } from './compiler'
-import { convertToArray, extractAttribute } from './utils'
+import { convertToArray } from './utils'
 
 let context: object = null
 
