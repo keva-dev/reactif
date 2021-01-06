@@ -1,4 +1,4 @@
-import { defineComponent, reactive, on, onMounted, onUnmounted } from 'ractix'
+import { defineComponent, reactive, onMounted, onUnmounted } from 'ractix'
 
 export default defineComponent({
   setup() {

@@ -6,6 +6,7 @@ type ComponentInstance = {
   component: ComponentObject,
   onMountedHooks: HandlerFunc[]
   onUnmountedHooks: HandlerFunc[]
+  notFromRouter: boolean
 }
 
 // LifeCycle instance will be created by useLifeCycle hook
@@ -26,7 +27,8 @@ function useLifeCycle() {
     const instance: ComponentInstance = {
       component,
       onMountedHooks: [],
-      onUnmountedHooks: []
+      onUnmountedHooks: [],
+      notFromRouter
     }
     components.push(instance)
 
@@ -63,7 +65,7 @@ function useLifeCycle() {
     }
 
     // Add listeners to the DOM, to watch it changes
-    const targetNode = document.querySelector(selector)
+    const targetNode = elem
     const observerOptions = {
       childList: true
     }
@@ -71,18 +73,16 @@ function useLifeCycle() {
     observer.observe(targetNode, observerOptions);
 
     function makeFuncReactiveAndExecuteIt(fn: HandlerFunc) {
-      function wrapped() {
-        globalState.notFromRouter = notFromRouter
-        globalState.currentFn = fn;
-        fn();
-        globalState.currentFn = undefined;
-      }
-      wrapped();
+      globalState.notFromRouter = notFromRouter
+      globalState.currentFn = fn;
+      fn()
+      globalState.notFromRouter = false
+      globalState.currentFn = undefined
     }
 
     makeFuncReactiveAndExecuteIt(() => {
-      const templateHTML = stringToHTML(renderer(), context);
-      patch(templateHTML, elem);
+      const templateHTML = stringToHTML(renderer(), context)
+      patch(templateHTML, elem)
     })
   }
 

@@ -410,7 +410,7 @@ const Index = defineComponent({
 - Todo List Example:
 
 ```javascript
-import { defineComponent, reactive, on, render } from 'ractix'
+import { defineComponent, reactive, render } from 'ractix'
 
 const TodoList = defineComponent({
   setup() {

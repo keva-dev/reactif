@@ -27,5 +27,5 @@ export default {
   onUnmounted,
   Router,
   nextTick,
-  readonly
+  readonly,
 }

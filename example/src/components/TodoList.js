@@ -1,4 +1,4 @@
-import { defineComponent, reactive, on, nextTick } from 'ractix'
+import { defineComponent, reactive, nextTick } from 'ractix'
 
 export default defineComponent({
   setup() {

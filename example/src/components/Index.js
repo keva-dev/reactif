@@ -1,4 +1,4 @@
-import { defineComponent, onMounted, onUnmounted, on } from 'ractix'
+import { defineComponent, onMounted, onUnmounted } from 'ractix'
 import { getAllArticles } from '../services/fuhcm'
 import sleep from '../utils/sleep'
 
