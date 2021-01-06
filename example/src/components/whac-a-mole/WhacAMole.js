@@ -101,16 +101,17 @@ export default defineComponent({
     const { state, getTime } = this
     return `
       <div class="game-container">
-        ${state.hasWon ? `<h2>YOU WON LEVEL ${state.level} in ${getTime()}s</h2>` : `<h2>Whac a Mole (Level ${state.level})</h2>`}
-        ${state.hasWon ? `` : `<p class="guide">To win the game, clear all the Brown</p>`}
-        ${!state.hasWon ?
-          `<div class="game-box">
+        <h2 if="state.hasWon">YOU WON LEVEL ${state.level} in ${getTime()}s</h2>
+        <h2 if="!state.hasWon">Whac a Mole (Level ${state.level})</h2>
+        <p if="!state.hasWon" class="guide">To win the game, clear all the Brown</p>
+        <div if="!state.hasWon" class="game-box">
             ${state.moleGrid.each((dem1, x) =>
-            dem1.each((dem2, y) =>
-              `<div id="circle" data-x="${x}" data-y="${y}" class="${dem2 === 1 ? 'one' : 'zero'}"></div>`
+              dem1.each((dem2, y) =>
+                `<div id="circle" data-x="${x}" data-y="${y}" class="${dem2 === 1 ? 'one' : 'zero'}"></div>`
               )
             )}
-           </div>` : `<p class="won-text"><button id="next">Challenge with level ${state.level + 1}</button></p>`}
+         </div>
+        <p if="state.hasWon" class="won-text"><button id="next">Challenge with level ${state.level + 1}</button></p>
         <div class="source">
           <a href="https://github.com/oddx-team/reactive/blob/master/example/src/components/whac-a-mole/WhacAMole.js" target="_blank">
             [See the source code here]

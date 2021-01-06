@@ -1,14 +1,14 @@
-export function extractAttribute(obj: object, is: string | string[], value?: any): any {
-  if (typeof is === 'string')
-    return extractAttribute(obj, is.split('.'), value)
-  else if (is.length === 1 && value !== undefined)
+export function extractAttribute(obj: object, path: string | string[], value?: any): any {
+  if (typeof path === 'string')
+    return extractAttribute(obj, path.split('.'), value)
+  else if (path.length === 1 && value !== undefined)
     { // @ts-ignore
-      return obj[is[0]] = value
+      return obj[path[0]] = value
     }
-  else if (is.length === 0)
+  else if (path.length === 0)
     return obj
   else
     { // @ts-ignore
-      return extractAttribute(obj[is[0]], is.slice(1), value);
+      return extractAttribute(obj[path[0]], path.slice(1), value);
     }
 }
