@@ -21,8 +21,8 @@ export function convertToArray(arr: any): any {
   return [...arr]
 }
 
-export function isFunc(obj: any) {
-  return typeof obj === 'function'
+export function isObject(obj: any) {
+  return typeof obj === 'object'
 }
 
 export function includes(arr: any, id: string | number) {

@@ -1,6 +1,6 @@
 import { ComponentObject, HandlerFunc } from './types'
 import { createRouterComponent } from './createComponent'
-import { cleanPath, isFunc, includes } from './utils'
+import { cleanPath, isObject, includes } from './utils'
 
 let params: Record<string, string> = Object.create(null)
 
@@ -63,7 +63,7 @@ export function useRouter(routesArray: Route[]): Router {
   }
 
   function match(browserPath: string, selector: string): void {
-    if (isFunc(routes[browserPath])) {
+    if (isObject(routes[browserPath])) {
       createRouterComponent(routes[browserPath], selector)
       return
     }
@@ -88,7 +88,7 @@ export function useRouter(routesArray: Route[]): Router {
     }
 
     // Handle 404
-    if (isFunc(routes['*'])) {
+    if (isObject(routes['*'])) {
       createRouterComponent(routes['*'], selector)
       return
     }
