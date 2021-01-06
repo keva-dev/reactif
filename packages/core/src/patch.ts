@@ -14,7 +14,7 @@ const NODE_TYPE_CONST = {
 }
 
 function convertToArray(arr: any): any {
-  return Array.prototype.slice.call(arr)
+  return [...arr]
 }
 
 // Patch DOM, diffing with currentDOM
