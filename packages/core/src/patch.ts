@@ -1,5 +1,6 @@
 import { addDefaultAtts, diffAtts } from './diffAtt'
 import { compileDirectives } from './compiler'
+import { convertToArray } from './utils'
 
 let context: object = null
 
@@ -25,10 +26,6 @@ const NODE_TYPE_CONST = {
   ATTRIBUTE_NODE: 2,
   TEXT_NODE: 3,
   COMMENT_NODE: 8
-}
-
-function convertToArray(arr: any): any {
-  return [...arr]
 }
 
 // Patch DOM, diffing with currentDOM
