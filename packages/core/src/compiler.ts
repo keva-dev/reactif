@@ -8,6 +8,7 @@ export function compileDirectives(node: HTMLElement, context: object) {
     const directive = onDirective.substring(1)
     const methodPath = node.getAttribute(onDirective)
     node.addEventListener(directive, extractAttribute(context, methodPath))
+    node.removeAttribute(onDirective)
   }
 
   if (node.getAttribute('if')) {
@@ -17,6 +18,8 @@ export function compileDirectives(node: HTMLElement, context: object) {
       negativeCount++
       statePath = statePath.substring(1)
     }
+
+    node.removeAttribute('if')
 
     const state = extractAttribute(context, statePath)
 
@@ -44,6 +47,7 @@ export function compileDirectives(node: HTMLElement, context: object) {
     // @ts-ignore
     node.addEventListener('input', e => extractAttribute(context, statePath, e.target.value))
     node.setAttribute('value', extractAttribute(context, statePath, undefined))
+    node.removeAttribute('model')
   }
 }
 
