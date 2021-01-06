@@ -1,4 +1,5 @@
 export interface ComponentObject {
+  components?: Record<string, ComponentObject>
   setup?: () => object
   render: () => string
 }

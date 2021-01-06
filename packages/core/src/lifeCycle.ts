@@ -16,11 +16,22 @@ type ComponentInstance = {
 // Mount, Unmount, Update...
 function useLifeCycle() {
   let components: ComponentInstance[] = []
+  
+  // Clean Up component on unmounted or force unmount
+  function cleanUp(component: ComponentObject) {
+    const instance = components.find(e => e.component === component)
+    // Run onUnmounted hooks
+    instance.onUnmountedHooks.forEach(fn => fn())
+    // Remove dependencies
+    instance.dependencies.forEach(fn => fn())
+    // Remove watchEffects
+    instance.watchEffects.forEach(fn => fn())
+    // Remove instance
+    components = components.filter(e => e.component !== instance.component)
+  }
 
   // Mount component to a selector
-  function addComponent(selector: string, component: ComponentObject) {
-    const elem = <HTMLElement>document.querySelector(selector)
-
+  function addComponent(elem: HTMLElement | DocumentFragment, component: ComponentObject) {
     // If the selector is not valid, or the component is already mounted, then skip
     if (!elem || components.find(e => e.component === component)) {
       return
@@ -39,27 +50,25 @@ function useLifeCycle() {
     // Set reactive flag 'currentComponent' to know the hook owner (which component call it)
     globalState.currentComponent = component
     // Mount hooks (onMounted, onUnmounted) and get Context (states, methods)
-    const context = component.setup()
+    const context = component.setup ? component.setup() : Object.create(null)
     globalState.currentComponent = undefined
     const renderer: () => string = component.render.bind(context)
-
+  
     let firstMount: boolean = false
     let nodes: number = 0
+    
     function mutationHandler(mutationList: MutationRecord[], observer: MutationObserver) {
       mutationList.forEach((mutation) => {
+        // console.log('observe = ' + elem)
+        // console.log('mutation.removedNodes.length = ' + mutation.removedNodes.length)
+        // console.log('nodes = ' + nodes)
         if (mutation.removedNodes.length && !mutation.addedNodes.length &&
-          mutation.removedNodes.length === nodes) {
-          // Run onUnmounted hooks
-          components = components.filter(e => e.component !== component)
-          observer.disconnect();
-          instance.onUnmountedHooks.forEach(fn => fn())
-          nodes = 0
-
-          // Remove dependencies
-          instance.dependencies.forEach(fn => fn())
+          mutation.removedNodes.length >= nodes) {
+          cleanUp(component)
           
-          // Remove watchEffects
-          instance.watchEffects.forEach(fn => fn())
+          // Disconnect
+          nodes = 0
+          observer.disconnect();
 
           return
         }
@@ -89,7 +98,7 @@ function useLifeCycle() {
     }
 
     makeFuncReactiveAndExecuteIt(() => {
-      const templateHTML = stringToHTML(renderer(), context)
+      const templateHTML = stringToHTML(renderer(), context, component.components)
       patch(templateHTML, elem)
     })
   }
@@ -119,13 +128,18 @@ function useLifeCycle() {
     const instance = components.find(e => e.component === component)
     instance.watchEffects.push(stopWatcher)
   }
+  
+  function forceUnmountComponent(component: ComponentObject) {
+    cleanUp(component)
+  }
 
   return {
     addState,
     addComponent,
     addOnMountedHook,
     addOnUnmountedHook,
-    addWatchEffect
+    addWatchEffect,
+    forceUnmountComponent
   }
 }
 

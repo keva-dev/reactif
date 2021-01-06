@@ -1,6 +1,9 @@
+import { createComponent } from './createComponent'
+import { lifeCycle } from './lifeCycle'
+import { ComponentObject } from './types'
 import { extractAttribute } from './utils'
 
-export function compileDirectives(node: HTMLElement, context: object) {
+export function compileDirectives(node: HTMLElement, context: object, childComponents: Record<string, ComponentObject>) {
   if (node.nodeType !== 1) return
 
   const onDirective = node.getAttributeNames()?.find(e => e.startsWith('@'))
@@ -24,7 +27,14 @@ export function compileDirectives(node: HTMLElement, context: object) {
     const state = extractAttribute(context, statePath)
 
     if (negativeCount % 2 === 0 ? !state : state) {
+      // Child component with if
+      if (childComponents[node.tagName.toLowerCase()]) {
+        const ChildComponent = childComponents[node.tagName.toLowerCase()]
+        lifeCycle.forceUnmountComponent(ChildComponent)
+      }
+      
       node.remove()
+      return
     }
   }
 
@@ -48,6 +58,15 @@ export function compileDirectives(node: HTMLElement, context: object) {
     node.addEventListener('input', e => extractAttribute(context, statePath, e.target.value))
     node.setAttribute('value', extractAttribute(context, statePath, undefined))
     node.removeAttribute('model')
+  }
+  
+  if (childComponents[node.tagName.toLowerCase()]) {
+    if (node.childNodes.length <= 1) {
+      const ChildComponent = childComponents[node.tagName.toLowerCase()]
+      setTimeout(() => {
+        lifeCycle.addComponent(node, ChildComponent)
+      }, 0)
+    }
   }
 }
 
