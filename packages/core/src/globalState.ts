@@ -1,9 +1,9 @@
-import { ComponentFunc, RenderFunc } from './types'
+import { ComponentObject } from './types'
 
 interface GlobalState {
   notFromRouter?: boolean
   currentFn?: () => void
-  currentComponent?: ComponentFunc | RenderFunc
+  currentComponent?: ComponentObject
 }
 
 export const globalState: GlobalState = {

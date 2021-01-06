@@ -1,4 +1,4 @@
-import { ComponentFunc, HandlerFunc, RenderFunc } from './types'
+import { ComponentObject, HandlerFunc } from './types'
 import { createRouterComponent } from './createComponent'
 
 let params: Record<string, string> = Object.create(null)
@@ -15,7 +15,7 @@ export function onRouterChange(fn: HandlerFunc) {
 
 export interface Route {
   path: string,
-  component: ComponentFunc | RenderFunc
+  component: ComponentObject
 }
 
 export interface Router {
@@ -23,7 +23,7 @@ export interface Router {
 }
 
 export function useRouter(routesArray: Route[]): Router {
-  const routes: Record<string, ComponentFunc | RenderFunc> = Object.create(null)
+  const routes: Record<string, ComponentObject> = Object.create(null)
 
   for (const r of routesArray) {
     while(r.path.startsWith('/')) {
@@ -46,7 +46,7 @@ export function useRouter(routesArray: Route[]): Router {
   }
 
   function match(browserPath: string, selector: string): void {
-    if (typeof routes[browserPath] === "function") {
+    if (typeof routes[browserPath] === "object") {
       createRouterComponent(routes[browserPath], selector)
       return
     }
@@ -89,7 +89,10 @@ export function useRouter(routesArray: Route[]): Router {
       return
     }
 
-    createRouterComponent(() => () => `<p>404 Not Found</p>`, selector)
+    createRouterComponent({
+      setup: () => { return {} },
+      render: () => `Not found`
+    }, selector)
   }
 
   function renderer(selector: string): void {

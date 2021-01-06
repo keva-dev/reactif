@@ -1,4 +1,6 @@
-export type ComponentFunc = () => RenderFunc
-export type RenderFunc = () => string
+export interface ComponentObject {
+  setup?: () => object
+  render: () => string
+}
+
 export type HandlerFunc = () => void
-export type HandlerFuncWithCleanUp = () => HandlerFunc
