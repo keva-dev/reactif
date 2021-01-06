@@ -62,7 +62,18 @@ export function compileDirectives(node: HTMLElement, context: object, childCompo
   if (childComponents[node.tagName.toLowerCase()]) {
     if (node.childNodes.length <= 1) {
       const ChildComponent = childComponents[node.tagName.toLowerCase()]
-      lifeCycle.addComponent(node, ChildComponent)
+      
+      // Parse props
+      const propsAtts = node.getAttributeNames()
+      const props: Record<string, unknown> = Object.create(null)
+      propsAtts.forEach(e => {
+        const propName = e.startsWith(':') ? e.substring(1) : e
+        const statePath = node.getAttribute(e)
+        props[propName] = e.startsWith(':') ? extractAttribute(context, statePath) : statePath
+        node.removeAttribute(e)
+      })
+      
+      lifeCycle.addComponent(node, ChildComponent, props)
     }
   }
 }

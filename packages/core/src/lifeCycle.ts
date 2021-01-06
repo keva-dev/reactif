@@ -25,6 +25,7 @@ function useLifeCycle() {
   // Clean Up component on unmounted or force unmount
   function cleanUp(component: ComponentObject) {
     const instance = pickComponent(component)
+    if (!instance) return
     // Run onUnmounted hooks
     instance.onUnmountedHooks.forEach(fn => fn())
     // Remove dependencies
@@ -36,7 +37,7 @@ function useLifeCycle() {
   }
 
   // Mount component to a selector
-  function addComponent(elem: HTMLElement | DocumentFragment, component: ComponentObject) {
+  function addComponent(elem: HTMLElement | DocumentFragment, component: ComponentObject, props?: Record<string, unknown>) {
     // If the selector is not valid, or the component is already mounted, then skip
     if (!elem || components.find(e => e.component === component)) {
       return
@@ -55,46 +56,35 @@ function useLifeCycle() {
     // Set reactive flag 'currentComponent' to know the hook owner (which component call it)
     globalState.currentComponent = component
     // Mount hooks (onMounted, onUnmounted) and get Context (states, methods)
-    const context = component.setup ? component.setup() : Object.create(null)
+    const context = component.setup ? component.setup(props) : Object.create(null)
     globalState.currentComponent = undefined
     const renderer: () => string = component.render.bind(context)
   
     let firstMount: boolean = false
-    let nodes: number = 0
     
     function mutationHandler(mutationList: MutationRecord[], observer: MutationObserver) {
-      mutationList.forEach((mutation) => {
-        // console.log('observe = ' + elem)
-        // console.log('mutation.removedNodes.length = ' + mutation.removedNodes.length)
-        // console.log('nodes = ' + nodes)
-        if (mutation.removedNodes.length && !mutation.addedNodes.length &&
-          mutation.removedNodes.length >= nodes) {
-          cleanUp(component)
-          
-          // Disconnect
-          nodes = 0
-          observer.disconnect();
-
-          return
-        }
-
+      const r = mutationList[0].removedNodes[0]
+      if (r?.isEqualNode(elem)) {
+        cleanUp(component)
+        // Disconnect
+        observer.disconnect();
+        return
+      } else {
         if (!firstMount) {
           firstMount = true
           // Run onMounted hooks
           instance.onMountedHooks.forEach(fn => fn())
         }
-
-        nodes = nodes + mutation.addedNodes.length - mutation.removedNodes.length
-      });
+      }
     }
 
     // Add listeners to the DOM, to watch it changes
-    const targetNode = elem
     const observerOptions = {
-      childList: true
+      childList: true,
+      subtree: true
     }
     const observer = new MutationObserver(mutationHandler);
-    observer.observe(targetNode, observerOptions);
+    observer.observe(elem.parentNode, observerOptions);
 
     function makeFuncReactiveAndExecuteIt(fn: HandlerFunc) {
       globalState.currentFn = fn;
