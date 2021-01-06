@@ -3,7 +3,17 @@ import { defineComponent, reactive } from 'ractix'
 export default defineComponent({
   setup() {
     const state = reactive({
-      dogs: ['dogOne', 'dogTwo', 'dogThree'],
+      dogs: [
+        {
+          name: 'Dog1'
+        },
+        {
+          name: 'Dog2'
+        },
+        {
+          name: 'Dog3'
+        }
+      ],
       toggle: true
     })
     const toggle = () => state.toggle = !state.toggle
@@ -20,7 +30,7 @@ export default defineComponent({
         <button @click="toggle">Toggle List</button>
         <ul if="state.toggle">
           <li each="dog in state.dogs">
-            {{ dog }}
+            {{ dog.name }}
           </li>
         </ul>
       </div>

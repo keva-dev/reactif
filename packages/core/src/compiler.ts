@@ -31,7 +31,7 @@ export function compileDirectives(node: HTMLElement, context: object) {
     const state = extractAttribute(context, loopFactors[1])
     node.removeAttribute('each')
     const fragment = document.createDocumentFragment()
-    state.forEach((item: string) => {
+    state.forEach((item: object) => {
       const iterateNode = node.cloneNode(true)
       generateIterateNode(iterateNode, loopFactors[0], item)
       fragment.appendChild(iterateNode)
@@ -47,15 +47,17 @@ export function compileDirectives(node: HTMLElement, context: object) {
   }
 }
 
-function generateIterateNode(iterateNode: Node, loopFactors: string, item: string) {
-  iterateNode.textContent = replaceAll(iterateNode.textContent, `{{ ${loopFactors} }}`, item)
+function generateIterateNode(iterateNode: Node, loopFactors: string, item: object) {
+  iterateNode.textContent = iterateNode.textContent
+    .replace(new RegExp(`{{ ${loopFactors}(.+?) }}`, 'g'), (matched: string, index: number, original: string) => {
+      const statePath = matched.substring(3).slice(0, -3).split('.').slice(1).join('.')
+      const result = extractAttribute(item, statePath)
+      return result as unknown as string
+    })
+
   if (iterateNode.childNodes.length) {
     iterateNode.childNodes.forEach(child => {
       generateIterateNode(child, loopFactors, item)
     })
   }
-}
-
-function replaceAll(str: string, find: string, replace: string) {
-  return str.replace(new RegExp(find, 'g'), replace);
 }
