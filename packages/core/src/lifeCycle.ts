@@ -1,4 +1,4 @@
-import { ComponentObject, HandlerFunc, MemoizedHandlerFunc } from './types'
+import { ComponentObject, Data, HandlerFunc, MemoizedHandlerFunc } from './types'
 import { globalState } from './globalState'
 import { stringToHTML, patch } from './patch'
 import { createReactiveState } from './createState'
@@ -37,7 +37,7 @@ function useLifeCycle() {
   }
 
   // Mount component to a selector
-  function addComponent(elem: HTMLElement | DocumentFragment, component: ComponentObject, props?: Record<string, unknown>) {
+  function addComponent(elem: HTMLElement | DocumentFragment, component: ComponentObject, props?: Data) {
     // If the selector is not valid, or the component is already mounted, then skip
     if (!elem || components.find(e => e.component === component)) {
       return
