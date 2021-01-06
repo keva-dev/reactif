@@ -1,7 +1,11 @@
 import { ComponentObject, HandlerFunc } from './types'
 import { createRouterComponent } from './createComponent'
+import { cleanPath, isObject, includes } from './utils'
 
 let params: Record<string, string> = Object.create(null)
+
+const REGEX_PARAMS = /([:*])(\w+)/g;
+const REGEX_REPLACE_VAR = "([^/]+)";
 
 export function getParams() {
   return params
@@ -26,59 +30,66 @@ export function useRouter(routesArray: Route[]): Router {
   const routes: Record<string, ComponentObject> = Object.create(null)
 
   for (const r of routesArray) {
-    while(r.path.startsWith('/')) {
-      r.path = r.path.substring(1);
-    }
+    r.path = cleanPath(r.path)
     routes[r.path] = r.component
   }
 
   function getPath(): string {
-    params = Object.create(null)
+    return cleanPath(location.hash)
+  }
 
-    let path = location.hash
-    while(path.startsWith('/') || path.startsWith('#')) {
-      path = path.substring(1);
-    }
-    while(path.endsWith('/')) {
-      path = path.substring(0, path.length - 1);
-    }
-    return path
+  function regexToParams(match: any, names: string[]) {
+    if (names.length === 0) return null;
+    if (!match) return null;
+
+    // filter params, skip full match string -> params mapping
+    const matchInfo = match.slice(1, match.length); 
+    return matchInfo.reduce((paramObj: any, value: string, index: number) => {
+      const name = names[index];
+      paramObj[name] = value
+      return paramObj
+    }, {})
+  }
+
+  function createParamsPattern(routerPath: string) {
+    // posts/:id -> posts/([^/]+)
+
+    const paramNames: string[] = []
+    const pattern = routerPath.replace(REGEX_PARAMS, (_1, _2, name: string) => {
+      paramNames.push(name)
+      return REGEX_REPLACE_VAR
+    })
+    return { paramNames, pattern }
   }
 
   function match(browserPath: string, selector: string): void {
-    if (typeof routes[browserPath] === "object") {
+    if (isObject(routes[browserPath])) {
       createRouterComponent(routes[browserPath], selector)
       return
     }
 
-    const routerPaths = Object.keys(routes)
-    for (const routerPath of routerPaths) {
-      if (routerPath.includes(':')) {
-        const browserPathGroup = browserPath.split('/')
-        const routerPathGroups = routerPath.split('/')
-        const listPathParamPositions: number[] = []
-        routerPathGroups.forEach((g, i) => {
-          if (g.startsWith(':')) {
-            listPathParamPositions.push(i)
-          }
-        })
-        listPathParamPositions.forEach(i => {
-          browserPathGroup[i] = routerPathGroups[i]
-        })
-        if (browserPathGroup.join('/') === routerPath) {
-          const originalBrowserPathGroup = browserPath.split('/')
-          listPathParamPositions.forEach(i => {
-            params[routerPathGroups[i].substring(1)] = originalBrowserPathGroup[i]
-          })
+    // Assign url params
+    params = Object.create(null)
+    for (const routerPath of Object.keys(routes)) {
+      // browerPath = 'posts/37739';
+      // routerPath = 'posts/:id'
+
+      if (includes(routerPath, ":")) {
+        const { pattern, paramNames } = createParamsPattern(routerPath)
+        const regexp = new RegExp(pattern)
+        const match = browserPath.match(regexp)
+  
+        if (match) {
+          params = regexToParams(match, paramNames)
           createRouterComponent(routes[routerPath], selector)
-          return
-        }
+          return;
+        } 
       }
     }
 
     // Handle 404
-    if (typeof routes['**'] === "object") {
-      createRouterComponent(routes['**'], selector)
+    if (isObject(routes['*'])) {
+      createRouterComponent(routes['*'], selector)
       return
     }
 
