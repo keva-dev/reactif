@@ -8,6 +8,7 @@ type ComponentInstance = {
   dependencies: HandlerFunc[],
   onMountedHooks: HandlerFunc[]
   onUnmountedHooks: HandlerFunc[]
+  watchEffects: HandlerFunc[]
 }
 
 // LifeCycle instance will be created by useLifeCycle hook
@@ -30,6 +31,7 @@ function useLifeCycle() {
       dependencies: [],
       onMountedHooks: [],
       onUnmountedHooks: [],
+      watchEffects: []
     }
     components.push(instance)
 
@@ -55,6 +57,9 @@ function useLifeCycle() {
 
           // Remove dependencies
           instance.dependencies.forEach(fn => fn())
+          
+          // Remove watchEffects
+          instance.watchEffects.forEach(fn => fn())
 
           return
         }
@@ -106,10 +111,13 @@ function useLifeCycle() {
     instance.onUnmountedHooks.push(handler)
   }
   
-  function addWatchEffect(fn: MemoizedHandlerFunc) {
+  function addWatchEffect(fn: MemoizedHandlerFunc, component: ComponentObject, stopWatcher: HandlerFunc) {
     globalState.currentFn = fn;
     fn.function()
     globalState.currentFn = undefined
+    
+    const instance = components.find(e => e.component === component)
+    instance.watchEffects.push(stopWatcher)
   }
 
   return {

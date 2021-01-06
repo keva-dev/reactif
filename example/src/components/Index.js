@@ -11,10 +11,6 @@ export default defineComponent({
     const { state, mutations } = useStore()
     const { setLimit, setIsLoading, setData } = mutations
 
-    const stopWatcher = watchEffect(() => {
-      console.log(state.isLoading)
-    })
-
     onMounted(() => {
       if (!state.data.length) {
         loadData().catch(err => console.error(err))
@@ -23,8 +19,11 @@ export default defineComponent({
     })
 
     onUnmounted(() => {
-      stopWatcher()
       window.removeEventListener("scroll", onScroll)
+    })
+
+    watchEffect(() => {
+      console.log(state.isLoading)
     })
 
     async function loadData() {
