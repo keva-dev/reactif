@@ -24,6 +24,7 @@
 - [Usage](#usage)
   * [Basic Render](#basic-render)
   * [Reactive State](#reactive-state)
+  * [Form Input Binding](#form-input-binding)
   * [Event Binding](#event-binding)
   * [Lifecycle Hooks](#lifecycle-hooks)
   * [Router](#router)
@@ -138,6 +139,28 @@ async function loadData() {
 Also, please don't forget to pass your loadData (which is a side-effect function) to the `.onMounted` function like in the above code.
 
 For better performance, multiple property updates may be batched into a single, asynchronous render.
+
+### Form Input Binding
+
+You can use the `model` directive to create two-way data bindings on form input, textarea, and select elements. It 
+automatically picks the correct way to update the element based on the input type. Although a bit magical, model is essentially syntax sugar for updating data on user input events.
+
+```javascript
+import { defineComponent, render, reactive } from 'ractix'
+
+const InputApp = defineComponent({
+  setup() {
+    const state = reactive({ message: 'Default message' })
+    return { state }
+  },
+  render() {
+    return `
+      <input model="state.message" placeholder="Edit me" />
+      <p>Message is: ${this.state.message}</p>
+    `
+  }
+})
+```
 
 ### Event Binding
 
