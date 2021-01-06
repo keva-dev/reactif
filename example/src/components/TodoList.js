@@ -1,35 +1,39 @@
-import { reactive, on, nextTick } from 'ractix'
+import { defineComponent, reactive, on, nextTick } from 'ractix'
 
-function TodoList() {
-  const state = reactive({
-    todos: [],
-    text: ''
-  })
+export default defineComponent({
+  setup() {
+    const state = reactive({
+      todos: [],
+      text: ''
+    })
 
-  function addTodo() {
-    state.todos.push(state.text)
-    nextTick()
-    state.text = ' '
-  }
+    function addTodo() {
+      state.todos.push(state.text)
+      nextTick()
+      state.text = ' '
+    }
 
-  return () => {
-    on('#form').submit(e => e.preventDefault())
-    on('#input').input(e => state.text = e.target.value)
-    on('#add-btn').click(addTodo)
+    const submit = e => e.preventDefault()
 
+    return {
+      state,
+      addTodo,
+      submit
+    }
+  },
+  render() {
+    const { state } = this
     return `
-      <form id="form">
+      <form @submit="submit">
           <label>
             <span>Add Todo</span>
-            <input id="input" value="${state.text}" />
+            <input model="state.text" value="${state.text}" />
           </label>
-          <button id="add-btn" type="submit" ${state.text.length > 1 ? '' : 'hidden'}>Add</button>
+          <button @click="addTodo" type="submit" ${state.text.length > 1 ? '' : 'hidden'}>Add</button>
           <ul>
               ${state.todos.map(todo => `<li>${todo}</li>`).join('')}
           </ul>
       </form>
     `
   }
-}
-
-export default TodoList
+})
