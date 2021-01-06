@@ -20,14 +20,15 @@ const Child = defineComponent({
 
     return {
       state,
+      heading: props.heading,
       coin: props.coin
     }
   },
   render() {
-    const { state, coin } = this
+    const { state, heading, coin } = this
     return `
       <div style="margin: 1rem; padding: 1rem; border: 1px solid black;">
-        <div>This is child</div>
+        <h3>${heading}</h3>
         <div>Internal Count State: ${state.count}</div>
         <div>Coin: ${coin.value}</div>
         <input model="state.text"/> -> ${state.text || 'Empty'}
@@ -51,12 +52,6 @@ const Parent = defineComponent({
     })
     const increaseCoin = () => coin.value += 1000
 
-    onMounted(() => {
-      setTimeout(() => {
-        state.data = 'Why?'
-      }, 2000)
-    })
-
     return {
       state,
       coin,
@@ -71,7 +66,7 @@ const Parent = defineComponent({
         <button @click="increaseCoin">+1000 coin</button>
         <p>This is parent component</p>
         <button @click="toggleChild">Toggle Child</button>
-        <child-component if="state.childToggle" :coin="coin" />
+        <child-component if="state.childToggle" heading="This is child" :coin="coin" />
       </div>
     `
   }
