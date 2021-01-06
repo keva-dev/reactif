@@ -34,7 +34,7 @@ export function getParam(paramName: string, url: string) {
 
 // -------- COMMON FUNCTIONS ----------
 export function convertToArray(arr: any): any {
-  return Array.prototype.slice.call(arr);
+  return [...arr]
 }
 
 export function isFunc(obj: any) {
