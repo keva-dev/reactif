@@ -1,4 +1,4 @@
-import { reactive, onMounted, onUnmounted } from 'ractix'
+import { reactive, ref, onMounted, onUnmounted } from 'ractix'
 
 const Child = {
   setup(props) {
@@ -47,9 +47,7 @@ const Parent = {
     })
     const toggleChild = () => state.childToggle = !state.childToggle
 
-    const coin = reactive({
-      value: 0
-    })
+    const coin = ref(0)
     const increaseCoin = () => coin.value += 1000
 
     return {

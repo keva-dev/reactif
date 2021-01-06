@@ -7,8 +7,21 @@ export function createState<T extends object>(state: T): T {
   if (globalState.currentComponent) {
     return lifeCycle.addState(state, globalState.currentComponent)
   }
-
   return createReactiveState(state).state
+}
+
+type Primitive = number | string | boolean
+interface Ref {
+  value: Primitive
+}
+export function createRef(value: Primitive): Ref {
+  const ref = {
+    value
+  }
+  if (globalState.currentComponent) {
+    return lifeCycle.addState(ref, globalState.currentComponent)
+  }
+  return createReactiveState(ref).state
 }
 
 export function createReactiveState<T extends object>(state: T) {
