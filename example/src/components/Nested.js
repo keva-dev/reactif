@@ -1,6 +1,6 @@
-import { defineComponent, reactive, onMounted, onUnmounted } from 'ractix'
+import { reactive, onMounted, onUnmounted } from 'ractix'
 
-const Child = defineComponent({
+const Child = {
   setup(props) {
     const state = reactive({
       count: 0,
@@ -35,9 +35,9 @@ const Child = defineComponent({
       </div>
     `
   }
-})
+}
 
-const Parent = defineComponent({
+const Parent = {
   components: {
     'child-component': Child
   },
@@ -70,6 +70,6 @@ const Parent = defineComponent({
       </div>
     `
   }
-})
+}
 
 export default Parent
