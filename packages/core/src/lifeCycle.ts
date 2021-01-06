@@ -1,12 +1,13 @@
 import { ComponentObject, HandlerFunc } from './types'
 import { globalState } from './globalState'
 import { stringToHTML, patch } from './patch'
+import { createReactiveState } from './createState'
 
 type ComponentInstance = {
   component: ComponentObject,
+  dependencies: HandlerFunc[],
   onMountedHooks: HandlerFunc[]
   onUnmountedHooks: HandlerFunc[]
-  notFromRouter: boolean
 }
 
 // LifeCycle instance will be created by useLifeCycle hook
@@ -16,7 +17,7 @@ function useLifeCycle() {
   let components: ComponentInstance[] = []
 
   // Mount component to a selector
-  function addComponent(selector: string, component: ComponentObject, notFromRouter?: boolean) {
+  function addComponent(selector: string, component: ComponentObject) {
     const elem = <HTMLElement>document.querySelector(selector)
 
     // If the selector is not valid, or the component is already mounted, then skip
@@ -26,9 +27,9 @@ function useLifeCycle() {
 
     const instance: ComponentInstance = {
       component,
+      dependencies: [],
       onMountedHooks: [],
       onUnmountedHooks: [],
-      notFromRouter
     }
     components.push(instance)
 
@@ -51,6 +52,10 @@ function useLifeCycle() {
           observer.disconnect();
           instance.onUnmountedHooks.forEach(fn => fn())
           nodes = 0
+
+          // Remove dependencies
+          instance.dependencies.forEach(fn => fn())
+
           return
         }
 
@@ -73,10 +78,8 @@ function useLifeCycle() {
     observer.observe(targetNode, observerOptions);
 
     function makeFuncReactiveAndExecuteIt(fn: HandlerFunc) {
-      globalState.notFromRouter = notFromRouter
       globalState.currentFn = fn;
       fn()
-      globalState.notFromRouter = false
       globalState.currentFn = undefined
     }
 
@@ -84,6 +87,13 @@ function useLifeCycle() {
       const templateHTML = stringToHTML(renderer(), context)
       patch(templateHTML, elem)
     })
+  }
+
+  function addState<T extends object>(_state: T, component: ComponentObject): T {
+    const { state, dep } = createReactiveState(_state)
+    const instance = components.find(e => e.component === component)
+    instance.dependencies.push(dep.destroy)
+    return state
   }
 
   function addOnMountedHook(handler: HandlerFunc, component: ComponentObject) {
@@ -97,6 +107,7 @@ function useLifeCycle() {
   }
 
   return {
+    addState,
     addComponent,
     addOnMountedHook,
     addOnUnmountedHook

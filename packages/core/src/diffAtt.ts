@@ -23,7 +23,7 @@ export function diffAtts(template: HTMLElement, el: HTMLElement): void {
     const getAtt = elAtts.find((elAtt: Attribute) => {
       return att.att === elAtt.att
     })
-    return getAtt === null || getAtt.value !== att.value
+    return getAtt === null || getAtt?.value !== att?.value
   })
 
   addAttributes(el, change)
@@ -42,10 +42,10 @@ function getDynamicAttributes(node: HTMLElement, atts: Attribute, isTemplate?: b
 
 function getBaseAttributes(node: HTMLElement, isTemplate?: boolean) {
   return Array.prototype.reduce.call(node.attributes, (arr: any, attribute: any) => {
-    if ((dynamicAttributes.indexOf(attribute.name) < 0 || (isTemplate && attribute.name === 'selected'))
-      && (attribute.name.length > 7 ? attribute.name.slice(0, 7) !== 'default' : true))
+    if ((dynamicAttributes.indexOf(attribute?.name) < 0 || (isTemplate && attribute?.name === 'selected'))
+      && (attribute?.name.length > 7 ? attribute?.name.slice(0, 7) !== 'default' : true))
     {
-      arr.push(getAttribute(attribute.name, attribute.value))
+      arr.push(getAttribute(attribute?.name, attribute?.value))
     }
     return arr
   }, [])
@@ -71,9 +71,9 @@ function addAttributes(el: HTMLElement, atts: Attribute[]) {
     // Else if it's style, diff and update styles
     // Otherwise, set the attribute
     if (attribute.att === 'class') {
-      el.className = attribute.value
+      el.className = attribute?.value
     } else if (attribute.att === 'style') {
-      diffStyles(el, attribute.value);
+      diffStyles(el, attribute?.value);
     } else {
       if (attribute.att in el) {
         try {
@@ -87,7 +87,7 @@ function addAttributes(el: HTMLElement, atts: Attribute[]) {
         } catch (e) {}
       }
       try {
-        el.setAttribute(attribute.att, attribute.value)
+        el.setAttribute(attribute.att, attribute?.value)
       } catch (e) {}
     }
   })
@@ -177,6 +177,6 @@ function removeStyles(el: HTMLElement, styles: Style[]) {
 
 function changeStyles(el: HTMLElement, styles: Style[]) {
   styles.forEach((style: any) => {
-    el.style[style.name] = style.value
+    el.style[style.name] = style?.value
   })
 }

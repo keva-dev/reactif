@@ -1,5 +1,5 @@
 import { ComponentObject, HandlerFunc } from './types'
-import { createRouterComponent } from './createComponent'
+import { createComponent } from './createComponent'
 import { cleanPath, isObject, includes } from './utils'
 
 let params: Record<string, string> = Object.create(null)
@@ -64,7 +64,7 @@ export function useRouter(routesArray: Route[]): Router {
 
   function match(browserPath: string, selector: string): void {
     if (isObject(routes[browserPath])) {
-      createRouterComponent(routes[browserPath], selector)
+      createComponent(routes[browserPath], selector)
       return
     }
 
@@ -81,7 +81,7 @@ export function useRouter(routesArray: Route[]): Router {
   
         if (match) {
           params = regexToParams(match, paramNames)
-          createRouterComponent(routes[routerPath], selector)
+          createComponent(routes[routerPath], selector)
           return;
         } 
       }
@@ -89,11 +89,11 @@ export function useRouter(routesArray: Route[]): Router {
 
     // Handle 404
     if (isObject(routes['*'])) {
-      createRouterComponent(routes['*'], selector)
+      createComponent(routes['*'], selector)
       return
     }
 
-    createRouterComponent({
+    createComponent({
       setup: () => { return {} },
       render: () => `Not found`
     }, selector)

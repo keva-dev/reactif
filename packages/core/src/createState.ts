@@ -1,7 +1,19 @@
-import { useDependency } from "./dependency";
-import { asyncUpdateQueue }  from './asyncUpdateQueue'
+import { globalState } from './globalState'
+import { lifeCycle } from './lifeCycle'
+import { useDependency } from './dependency'
+import { asyncUpdateQueue } from './asyncUpdateQueue'
 
 export function createState<T extends object>(state: T): T {
+  if (globalState.currentComponent) {
+    return lifeCycle.addState(state, globalState.currentComponent)
+  }
+
+  return createReactiveState(state).state
+}
+
+export function createReactiveState<T extends object>(state: T) {
+  const dep = useDependency()
+
   const handler = {
     get(target: object, p: PropertyKey, receiver: any): any {
       // For nested state update
@@ -20,6 +32,11 @@ export function createState<T extends object>(state: T): T {
       return set
     }
   }
-  const dep = useDependency()
-  return new Proxy<T>(state, handler)
+
+  const _state = new Proxy<T>(state, handler)
+
+  return {
+    state: _state,
+    dep
+  }
 }
