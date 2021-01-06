@@ -71,7 +71,7 @@ export function useRouter(routesArray: Route[]): Router {
     // Assign url params
     params = Object.create(null)
     for (const routerPath of Object.keys(routes)) {
-      // browerPath = 'posts/37739/ahihi-post';
+      // browerPath = 'posts/37739';
       // routerPath = 'posts/:id'
 
       if (includes(routerPath, ":")) {
