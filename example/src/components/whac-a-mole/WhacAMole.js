@@ -49,20 +49,14 @@ export default defineComponent({
     }
 
     onMounted(() => {
-      document.addEventListener('click', (e) => {
-        if (e.target.matches('#circle')) {
-          const x = e.target.getAttribute('data-x')
-          const y = e.target.getAttribute('data-y')
-          squash(x, y)
-        }
-
-        if (e.target.matches('#next')) {
-          startGameInterval()
-        }
-      })
-
       startGameInterval()
     })
+
+    function circleClick(e) {
+      const x = e.target.getAttribute('data-x')
+      const y = e.target.getAttribute('data-y')
+      squash(x, y)
+    }
 
     function startGameInterval() {
       state.hasWon = false
@@ -94,7 +88,9 @@ export default defineComponent({
 
     return {
       state,
-      getTime
+      getTime,
+      circleClick,
+      next: startGameInterval
     }
   },
   render() {
@@ -107,11 +103,11 @@ export default defineComponent({
         <div if="!state.hasWon" class="game-box">
             ${state.moleGrid.each((dem1, x) =>
               dem1.each((dem2, y) =>
-                `<div id="circle" data-x="${x}" data-y="${y}" class="${dem2 === 1 ? 'one' : 'zero'}"></div>`
+                `<div id="circle" @click="circleClick" data-x="${x}" data-y="${y}" class="${dem2 === 1 ? 'one' : 'zero'}"></div>`
               )
             )}
          </div>
-        <p if="state.hasWon" class="won-text"><button id="next">Challenge with level ${state.level + 1}</button></p>
+        <p if="state.hasWon" class="won-text"><button @click="next">Challenge with level ${state.level + 1}</button></p>
         <div class="source">
           <a href="https://github.com/oddx-team/reactive/blob/master/example/src/components/whac-a-mole/WhacAMole.js" target="_blank">
             [See the source code here]
