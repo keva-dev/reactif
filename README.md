@@ -160,6 +160,8 @@ const InputApp = defineComponent({
     `
   }
 })
+
+render(InputApp, '#app')
 ```
 
 ### Event Binding
