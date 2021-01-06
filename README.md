@@ -10,13 +10,13 @@
 
 ## Features
 
-~700 SLOC, tiny in size, just 3 KB minified and gzipped runtime size
+~800 SLOC, tiny in size, just 3 KB minified and gzipped runtime size
 - Zero dependencies, no JSX, no need to transpile, no virtual DOM overhead
 - Two-way data binding which is similar to Vue.js's [Reactive System](https://v3.vuejs.org/guide/reactivity.html)
 - Uses an efficient native DOM diffing algorithm to [update only the things that have changed](https://s8.gifyu.com/images/diffing.gif)
-- Has an "out-of-the-box" Redux/Vuex-like data store and Router
+- Has an "out-of-the-box" Vuex-like data store and Router
 - Embeddable and perfectly suitable for small-and-tiny-sized single page applications
-- Functional style with TypeScript ready
+- Functional style (inspired by Vue 3 Composition API) with TypeScript ready
 
 ## Table of Contents
 
@@ -24,9 +24,12 @@
 - [Usage](#usage)
   * [Basic Render](#basic-render)
   * [Reactive State](#reactive-state)
+  * [Conditional Rendering](#conditional-rendering)
+  * [List Rendering](#list-rendering)
   * [Form Input Binding](#form-input-binding)
-  * [Event Binding](#event-binding)
+  * [Event Handling](#event-handling)
   * [Lifecycle Hooks](#lifecycle-hooks)
+  * [Hooks and Reusability](#hooks-and-reusability)
   * [Router](#router)
   * [Store](#store)
 - [Example](#example)
@@ -47,18 +50,24 @@ Just import the CDN JS file to your `index.html`:
 
 <script src="https://cdn.jsdelivr.net/npm/ractix@latest/dist/ractix.min.js"></script>
 <script>
-const CountApp = Ractix.defineComponent({
+const HelloWorld = Ractix.defineComponent({
   setup() {
-    const state = Ractix.reactive({ count: 0 })
-    const increase = () => state.count++
-    return { state, increase }
+    const state = Ractix.reactive({ yourName: '' })
+    return { state }
   },
   render() {
-    return `<button @click="increase">Click Me to increase ${this.state.count}</button>`
+    return `
+      <div>
+        <label>Name:</label>
+        <input type="text" model="state.yourName" placeholder="Enter a name here">
+        <hr>
+        <h1>Hello ${this.state.yourName}!</h1>
+      </div>
+    `
   }
 })
 
-Ractix.render(CountApp, '#app')
+Ractix.render(HelloWorld, '#app')
 </script>
 ```
 
@@ -86,7 +95,7 @@ defineComponent({
 render(HelloWorld, '#app')
 ```
 
-The React-like APIs are easy to understand and work with (especially if you're coming from an React.js background)
+The Vue-like APIs are easy to understand and work with (especially if you're coming from an Vue.js background)
 
 ### Reactive State
 
@@ -140,6 +149,56 @@ Also, please don't forget to pass your loadData (which is a side-effect function
 
 For better performance, multiple property updates may be batched into a single, asynchronous render.
 
+### Conditional Rendering
+
+The directive `if` is used to conditionally render a block. The block will only be rendered if the directive's 
+expression returns a truthy value.
+
+```javascript
+<h1 if="state.awesome">Ractix is awesome!</h1>
+```
+
+Or:
+
+```javascript
+<h1 if="!state.money">Money is ${this.state.money}</h1>
+```
+
+### List Rendering
+
+You can use the `each` directive to render a list of items based on an array. The `each` directive requires a special 
+syntax in the form of item in items, where items is the source data array and item is an alias for the array element being iterated on:
+
+```javascript
+render() {
+  return `
+    <div>
+      <h2>List Dogs</h2>
+      <p>This is list rendering</p>
+      <ul>
+        <li each="dog in state.dogs">
+          {{ dog.name }}
+        </li>
+      </ul>
+    </div>
+  `
+}
+```
+
+Inside `each` blocks we have full access to parent scope properties:
+
+```javascript
+render() {
+  return `
+    <ul>
+      <li each="dog in state.dogs">
+        {{ dog.name }} - {{ dog.age }} - {{ dog.owner }}
+      </li>
+    </ul>
+  `
+}
+```
+
 ### Form Input Binding
 
 You can use the `model` directive to create two-way data bindings on form input, textarea, and select elements. It 
@@ -164,7 +223,10 @@ const InputApp = defineComponent({
 render(InputApp, '#app')
 ```
 
-### Event Binding
+### Event Handling
+
+You can use the '@-something' directive, to listen to DOM events and run some 
+JavaScript when they're triggered. The usage would be @click for listening on `click` event and so on.
 
 ```javascript
 import { defineComponent, render, reactive } from 'ractix'
@@ -211,6 +273,39 @@ const HelloWorld = defineComponent({
 
 render(HelloWorld, '#app')
 ```
+
+### Hooks and Reusability
+
+Hooks are a relatively new feature in React which allows more reusability between components. Inspired by the new 
+Composition API in Vue, you can write hooks in Ractix too! This is great if you want to reuse the same logic in 
+multiple components.
+
+Let's write a hook for our count logic.
+
+```javascript
+import { reactive } from "ractix"
+
+export default function useCounter(initialCount) {
+  const count = reactive({ value: initialCount })
+  const increment = () => count.value++
+
+  return {
+    count, increment
+  }
+}
+```
+
+And then we use this hook in our setup method:
+
+```javascript
+setup() {
+  return {
+    ...useCounter(5),
+    ...useAnotherHook()
+  }
+}
+```
+
 
 ### Router
 
