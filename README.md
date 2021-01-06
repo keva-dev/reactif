@@ -46,14 +46,16 @@ Just import the CDN JS file to your `index.html`:
 
 <script src="https://cdn.jsdelivr.net/npm/ractix@latest/dist/ractix.min.js"></script>
 <script>
-function CountApp() {
-  const state = Ractix.reactive({ count: 0 })
-  const increase = () => state.count++
-  return () => {
-    Ractix.on('#count-btn').click(increase)
-    return `<button id="count-btn">Click Me to increase ${state.count}</button>`
+const CountApp = Ractix.defineComponent({
+  setup() {
+    const state = Ractix.reactive({ count: 0 })
+    const increase = () => state.count++
+    return { state, increase }
+  },
+  render() {
+    return `<button @click="increase">Click Me to increase ${this.state.count}</button>`
   }
-}
+})
 
 Ractix.render(CountApp, '#app')
 </script>
@@ -69,16 +71,16 @@ npm install ractix
 
 ### Basic Render
 
-At the core of `ractix` is a system that enables you to declaratively render data to the DOM using straightforward HTML syntax:
+At the core of `ractix` is a system that enables you to declarative render data to the DOM using straightforward HTML syntax:
 
 ```javascript
-import { render }  from 'ractix'
+import { defineComponent, render }  from 'ractix'
 
-function HelloWorld() {
-  return `
-    <div>Hello World</div>
-  `
-}
+defineComponent({
+  render() {
+    return `Hello World`
+  }
+})
 
 render(HelloWorld, '#app')
 ```
@@ -96,22 +98,27 @@ Thanks to [ES6 Proxy](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Re
 reactive conversion is "deep" - it affects all nested properties of the passed object.
 
 ```javascript
-import { reactive, onMounted, render } from 'ractix'
+import { defineComponent, reactive, onMounted, render } from 'ractix'
 
-function Book() {
-  const state = reactive({
-    data: null
-  })
-
-  onMounted(() => {
-    loadData()
-  })
-
-  return () => `
-    <h2>List Books</h2>
-    <div>${state.data ? state.data : 'Loading...'}</div>
-  `
-}
+const Book = defineComponent({
+  setup() {
+    const state = reactive({
+      data: null
+    })
+  
+    onMounted(() => {
+      loadData()
+    })
+    
+    return { state }
+  },
+  render() {
+    return `
+      <h2>List Books</h2>
+      <div>${this.state.data ? this.state.data : 'Loading...'}</div>
+    `
+  }
+})
 
 render(Book, '#book')
 ```
@@ -134,22 +141,23 @@ For better performance, multiple property updates may be batched into a single, 
 
 ### Event Binding
 
-(working on improvements)
-
 ```javascript
-import { on, render } from 'ractix'
+import { defineComponent, render, reactive } from 'ractix'
 
-function Data() {
-  return () => {
-    // Mount events to DOMs at the component function's closure
-    on('#reload').click(loadData)
+const Data = defineComponent({
+  setup() {
+    const state = reactive({ data: null })
+    const reload = () => reloadFunc()
+    return { reload, state }
+  },
+  render() {
     return `
       <div>Data Book</div>
-      <div>${state.data}</div>
-      <button id="reload">Reload Data</button>
+      <div>${this.state.data}</div>
+      <button @click="reload">Reload Data</button>
     `
   }
-}
+})
 
 render(Data, '#data')
 ```
@@ -159,21 +167,22 @@ render(Data, '#data')
 Per component, `ractix` supports injecting hooks like `onMounted` and `onUnmounted`, these functions accept a callback that will be executed when the hook is called by the component:
 
 ```javascript
-import { onMounted, onUnmounted, render } from 'ractix'
+import { defineComponent, onMounted, onUnmounted, render } from 'ractix'
 
-function HelloWorld() {
-  onMounted(() => {
-    console.log("Mounted, I'm gonna binding some event to the DOM")
+const HelloWorld = defineComponent({
+  setup() {
+    onMounted(() => {
+      console.log("Mounted, I'm gonna binding some event to the DOM")
+    }
+  
+    onUnmounted(() => {
+      console.log("Unmounted, I'm gonna do some cleanup job here")
+    }
+  },
+  render() {
+    return `<div>Hello World</div>`
   }
-
-  onUnmounted(() => {
-    console.log("Unmounted, I'm gonna do some cleanup job here")
-  }
-
-  return () => `
-    <div>Hello World</div>
-  `
-}
+})
 
 render(HelloWorld, '#app')
 ```
@@ -200,15 +209,14 @@ router.render(router, '#app')
 Inside component Book, you can access `:id` param like this:
 
 ```javascript
-import { Router } from 'ractix'
+import { defineComponent, Router } from 'ractix'
 
-function Book() {
-  const id = Router.getParams().id
-
-  return `
-    <div>Book ID: ${id}</div>
-  `
-}
+const Book = defineComponent({
+  render() {
+    const id = Router.getParams().id
+    return `<div>Book ID: ${id}</div>`
+  }
+})
 ```
 
 ### Store
@@ -246,22 +254,30 @@ export default function useStore() {
 
 And then use in components:
 
-```javascript
-function Index() {
-  const { state, mutations } = useStore()
-  const { setLimit, setIsLoading, setData } = mutations
-
-  onMounted(() => {
-    loadData().catch(err => console.error(err))
-  })
-
-  async function loadData() {
-    setIsLoading(true)
-    setData(await getAllArticles(state.limit))
-    setIsLoading(false)
+```javascript  
+const Index = defineComponent({
+  setup() {
+    const { state, mutations } = useStore()
+    const { setLimit, setIsLoading, setData } = mutations
+  
+    onMounted(() => {
+      loadData().catch(err => console.error(err))
+    })
+  
+    async function loadData() {
+      setIsLoading(true)
+      setData(await getAllArticles(state.limit))
+      setIsLoading(false)
+    }
+  
+    // ...
+    
+    return { state, loadData } 
+  },
+  render() {
+    // ...
   }
-
-  // ...
+})
 ```
 
 ## Example
@@ -269,37 +285,39 @@ function Index() {
 - Todo List Example:
 
 ```javascript
-import { reactive, on, render } from 'ractix'
+import { defineComponent, reactive, on, render } from 'ractix'
 
-function TodoList() {
-  const state = reactive({
-    todos: [],
-    text: ''
-  })
-
-  function addTodo() {
-    state.todos.push(state.text)
-    state.text = ''
-  }
-
-  return () => {
-    on('#form').submit(e => e.preventDefault())
-    on('#input').input(e => state.text = e.target.value)
-    on('#add-btn').click(addTodo)
+const TodoList = defineComponent({
+  setup() {
+    const state = reactive({
+      todos: [],
+      text: ''
+    })
+  
+    function addTodo() {
+      state.todos.push(state.text)
+      state.text = ''
+    }
+    
+    const submit = e => e.preventDefault()
+    
+    return { state, addTodo, submit }
+  },
+  render() {
     return `
-      <form id="form">
+      <form @submit="submit">
           <label>
             <span>Add Todo</span>
-            <input id="input" value="${state.text}" />
+            <input model="state.text" />
           </label>
-          <button id="add-btn" type="submit">Add</button>
+          <button @click="addTodo" type="submit">Add</button>
           <ul>
               ${state.todos.map(todo => `<li>${todo}</li>`).join('')}
           </ul>
       </form>
     `
   }
-}
+})
 
 render(TodoList, '#app')
 ```
