@@ -71,6 +71,8 @@ Ractix.render(HelloWorld, '#app')
 </script>
 ```
 
+The Vue-like APIs are easy to understand and work with (especially if you're coming from a Vue.js background)
+
 - Via NPM:
 
 ```
@@ -81,21 +83,25 @@ npm install ractix
 
 ### Basic Render
 
-At the core of `ractix` is a system that enables you to declarative render data to the DOM using straightforward HTML syntax:
+Creating and using a component in Vue sometimes feels like chores, especially for very small components. You need to 
+create a new file, write a template, register some data, add some methods and then register your component either locally or globally. That is a lot of work if you have many small components in your application.
+
+At the core of Vue.js is a system that enables us to declaratively render data to the DOM using straightforward template syntax:
 
 ```javascript
 import { defineComponent, render }  from 'ractix'
 
 defineComponent({
   render() {
-    return `Hello World`
+    return `<div>Hello World</div>`
   }
 })
 
 render(HelloWorld, '#app')
 ```
 
-The Vue-like APIs are easy to understand and work with (especially if you're coming from an Vue.js background)
+As you can see, it's much simpler than the Vue Single File Component, writing components in this way is very useful 
+for the simple stuff, it makes setting up the small, little components feel less like a chore.
 
 ### Reactive State
 
@@ -115,17 +121,16 @@ const Book = defineComponent({
     const state = reactive({
       data: null
     })
-  
     onMounted(() => {
       loadData()
     })
-    
     return { state }
   },
   render() {
     return `
       <h2>List Books</h2>
-      <div>${this.state.data ? this.state.data : 'Loading...'}</div>
+      <div if="state.data">${this.state.data}</div>
+      <div if="!state.data>Loading...</div>
     `
   }
 })
@@ -319,7 +324,7 @@ import NotFound from './components/NotFound'
 const routes = [
   { path: '/', component: HelloWorld },
   { path: '/posts/:id', component: Book },
-  { path: '/*', component: NotFound }
+  { path: '/**', component: NotFound } // Defining fallback route by mapping them to '**
 ]
 
 const router = Router.useRouter(routes)
@@ -432,7 +437,7 @@ const TodoList = defineComponent({
           </label>
           <button @click="addTodo" type="submit">Add</button>
           <ul>
-              ${state.todos.map(todo => `<li>${todo}</li>`).join('')}
+              <li each="item in todos">{{ todo }}</li>
           </ul>
       </form>
     `
