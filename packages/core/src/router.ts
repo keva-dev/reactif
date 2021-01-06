@@ -1,5 +1,6 @@
 import { ComponentObject, HandlerFunc } from './types'
 import { createRouterComponent } from './createComponent'
+import { refinePath, isFunc } from './utils'
 
 let params: Record<string, string> = Object.create(null)
 
@@ -26,27 +27,17 @@ export function useRouter(routesArray: Route[]): Router {
   const routes: Record<string, ComponentObject> = Object.create(null)
 
   for (const r of routesArray) {
-    while(r.path.startsWith('/')) {
-      r.path = r.path.substring(1);
-    }
+    r.path = refinePath(r.path)
     routes[r.path] = r.component
   }
 
   function getPath(): string {
     params = Object.create(null)
-
-    let path = location.hash
-    while(path.startsWith('/') || path.startsWith('#')) {
-      path = path.substring(1);
-    }
-    while(path.endsWith('/')) {
-      path = path.substring(0, path.length - 1);
-    }
-    return path
+    return refinePath(location.hash)
   }
 
   function match(browserPath: string, selector: string): void {
-    if (typeof routes[browserPath] === "object") {
+    if (isFunc(routes[browserPath])) {
       createRouterComponent(routes[browserPath], selector)
       return
     }
@@ -77,8 +68,8 @@ export function useRouter(routesArray: Route[]): Router {
     }
 
     // Handle 404
-    if (typeof routes['**'] === "object") {
-      createRouterComponent(routes['**'], selector)
+    if (isFunc(routes['*'])) {
+      createRouterComponent(routes['*'], selector)
       return
     }
 
