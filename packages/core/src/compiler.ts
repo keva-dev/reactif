@@ -1,4 +1,3 @@
-import { createComponent } from './createComponent'
 import { lifeCycle } from './lifeCycle'
 import { ComponentObject } from './types'
 import { extractAttribute } from './utils'
