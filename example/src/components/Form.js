@@ -1,54 +1,59 @@
-import { reactive, on, onMounted, onUnmounted } from 'ractix'
+import { defineComponent, reactive, on, onMounted, onUnmounted } from 'ractix'
 
-function Form() {
-  const state = reactive({
-    count: 0,
-    form: {
-      firstName: '',
-      lastName: ''
-    }
-  })
-  let interval
+export default defineComponent({
+  setup() {
+    const state = reactive({
+      count: 0,
+      form: {
+        firstName: '',
+        lastName: ''
+      }
+    })
 
-  onMounted(() => {
-    interval = setInterval(() => {
-      state.count++
-    }, 1000)
-  })
+    let interval
 
-  onUnmounted(() => {
-    clearInterval(interval)
-  })
+    onMounted(() => {
+      interval = setInterval(() => {
+        state.count++
+      }, 1000)
+    })
 
-  return () => {
-    on('#firstName').input(e => state.form.firstName = e.target.value)
-    on('#lastName').input(e => state.form.lastName = e.target.value)
-    on('#submit').submit(e => e => {
+    onUnmounted(() => {
+      clearInterval(interval)
+    })
+
+    const submit = (e) => {
       e.preventDefault()
       return false
-    })
+    }
+
+    return {
+      state,
+      submit
+    }
+  },
+  render() {
+    const { state } = this
     return `
       <div class="form">
         <a href="#"><button>Back to home</button></a>
         <h2>Demo Form, Count: <span>${state.count}</span></h2>
-        <form onsubmit="event.preventDefault();">
+        <form @submit="submit">
           <label for="firstName">First Name ${state.form.firstName.length ? 'is ' + state.form.firstName : '' }</label>
-          <input type="text" id="firstName" name="firstname" placeholder="Your name..">
+          <input type="text" model="state.form.firstName" placeholder="Your name..">
       
           <label for="lastName">Last Name ${state.form.lastName.length ? 'is ' + state.form.lastName : '' }</label>
-          <input type="text" id="lastName" name="lastname" placeholder="Your last name..">
+          <input type="text" model="state.form.lastName" placeholder="Your last name..">
       
           ${state.form.firstName.length && state.form.lastName.length ? `<label for="country">Country</label>
           <select id="country" name="country">
             <option value="vn">Vietnam</option>
             <option value="usa">United States</option>
           </select>` : '' }
-        
+          
           <input type="submit" value="Submit" ${state.form.firstName.length && state.form.lastName.length ? '' : 'hidden' }>
         </form>
       </div>
     `
   }
-}
-
-export default Form
+})

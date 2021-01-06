@@ -1,45 +1,48 @@
-import { reactive, onMounted, Router, on } from 'ractix'
+import { defineComponent, reactive, onMounted, Router, on } from 'ractix'
 import { getArticle } from '../services/fuhcm'
 import useStore from '../store/store'
 import sleep from '../utils/sleep'
 
 import Loading from './Loading'
 
-function Post() {
-  const store = useStore()
-  const { mutations } = store
-  const state = reactive({
-    data: null,
-  })
+export default defineComponent({
+  setup() {
+    const store = useStore()
+    const { mutations } = store
+    const state = reactive({
+      data: null,
+    })
 
-  onMounted(() => {
-    loadData().catch(err => console.error(err))
-  })
+    onMounted(() => {
+      loadData().catch(err => console.error(err))
+    })
 
-  async function loadData() {
-    mutations.setIsLoading(true)
-    const id = Router.getParams().id
-    await sleep(500)
-    state.data = await getArticle(id)
-    mutations.setIsLoading(false)
-    document.title = state.data.title
-  }
+    async function loadData() {
+      mutations.setIsLoading(true)
+      const id = Router.getParams().id
+      await sleep(500)
+      state.data = await getArticle(id)
+      mutations.setIsLoading(false)
+      document.title = state.data.title
+    }
 
-  return () => {
-    on('#reload').click(loadData)
-
+    return {
+      state,
+      store,
+      loadData
+    }
+  },
+  render() {
     return `
-      ${Loading(store.state.isLoading)}
+      ${Loading(this.store.state.isLoading)}
       <a href="#"><button>Back to home</button></a>
-      <button id="reload" style="float: right;">Reload</button>
-      ${state.data ? `<div>
-        <h2>${state.data.title}</h2>
+      <button @click="loadData" style="float: right;">Reload</button>
+      ${this.state.data ? `<div>
+        <h2>${this.state.data.title}</h2>
         <div>
-            ${state.data.content}
+            ${this.state.data.content}
         </div>
       </div>` : ''}
     `
   }
-}
-
-export default Post
+})

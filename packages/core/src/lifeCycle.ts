@@ -81,7 +81,7 @@ function useLifeCycle() {
     }
 
     makeFuncReactiveAndExecuteIt(() => {
-      const templateHTML = stringToHTML(renderer());
+      const templateHTML = stringToHTML(renderer(), context);
       patch(templateHTML, elem);
     })
   }

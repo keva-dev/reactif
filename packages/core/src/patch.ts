@@ -1,9 +1,47 @@
 import { addDefaultAtts, diffAtts } from './diffAtt'
+import { extractAttribute } from './utils'
 
-export function stringToHTML(str: string): HTMLElement {
+let context: object = null
+
+export function stringToHTML(str: string, _context: object): HTMLElement {
   const parser = new DOMParser()
   const doc = parser.parseFromString(str, 'text/html')
+  context = _context
+  nodeTraversal(doc.body.childNodes)
   return doc.body
+}
+
+function nodeTraversal(nodes: NodeListOf<ChildNode>) {
+  nodes.forEach((node: HTMLElement) => {
+    compileDirectives(node)
+    if (node.childNodes.length) {
+      nodeTraversal(node.childNodes)
+    }
+  })
+}
+
+function compileDirectives(node: HTMLElement) {
+  if (node.nodeType !== 1) return
+
+  if (node?.getAttribute('@click')) {
+    const nameOfMethod = node.getAttribute('@click')
+    node.addEventListener('click', extractAttribute(context, nameOfMethod))
+    return
+  }
+
+  if (node?.getAttribute('@submit')) {
+    const nameOfMethod = node.getAttribute('@submit')
+    node.addEventListener('submit', extractAttribute(context, nameOfMethod))
+    return
+  }
+
+  if (node?.getAttribute('model')) {
+    const nameOfState = node.getAttribute('model')
+    // @ts-ignore
+    node.addEventListener('input', e => extractAttribute(context, nameOfState, e.target.value))
+    node.setAttribute('value', extractAttribute(context, nameOfState, undefined))
+    return
+  }
 }
 
 const NODE_TYPE_CONST = {
@@ -35,13 +73,13 @@ export function patch(template: HTMLElement, elem: HTMLElement | DocumentFragmen
     // If element doesn't exist, create it
     if (!oldNodes[index]) {
       addDefaultAtts(node)
-      elem.appendChild(node.cloneNode(true))
+      elem.appendChild(node)
       return
     }
 
     // If element is not the same type, replace it with new element
     if (getNodeType(node) !== getNodeType(oldNodes[index])) {
-      oldNodes[index].parentNode.replaceChild(node.cloneNode(true), oldNodes[index])
+      oldNodes[index].parentNode.replaceChild(node, oldNodes[index])
       return
     }
 
