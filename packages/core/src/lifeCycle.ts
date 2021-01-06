@@ -17,9 +17,14 @@ type ComponentInstance = {
 function useLifeCycle() {
   let components: ComponentInstance[] = []
   
+  // Find
+  function pickComponent(component: ComponentObject) {
+    return components.find(e => e.component === component)
+  }
+  
   // Clean Up component on unmounted or force unmount
   function cleanUp(component: ComponentObject) {
-    const instance = components.find(e => e.component === component)
+    const instance = pickComponent(component)
     // Run onUnmounted hooks
     instance.onUnmountedHooks.forEach(fn => fn())
     // Remove dependencies
@@ -105,18 +110,18 @@ function useLifeCycle() {
 
   function addState<T extends object>(_state: T, component: ComponentObject): T {
     const { state, dep } = createReactiveState(_state)
-    const instance = components.find(e => e.component === component)
+    const instance = pickComponent(component)
     instance.dependencies.push(dep.destroy)
     return state
   }
 
   function addOnMountedHook(handler: HandlerFunc, component: ComponentObject) {
-    const instance = components.find(e => e.component === component)
+    const instance = pickComponent(component)
     instance.onMountedHooks.push(handler)
   }
 
   function addOnUnmountedHook(handler: HandlerFunc, component: ComponentObject) {
-    const instance = components.find(e => e.component === component)
+    const instance = pickComponent(component)
     instance.onUnmountedHooks.push(handler)
   }
   
@@ -125,7 +130,7 @@ function useLifeCycle() {
     fn.function()
     globalState.currentFn = undefined
     
-    const instance = components.find(e => e.component === component)
+    const instance = pickComponent(component)
     instance.watchEffects.push(stopWatcher)
   }
   

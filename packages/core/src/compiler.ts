@@ -63,9 +63,7 @@ export function compileDirectives(node: HTMLElement, context: object, childCompo
   if (childComponents[node.tagName.toLowerCase()]) {
     if (node.childNodes.length <= 1) {
       const ChildComponent = childComponents[node.tagName.toLowerCase()]
-      setTimeout(() => {
-        lifeCycle.addComponent(node, ChildComponent)
-      }, 0)
+      lifeCycle.addComponent(node, ChildComponent)
     }
   }
 }
