@@ -1,27 +1,4 @@
 import { addDefaultAtts, diffAtts } from './diffAtt'
-import { compileDirectives } from './compiler'
-import { ComponentObject } from './types'
-
-let context: object = null
-let childComponents: Record<string, ComponentObject> = null
-
-export function stringToHTML(str: string, _context: object, _childComponents: Record<string, ComponentObject>): HTMLElement {
-  const parser = new DOMParser()
-  const doc = parser.parseFromString(str.trim(), 'text/html')
-  context = _context || Object.create(null)
-  childComponents = _childComponents || Object.create(null)
-  nodeTraversal(doc.body.childNodes)
-  return doc.body
-}
-
-function nodeTraversal(nodes: NodeListOf<ChildNode>) {
-  nodes.forEach((node: HTMLElement) => {
-    compileDirectives(node, context, childComponents)
-    if (node.childNodes.length) {
-      nodeTraversal(node.childNodes)
-    }
-  })
-}
 
 const NODE_TYPE_CONST = {
   ELEMENT_NODE: 1,

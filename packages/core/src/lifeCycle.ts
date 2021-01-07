@@ -1,6 +1,7 @@
 import { ComponentObject, Data, HandlerFunc, MemoizedHandlerFunc } from './types'
 import { globalState } from './globalState'
-import { stringToHTML, patch } from './patch'
+import { stringToHTML } from './compiler'
+import { patch } from './patch'
 import { createReactiveState } from './createState'
 
 type ComponentInstance = {

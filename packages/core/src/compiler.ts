@@ -2,7 +2,28 @@ import { lifeCycle } from './lifeCycle'
 import { ComponentObject } from './types'
 import { extractAttribute } from './utils'
 
-export function compileDirectives(node: HTMLElement, context: object, childComponents: Record<string, ComponentObject>) {
+let context: object = null
+let childComponents: Record<string, ComponentObject> = null
+
+export function stringToHTML(str: string, _context: object, _childComponents: Record<string, ComponentObject>): HTMLElement {
+  const parser = new DOMParser()
+  const doc = parser.parseFromString(str.trim(), 'text/html')
+  context = _context || Object.create(null)
+  childComponents = _childComponents || Object.create(null)
+  nodeTraversal(doc.body.childNodes)
+  return doc.body
+}
+
+function nodeTraversal(nodes: NodeListOf<ChildNode>) {
+  nodes.forEach((node: HTMLElement) => {
+    compileDirectives(node)
+    if (node.childNodes.length) {
+      nodeTraversal(node.childNodes)
+    }
+  })
+}
+
+export function compileDirectives(node: HTMLElement) {
   if (node.nodeType !== 1) return
 
   const onDirective = node.getAttributeNames()?.find(e => e.startsWith('@'))
