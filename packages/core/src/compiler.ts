@@ -1,13 +1,15 @@
 import { lifeCycle } from './lifeCycle'
-import { ComponentObject } from './types'
+import { ComponentObject, RouterContextFn } from './types'
 import { extractAttribute } from './utils'
 
+let routerContextFn: RouterContextFn = null
 let context: object = null
 let childComponents: Record<string, ComponentObject> = null
 
-export function stringToHTML(str: string, _context: object, _childComponents: Record<string, ComponentObject>): HTMLElement {
+export function stringToHTML(str: string, _routerContextFn: RouterContextFn, _context: object, _childComponents: Record<string, ComponentObject>): HTMLElement {
   const parser = new DOMParser()
   const doc = parser.parseFromString(str.trim(), 'text/html')
+  routerContextFn = _routerContextFn
   context = _context || Object.create(null)
   childComponents = _childComponents || Object.create(null)
   nodeTraversal(doc.body.childNodes)
@@ -103,7 +105,7 @@ export function compileDirectives(node: HTMLElement) {
         node.removeAttribute(e)
       })
       
-      lifeCycle.addComponent(node, ChildComponent, props)
+      lifeCycle.addComponent(node, ChildComponent, routerContextFn, props)
     }
   }
 }

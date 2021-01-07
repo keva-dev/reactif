@@ -1,4 +1,4 @@
-import { defineComponent, reactive, onMounted, Router } from 'ractix'
+import { defineComponent, reactive, onMounted } from 'ractix'
 import { getArticle } from '../services/fuhcm'
 import useStore from '../store/store'
 import sleep from '../utils/sleep'
@@ -6,7 +6,7 @@ import sleep from '../utils/sleep'
 import Loading from './Loading'
 
 export default defineComponent({
-  setup() {
+  setup(props, context) {
     const store = useStore()
     const { mutations } = store
     const state = reactive({
@@ -19,7 +19,7 @@ export default defineComponent({
 
     async function loadData() {
       mutations.setIsLoading(true)
-      const id = Router.getParams().id
+      const id = context.$router.params().id
       await sleep(500)
       state.data = await getArticle(id)
       mutations.setIsLoading(false)

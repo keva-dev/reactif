@@ -3,14 +3,8 @@ import { ComponentObject, HandlerFunc } from './types'
 import { createComponent } from './createComponent'
 import { cleanPath, isObject, includes } from './utils'
 
-let params: Record<string, string> = Object.create(null)
-
 const REGEX_PARAMS = /([:*])(\w+)/g;
 const REGEX_REPLACE_VAR = "([^/]+)";
-
-export function getParams() {
-  return params
-}
 
 export function onRouterChange(fn: HandlerFunc) {
   window.addEventListener('hashchange', () => {
@@ -28,6 +22,7 @@ export interface Router {
 }
 
 export function useRouter(routesArray: Route[]): Router {
+  let params: Record<string, string> = Object.create(null)
   const routes: Record<string, ComponentObject> = Object.create(null)
   let currentComponent: ComponentObject = null
 
@@ -67,7 +62,7 @@ export function useRouter(routesArray: Route[]): Router {
   function match(browserPath: string, selector: string): void {
     if (isObject(routes[browserPath])) {
       currentComponent = routes[browserPath]
-      createComponent(routes[browserPath], selector)
+      createComponent(routes[browserPath], selector, routerContextFn)
       return
     }
 
@@ -85,7 +80,7 @@ export function useRouter(routesArray: Route[]): Router {
         if (match) {
           params = regexToParams(match, paramNames)
           currentComponent = routes[routerPath]
-          createComponent(routes[routerPath], selector)
+          createComponent(routes[routerPath], selector, routerContextFn)
           return;
         } 
       }
@@ -94,7 +89,7 @@ export function useRouter(routesArray: Route[]): Router {
     // Handle 404
     if (isObject(routes['*'])) {
       currentComponent = routes['*']
-      createComponent(routes['*'], selector)
+      createComponent(routes['*'], selector, routerContextFn)
       return
     }
   
@@ -102,6 +97,14 @@ export function useRouter(routesArray: Route[]): Router {
     createComponent({
       render: () => `Not found`
     }, selector)
+  }
+  
+  function routerContextFn() {
+    return {
+      params: function() {
+        return params
+      }
+    }
   }
 
   function renderer(selector: string): void {
