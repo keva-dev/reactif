@@ -64,7 +64,7 @@ export function compileDirectives(node: HTMLElement, context: object, childCompo
     const statePath = node.getAttribute('model')
     // @ts-ignore
     node.addEventListener('input', e => extractAttribute(context, statePath, e.target.value))
-    node.setAttribute('value', extractAttribute(context, statePath, undefined))
+    node.setAttribute('value', extractAttribute(context, statePath))
     node.removeAttribute('model')
   }
   
@@ -102,8 +102,13 @@ function countNegative(node: HTMLElement, attStr: string) {
 
 function generateIterateNode(iterateNode: Node, loopFactors: string, item: object) {
   iterateNode.textContent = iterateNode.textContent
-    .replace(new RegExp(`{{ ${loopFactors}(.+?) }}`, 'g'), (matched: string, index: number, original: string) => {
-      const statePath = matched.substring(3).slice(0, -3).split('.').slice(1).join('.')
+    .replace(new RegExp(`{{ ${loopFactors}(.+?)? }}`, 'g'), (matched: string, index: number, original: string) => {
+      const matchedStr = matched.substring(3).slice(0, -3)
+      console.log(matchedStr)
+      if (matchedStr.indexOf('.') === -1) {
+        return item as unknown as string
+      }
+      const statePath = matchedStr.split('.').slice(1).join('.')
       const result = extractAttribute(item, statePath)
       return result as unknown as string
     }).trim()
