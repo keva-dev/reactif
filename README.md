@@ -29,6 +29,7 @@
   * [Form Input Binding](#form-input-binding)
   * [Event Handling](#event-handling)
   * [Lifecycle Hooks](#lifecycle-hooks)
+  * [Nested Components](#nested-components)
   * [Hooks and Reusability](#hooks-and-reusability)
   * [Router](#router)
   * [Store](#store)
@@ -89,13 +90,13 @@ create a new file, write a template, register some data, add some methods and th
 At the core of Vue.js is a system that enables us to declaratively render data to the DOM using straightforward template syntax:
 
 ```javascript
-import { defineComponent, render }  from 'ractix'
+import { render }  from 'ractix'
 
-defineComponent({
+const HelloWorld = {
   render() {
     return `<div>Hello World</div>`
   }
-})
+}
 
 render(HelloWorld, '#app')
 ```
@@ -114,9 +115,9 @@ Thanks to [ES6 Proxy](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Re
 reactive conversion is "deep" - it affects all nested properties of the passed object.
 
 ```javascript
-import { defineComponent, reactive, onMounted, render } from 'ractix'
+import { reactive, onMounted, render } from 'ractix'
 
-const Book = defineComponent({
+const Book = {
   setup() {
     const state = reactive({
       data: null
@@ -133,7 +134,7 @@ const Book = defineComponent({
       <div if="!state.data>Loading...</div>
     `
   }
-})
+}
 
 render(Book, '#book')
 ```
@@ -159,15 +160,31 @@ For better performance, multiple property updates may be batched into a single, 
 The directive `if` is used to conditionally render a block. The block will only be rendered if the directive's 
 expression returns a truthy value.
 
-```javascript
+```html
 <h1 if="state.awesome">Ractix is awesome!</h1>
 ```
 
-Or:
+Or you can use the `else` directive to indicate an "else block" for `if`:
 
-```javascript
-<h1 if="!state.money">Money is ${this.state.money}</h1>
+```html
+<div if="state.money">
+  You have money
+</div>
+<div else>
+  Now you don't
+</div>
 ```
+
+Another option for conditionally displaying an element is the `show` directive. The usage is largely the same:
+
+```html
+<h1 show="state.ok">Hello World!</h1>
+```
+
+The difference is that an element with `show` will always be rendered and remain in the DOM; `show` only toggles the 
+display CSS property of the element.
+
+Generally speaking, `if` has higher toggle costs while v-show has higher initial render costs. So prefer `show` if you need to toggle something very often, and prefer `if` if the condition is unlikely to change at runtime.
 
 ### List Rendering
 
@@ -210,9 +227,9 @@ You can use the `model` directive to create two-way data bindings on form input,
 automatically picks the correct way to update the element based on the input type. Although a bit magical, model is essentially syntax sugar for updating data on user input events.
 
 ```javascript
-import { defineComponent, render, reactive } from 'ractix'
+import { render, reactive } from 'ractix'
 
-const InputApp = defineComponent({
+const InputApp = {
   setup() {
     const state = reactive({ message: 'Default message' })
     return { state }
@@ -223,7 +240,7 @@ const InputApp = defineComponent({
       <p>Message is: ${this.state.message}</p>
     `
   }
-})
+}
 
 render(InputApp, '#app')
 ```
@@ -234,9 +251,9 @@ You can use the '@-something' directive, to listen to DOM events and run some
 JavaScript when they're triggered. The usage would be @click for listening on `click` event and so on.
 
 ```javascript
-import { defineComponent, render, reactive } from 'ractix'
+import { render, reactive } from 'ractix'
 
-const Data = defineComponent({
+const Data = {
   setup() {
     const state = reactive({ data: null })
     const reload = () => someReloadFunc()
@@ -249,19 +266,21 @@ const Data = defineComponent({
       <button @click="reload">Reload Data</button>
     `
   }
-})
+}
 
 render(Data, '#data')
 ```
 
 ### Lifecycle Hooks
 
+#### onMounted and onUnmounted
+
 Per component, `ractix` supports injecting hooks like `onMounted` and `onUnmounted`, these functions accept a callback that will be executed when the hook is called by the component:
 
 ```javascript
-import { defineComponent, onMounted, onUnmounted, render } from 'ractix'
+import { onMounted, onUnmounted, render } from 'ractix'
 
-const HelloWorld = defineComponent({
+const HelloWorld = {
   setup() {
     onMounted(() => {
       console.log("Mounted, I'm gonna binding some event to the DOM")
@@ -274,15 +293,95 @@ const HelloWorld = defineComponent({
   render() {
     return `<div>Hello World</div>`
   }
-})
+}
 
 render(HelloWorld, '#app')
 ```
 
-### Hooks and Reusability
+#### watchEffect
 
-Hooks are a relatively new feature in React which allows more reusability between components. Inspired by the new 
-Composition API in Vue, you can write hooks in Ractix too! This is great if you want to reuse the same logic in 
+Also, you can use `watchEffect` to run a function immediately while reactively tracking its dependencies, and re-run 
+it whenever the dependencies have changed.
+
+```javascript
+const count = ref(0)
+
+watchEffect(() => console.log(count.value))
+// -> logs 0
+
+setTimeout(() => {
+  count.value++
+  // -> logs 1
+}, 100)
+```
+
+When `watchEffect` is called during a component's setup() function or lifecycle hooks, the watcher is linked to the component's lifecycle, and will be stopped automatically when the component is unmounted.
+
+In other cases, it returns a stop handle which can be called to explicitly stop the watcher:
+
+```javascript
+const stop = watchEffect(() => {
+  /* ... */
+})
+
+// later
+stop()
+```
+
+### Nested Components
+
+Components are reusable instances, you can use nested components inside a component. Since nested components are still
+components, they accept the same options as a component, such as setup and render:
+
+```javascript
+const Parent = {
+  components: { // Component register
+    'child-component': Child
+  },
+  setup() {
+    const state = reactive({
+      childToggle: true,
+    })
+    const toggleChild = () => state.childToggle = !state.childToggle
+    const money = ref(1000)
+    return { state, toggleChild, money }
+  },
+  render() {
+    return `
+      <div>
+        <h2>Parent Component</h2>
+        <p>This is parent component</p>
+        <button @click="toggleChild">Toggle Child</button>
+        <child-component if="state.childToggle" heading="This is child" :money="money"></child-component>
+        <div else>Child is unmounted, click "Toggle Child" to re-mount it</div>
+      </div>
+    `
+  }
+}
+
+const Child = {
+  setup(props) {
+    // Get data passed from the Parent Component
+    return {
+      heading: props.heading,
+      coin: props.money
+    }
+  },
+  render() {
+    const { state, heading, coin } = this
+    return `
+      <h3>${heading}</h3>
+      <p>I am a child component</p>
+      <div>Coin: ${coin.value}</div>
+    `
+  }
+}
+```
+
+### Composition and Reusability
+
+Composition API is a relatively new feature in Vue 3 which allows more reusability between components. Inspired by 
+it, you can write hooks in Ractix too! This is great if you want to reuse the same logic in 
 multiple components.
 
 Let's write a hook for our count logic.
@@ -314,6 +413,9 @@ setup() {
 
 ### Router
 
+To use Ractix Router, all you need to do is map your components to the routes and let Ractix Router know where to 
+render them. Here's a basic example:
+
 ```javascript
 import { Router } from 'ractix'
 
@@ -334,14 +436,14 @@ router.render(router, '#app')
 Inside component Book, you can access `:id` param like this:
 
 ```javascript
-import { defineComponent, Router } from 'ractix'
+import { Router } from 'ractix'
 
-const Book = defineComponent({
-  render() {
-    const id = Router.getParams().id
+const Book = {
+  render(props, context) {
+    const id = context.$router.params().id
     return `<div>Book ID: ${id}</div>`
   }
-})
+}
 ```
 
 ### Store
@@ -380,7 +482,7 @@ export default function useStore() {
 And then use in components:
 
 ```javascript  
-const Index = defineComponent({
+const Index = {
   setup() {
     const { state, mutations } = useStore()
     const { setLimit, setIsLoading, setData } = mutations
@@ -402,7 +504,7 @@ const Index = defineComponent({
   render() {
     // ...
   }
-})
+}
 ```
 
 ## Example
@@ -410,9 +512,9 @@ const Index = defineComponent({
 - Todo List Example:
 
 ```javascript
-import { defineComponent, reactive, render } from 'ractix'
+import { reactive, render } from 'ractix'
 
-const TodoList = defineComponent({
+const TodoList = {
   setup() {
     const state = reactive({
       todos: [],
@@ -442,7 +544,7 @@ const TodoList = defineComponent({
       </form>
     `
   }
-})
+}
 
 render(TodoList, '#app')
 ```
