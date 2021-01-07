@@ -1,4 +1,4 @@
-import { defineComponent, reactive, nextTick } from 'ractix'
+import { defineComponent, reactive } from 'ractix'
 
 export default defineComponent({
   setup() {
@@ -7,32 +7,46 @@ export default defineComponent({
       text: ''
     })
 
-    function addTodo() {
-      state.todos.push(state.text)
-      nextTick()
+    function push() {
+      state.todos.push(state.text.trim())
       state.text = ' '
     }
+
+    function unshift() {
+      state.todos.unshift(state.text.trim())
+      state.text = ' '
+    }
+
+    const pop = () => state.todos.pop()
+    const shift = () => state.todos.shift()
 
     const submit = e => e.preventDefault()
 
     return {
       state,
-      addTodo,
-      submit
+      push,
+      unshift,
+      submit,
+      pop,
+      shift,
     }
   },
   render() {
-    const { state } = this
     return `
       <form @submit="submit">
           <label>
             <span>Add Todo</span>
-            <input model="state.text" value="${state.text}" />
+            <input model="state.text" />
           </label>
-          <button @click="addTodo" type="submit" ${state.text.length > 1 ? '' : 'hidden'}>Add</button>
+          <button show="state.text.length" @click="unshift" type="button">Unshift</button>
+          <button show="state.text.length" @click="push" type="submit">Push</button>
           <ul>
-              ${state.todos.map(todo => `<li>${todo}</li>`).join('')}
+              <li each="item in state.todos">
+                {{ item }}
+              </li>
           </ul>
+          <button @click="pop">Pop</button>
+          <button @click="shift">Shift</button>
       </form>
     `
   }

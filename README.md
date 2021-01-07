@@ -50,7 +50,7 @@ Just import the CDN JS file to your `index.html`:
 
 <script src="https://cdn.jsdelivr.net/npm/ractix@latest/dist/ractix.min.js"></script>
 <script>
-const HelloWorld = Ractix.defineComponent({
+const HelloWorld = {
   setup() {
     const state = Ractix.reactive({ yourName: '' })
     return { state }
@@ -65,7 +65,7 @@ const HelloWorld = Ractix.defineComponent({
       </div>
     `
   }
-})
+}
 
 Ractix.render(HelloWorld, '#app')
 </script>

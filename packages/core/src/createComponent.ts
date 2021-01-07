@@ -7,6 +7,7 @@ export function createComponent(component: ComponentObject | Router, selector: s
     component.renderer(selector)
     return
   }
-
-  lifeCycle.addComponent(selector, component)
+  
+  const elem = <HTMLElement>document.querySelector(selector)
+  lifeCycle.addComponent(elem, component)
 }

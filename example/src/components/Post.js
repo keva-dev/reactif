@@ -1,4 +1,4 @@
-import { defineComponent, reactive, onMounted, Router, on } from 'ractix'
+import { defineComponent, reactive, onMounted, Router } from 'ractix'
 import { getArticle } from '../services/fuhcm'
 import useStore from '../store/store'
 import sleep from '../utils/sleep'
@@ -36,7 +36,7 @@ export default defineComponent({
     return `
       ${Loading(this.store.state.isLoading)}
       <a href="#"><button>Back to home</button></a>
-      <button @click="loadData" style="float: right;">Reload</button>
+      <button @click="loadData" style="float: right;">Reload</button> <span show="state.isLoading">Loading</span>
       ${this.state.data ? `<div>
         <h2>${this.state.data.title}</h2>
         <div>

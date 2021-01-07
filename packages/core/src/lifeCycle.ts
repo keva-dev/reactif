@@ -1,6 +1,7 @@
-import { ComponentObject, HandlerFunc, MemoizedHandlerFunc } from './types'
+import { ComponentObject, Data, HandlerFunc, MemoizedHandlerFunc } from './types'
 import { globalState } from './globalState'
-import { stringToHTML, patch } from './patch'
+import { stringToHTML } from './compiler'
+import { patch } from './patch'
 import { createReactiveState } from './createState'
 
 type ComponentInstance = {
@@ -16,14 +17,31 @@ type ComponentInstance = {
 // Mount, Unmount, Update...
 function useLifeCycle() {
   let components: ComponentInstance[] = []
+  
+  // Find
+  function pickComponent(component: ComponentObject) {
+    return components.find(e => e.component === component)
+  }
+  
+  // Clean Up component on unmounted or force unmount
+  function cleanUp(component: ComponentObject) {
+    const instance = pickComponent(component)
+    if (!instance) return
+    // Run onUnmounted hooks
+    instance.onUnmountedHooks.forEach(fn => fn())
+    // Remove dependencies
+    instance.dependencies.forEach(fn => fn())
+    // Remove watchEffects
+    instance.watchEffects.forEach(fn => fn())
+    // Remove instance
+    components = components.filter(e => e.component !== instance.component)
+  }
 
   // Mount component to a selector
-  function addComponent(selector: string, component: ComponentObject) {
-    const elem = <HTMLElement>document.querySelector(selector)
-
+  function addComponent(elem: HTMLElement | DocumentFragment, component: ComponentObject, props?: Data) {
     // If the selector is not valid, or the component is already mounted, then skip
-    if (!elem || components.find(e => e.component === component)) {
-      return
+    if (components.find(e => e.component === component)) {
+      throw new Error('Duplicated render')
     }
 
     const instance: ComponentInstance = {
@@ -39,48 +57,35 @@ function useLifeCycle() {
     // Set reactive flag 'currentComponent' to know the hook owner (which component call it)
     globalState.currentComponent = component
     // Mount hooks (onMounted, onUnmounted) and get Context (states, methods)
-    const context = component.setup()
+    const context = component.setup ? component.setup(props) : Object.create(null)
     globalState.currentComponent = undefined
     const renderer: () => string = component.render.bind(context)
-
+  
     let firstMount: boolean = false
-    let nodes: number = 0
+    
     function mutationHandler(mutationList: MutationRecord[], observer: MutationObserver) {
-      mutationList.forEach((mutation) => {
-        if (mutation.removedNodes.length && !mutation.addedNodes.length &&
-          mutation.removedNodes.length === nodes) {
-          // Run onUnmounted hooks
-          components = components.filter(e => e.component !== component)
-          observer.disconnect();
-          instance.onUnmountedHooks.forEach(fn => fn())
-          nodes = 0
-
-          // Remove dependencies
-          instance.dependencies.forEach(fn => fn())
-          
-          // Remove watchEffects
-          instance.watchEffects.forEach(fn => fn())
-
-          return
-        }
-
+      const r = mutationList[0].removedNodes[0]
+      if (r?.isEqualNode(elem)) {
+        cleanUp(component)
+        // Disconnect
+        observer.disconnect();
+        return
+      } else {
         if (!firstMount) {
           firstMount = true
           // Run onMounted hooks
           instance.onMountedHooks.forEach(fn => fn())
         }
-
-        nodes = nodes + mutation.addedNodes.length - mutation.removedNodes.length
-      });
+      }
     }
 
     // Add listeners to the DOM, to watch it changes
-    const targetNode = elem
     const observerOptions = {
-      childList: true
+      childList: true,
+      subtree: true
     }
     const observer = new MutationObserver(mutationHandler);
-    observer.observe(targetNode, observerOptions);
+    observer.observe(elem.parentNode, observerOptions);
 
     function makeFuncReactiveAndExecuteIt(fn: HandlerFunc) {
       globalState.currentFn = fn;
@@ -89,25 +94,25 @@ function useLifeCycle() {
     }
 
     makeFuncReactiveAndExecuteIt(() => {
-      const templateHTML = stringToHTML(renderer(), context)
+      const templateHTML = stringToHTML(renderer(), context, component.components)
       patch(templateHTML, elem)
     })
   }
 
   function addState<T extends object>(_state: T, component: ComponentObject): T {
     const { state, dep } = createReactiveState(_state)
-    const instance = components.find(e => e.component === component)
+    const instance = pickComponent(component)
     instance.dependencies.push(dep.destroy)
     return state
   }
 
   function addOnMountedHook(handler: HandlerFunc, component: ComponentObject) {
-    const instance = components.find(e => e.component === component)
+    const instance = pickComponent(component)
     instance.onMountedHooks.push(handler)
   }
 
   function addOnUnmountedHook(handler: HandlerFunc, component: ComponentObject) {
-    const instance = components.find(e => e.component === component)
+    const instance = pickComponent(component)
     instance.onUnmountedHooks.push(handler)
   }
   
@@ -116,8 +121,12 @@ function useLifeCycle() {
     fn.function()
     globalState.currentFn = undefined
     
-    const instance = components.find(e => e.component === component)
+    const instance = pickComponent(component)
     instance.watchEffects.push(stopWatcher)
+  }
+  
+  function forceUnmountComponent(component: ComponentObject) {
+    cleanUp(component)
   }
 
   return {
@@ -125,7 +134,8 @@ function useLifeCycle() {
     addComponent,
     addOnMountedHook,
     addOnUnmountedHook,
-    addWatchEffect
+    addWatchEffect,
+    forceUnmountComponent
   }
 }
 
