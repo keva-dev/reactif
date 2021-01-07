@@ -39,8 +39,8 @@ function useLifeCycle() {
   // Mount component to a selector
   function addComponent(elem: HTMLElement | DocumentFragment, component: ComponentObject, props?: Data) {
     // If the selector is not valid, or the component is already mounted, then skip
-    if (!elem || components.find(e => e.component === component)) {
-      return
+    if (components.find(e => e.component === component)) {
+      throw new Error('Duplicated render')
     }
 
     const instance: ComponentInstance = {

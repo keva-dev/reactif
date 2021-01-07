@@ -1,3 +1,4 @@
+import { lifeCycle } from './lifeCycle'
 import { ComponentObject, HandlerFunc } from './types'
 import { createComponent } from './createComponent'
 import { cleanPath, isObject, includes } from './utils'
@@ -28,6 +29,7 @@ export interface Router {
 
 export function useRouter(routesArray: Route[]): Router {
   const routes: Record<string, ComponentObject> = Object.create(null)
+  let currentComponent: ComponentObject = null
 
   for (const r of routesArray) {
     r.path = cleanPath(r.path)
@@ -64,6 +66,7 @@ export function useRouter(routesArray: Route[]): Router {
 
   function match(browserPath: string, selector: string): void {
     if (isObject(routes[browserPath])) {
+      currentComponent = routes[browserPath]
       createComponent(routes[browserPath], selector)
       return
     }
@@ -81,6 +84,7 @@ export function useRouter(routesArray: Route[]): Router {
   
         if (match) {
           params = regexToParams(match, paramNames)
+          currentComponent = routes[routerPath]
           createComponent(routes[routerPath], selector)
           return;
         } 
@@ -89,19 +93,22 @@ export function useRouter(routesArray: Route[]): Router {
 
     // Handle 404
     if (isObject(routes['*'])) {
+      currentComponent = routes['*']
       createComponent(routes['*'], selector)
       return
     }
-
+  
+    currentComponent = null
     createComponent({
-      setup: () => { return {} },
       render: () => `Not found`
     }, selector)
   }
 
   function renderer(selector: string): void {
     onRouterChange(() => {
-      document.querySelector(selector).innerHTML = null
+      if (currentComponent) {
+        lifeCycle.forceUnmountComponent(currentComponent)
+      }
       match(getPath(), selector)
     })
 
