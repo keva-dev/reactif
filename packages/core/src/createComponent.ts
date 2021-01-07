@@ -1,13 +1,13 @@
-import { ComponentObject } from './types'
+import { ComponentObject, RouterContextFn } from './types'
 import { Router } from './router'
 import { lifeCycle } from './lifeCycle'
 
-export function createComponent(component: ComponentObject | Router, selector: string): void {
+export function createComponent(component: ComponentObject | Router, selector: string, routerContextFn?: RouterContextFn): void {
   if ("renderer" in component) {
     component.renderer(selector)
     return
   }
   
   const elem = <HTMLElement>document.querySelector(selector)
-  lifeCycle.addComponent(elem, component)
+  lifeCycle.addComponent(elem, component, routerContextFn)
 }

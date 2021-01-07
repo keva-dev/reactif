@@ -22,4 +22,4 @@ const routes = [
 ]
 const router = Router.useRouter(routes)
 render(router, '#app')
-// render(CopyRight, '#copyright')
+render(CopyRight, '#copyright')

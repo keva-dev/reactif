@@ -1,4 +1,4 @@
-import { ComponentObject, Data, HandlerFunc, MemoizedHandlerFunc } from './types'
+import { ComponentObject, Data, HandlerFunc, MemoizedHandlerFunc, RouterContextFn } from './types'
 import { globalState } from './globalState'
 import { stringToHTML } from './compiler'
 import { patch } from './patch'
@@ -6,6 +6,7 @@ import { createReactiveState } from './createState'
 
 type ComponentInstance = {
   component: ComponentObject,
+  routerContextFn: RouterContextFn,
   dependencies: HandlerFunc[],
   onMountedHooks: HandlerFunc[]
   onUnmountedHooks: HandlerFunc[]
@@ -38,18 +39,19 @@ function useLifeCycle() {
   }
 
   // Mount component to a selector
-  function addComponent(elem: HTMLElement | DocumentFragment, component: ComponentObject, props?: Data) {
+  function addComponent(elem: HTMLElement | DocumentFragment, component: ComponentObject, routerContextFn?: RouterContextFn, props?: Data) {
     // If the selector is not valid, or the component is already mounted, then skip
     if (components.find(e => e.component === component)) {
       throw new Error('Duplicated render')
     }
-
+    
     const instance: ComponentInstance = {
       component,
+      routerContextFn,
       dependencies: [],
       onMountedHooks: [],
       onUnmountedHooks: [],
-      watchEffects: []
+      watchEffects: [],
     }
     components.push(instance)
 
@@ -57,9 +59,14 @@ function useLifeCycle() {
     // Set reactive flag 'currentComponent' to know the hook owner (which component call it)
     globalState.currentComponent = component
     // Mount hooks (onMounted, onUnmounted) and get Context (states, methods)
-    const context = component.setup ? component.setup(props) : Object.create(null)
+    const context = {
+      $router: {
+        params: routerContextFn ? routerContextFn().params : null
+      }
+    }
+    const contextBinder = component.setup ? component.setup(props, context) : Object.create(null)
     globalState.currentComponent = undefined
-    const renderer: () => string = component.render.bind(context)
+    const renderer: () => string = component.render.bind(contextBinder)
   
     let firstMount: boolean = false
     
@@ -94,7 +101,7 @@ function useLifeCycle() {
     }
 
     makeFuncReactiveAndExecuteIt(() => {
-      const templateHTML = stringToHTML(renderer(), context, component.components)
+      const templateHTML = stringToHTML(renderer(), routerContextFn, contextBinder, component.components)
       patch(templateHTML, elem)
     })
   }

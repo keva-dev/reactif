@@ -1,6 +1,6 @@
 export interface ComponentObject {
   components?: Record<string, ComponentObject>
-  setup?: (props?: Data) => Data
+  setup?: (props?: Data, context?: Data) => Data
   render: () => string
 }
 
@@ -12,3 +12,8 @@ export interface MemoizedHandlerFunc {
 export interface Data {
   [key: string]: unknown
 }
+
+export interface RouterContext {
+  params: () => Record<string, string>
+}
+export type RouterContextFn = () => RouterContext
