@@ -284,11 +284,11 @@ const HelloWorld = {
   setup() {
     onMounted(() => {
       console.log("Mounted, I'm gonna binding some event to the DOM")
-    }
+    })
   
     onUnmounted(() => {
       console.log("Unmounted, I'm gonna do some cleanup job here")
-    }
+    })
   },
   render() {
     return `<div>Hello World</div>`
