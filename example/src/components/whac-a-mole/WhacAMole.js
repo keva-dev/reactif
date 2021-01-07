@@ -50,6 +50,7 @@ export default defineComponent({
 
     onMounted(() => {
       startGameInterval()
+      document.title = 'Ractix Game Demo: Whac a Mole!'
     })
 
     function circleClick(e) {
@@ -84,6 +85,7 @@ export default defineComponent({
 
     onUnmounted(() => {
       clearInterval(interval)
+      document.title = 'Ractix Demo'
     })
 
     return {
@@ -96,22 +98,25 @@ export default defineComponent({
   render() {
     const { state, getTime } = this
     return `
-      <div class="game-container">
-        <h2 if="state.hasWon">YOU WON LEVEL ${state.level} in ${getTime()}s</h2>
-        <h2 if="!state.hasWon">Whac a Mole (Level ${state.level})</h2>
-        <p if="!state.hasWon" class="guide">To win the game, clear all the Brown</p>
-        <div if="!state.hasWon" class="game-box">
-            ${state.moleGrid.each((dem1, x) =>
-              dem1.each((dem2, y) =>
-                `<div id="circle" @click="circleClick" data-x="${x}" data-y="${y}" class="${dem2 === 1 ? 'one' : 'zero'}"></div>`
-              )
-            )}
-         </div>
-        <p if="state.hasWon" class="won-text"><button @click="next">Challenge with level ${state.level + 1}</button></p>
-        <div class="source">
-          <a href="https://github.com/oddx-team/reactive/blob/master/example/src/components/whac-a-mole/WhacAMole.js" target="_blank">
-            [See the source code here]
-          </a>
+      <div class="container">
+         <div class="game-container">
+          <h2 show="state.hasWon">YOU WON LEVEL ${state.level} in ${getTime()}s</h2>
+          <h2 else>Whac a Mole (Level ${state.level})</h2>
+          <p show="!state.hasWon" class="guide">To win the game, clear all the Brown</p>
+          <div show="!state.hasWon" class="game-box">
+              ${state.moleGrid.each((dem1, x) =>
+        dem1.each((dem2, y) =>
+          `<div id="circle" @click="circleClick" data-x="${x}" data-y="${y}" class="${dem2 === 1 ? 'one' : 'zero'}"></div>`
+        )
+      )}
+          </div>
+          <p show="state.hasWon" class="won-text"><button @click="next">Challenge with level ${state.level + 1}</button></p>
+        </div>
+        <div class="code-container">
+          <iframe height="840" style="width: 100%;" scrolling="no" title="Ractix Game" src="https://codepen.io/tuhuynh27/embed/eYdKrvK?height=265&theme-id=dark&default-tab=js" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+    See the Pen <a href='https://codepen.io/tuhuynh27/pen/eYdKrvK'>Ractix Game</a> by Tu Huynh
+    (<a href='https://codepen.io/tuhuynh27'>@tuhuynh27</a>) on <a href='https://codepen.io'>CodePen</a>.
+  </iframe>
         </div>
       </div>
     `
