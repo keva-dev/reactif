@@ -12,32 +12,36 @@ export function compileDirectives(node: HTMLElement, context: object, childCompo
     node.addEventListener(directive, extractAttribute(context, methodPath))
     node.removeAttribute(onDirective)
   }
-
+  
   if (node.getAttribute('if')) {
-    let statePath = node.getAttribute('if')
-    let negativeCount = 0
-    while (statePath.startsWith('!')) {
-      negativeCount++
-      statePath = statePath.substring(1)
-    }
-
+    const { negativeCount, statePath } = countNegative(node, 'if')
     node.removeAttribute('if')
-
     const state = extractAttribute(context, statePath)
-
     if (negativeCount % 2 === 0 ? !state : state) {
       // Child component with if
       if (childComponents[node.tagName.toLowerCase()]) {
         const ChildComponent = childComponents[node.tagName.toLowerCase()]
         lifeCycle.forceUnmountComponent(ChildComponent)
       }
-      
       node.remove()
       return
     } else {
       // Process else
       if (node.nextElementSibling?.getAttribute('else') !== null) {
         node.nextElementSibling.remove()
+      }
+    }
+  } else if (node.getAttribute('show')) {
+    const { negativeCount, statePath } = countNegative(node, 'show')
+    node.removeAttribute('show')
+    const state = extractAttribute(context, statePath)
+    if (negativeCount % 2 === 0 ? !state : state) {
+      node.style.display = 'none'
+    } else {
+      // Process else
+      if (node.nextElementSibling?.getAttribute('else') !== null) {
+        // @ts-ignore
+        node.nextElementSibling?.style.display = 'none'
       }
     }
   }
@@ -83,13 +87,26 @@ export function compileDirectives(node: HTMLElement, context: object, childCompo
   }
 }
 
+function countNegative(node: HTMLElement, attStr: string) {
+  let statePath = node.getAttribute(attStr)
+  let negativeCount = 0
+  while (statePath.startsWith('!')) {
+    negativeCount++
+    statePath = statePath.substring(1)
+  }
+  return {
+    negativeCount,
+    statePath
+  }
+}
+
 function generateIterateNode(iterateNode: Node, loopFactors: string, item: object) {
   iterateNode.textContent = iterateNode.textContent
     .replace(new RegExp(`{{ ${loopFactors}(.+?) }}`, 'g'), (matched: string, index: number, original: string) => {
       const statePath = matched.substring(3).slice(0, -3).split('.').slice(1).join('.')
       const result = extractAttribute(item, statePath)
       return result as unknown as string
-    })
+    }).trim()
 
   if (iterateNode.childNodes.length) {
     iterateNode.childNodes.forEach(child => {

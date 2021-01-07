@@ -7,7 +7,7 @@ let childComponents: Record<string, ComponentObject> = null
 
 export function stringToHTML(str: string, _context: object, _childComponents: Record<string, ComponentObject>): HTMLElement {
   const parser = new DOMParser()
-  const doc = parser.parseFromString(str, 'text/html')
+  const doc = parser.parseFromString(str.trim(), 'text/html')
   context = _context || Object.create(null)
   childComponents = _childComponents || Object.create(null)
   nodeTraversal(doc.body.childNodes)
