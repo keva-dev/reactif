@@ -10,22 +10,22 @@ interface Attribute {
 export function diffAtts(template: HTMLElement, el: HTMLElement): void {
   const templateAtts = getAttributes(template, true)
   const elAtts = getAttributes(el)
-
+  
   const remove = elAtts.filter((att: Attribute) => {
     if (dynamicAttributes.indexOf(att.att) > -1) return false
     const getAtt = templateAtts.find((newAtt: Attribute) => {
       return att.att === newAtt.att
     })
-    return getAtt === null
+    return getAtt === undefined
   })
-
+  
   const change = templateAtts.filter((att: Attribute) => {
     const getAtt = elAtts.find((elAtt: Attribute) => {
       return att.att === elAtt.att
     })
-    return getAtt === null || getAtt?.value !== att?.value
+    return getAtt === undefined || getAtt?.value !== att.value
   })
-
+  
   addAttributes(el, change)
   removeAttributes(el, remove)
 }
@@ -137,13 +137,13 @@ function removeAttributes(el: HTMLElement, atts: Attribute[]) {
 function diffStyles(el: HTMLElement, styles: string) {
   // Get style map
   const styleMap = getStyleMap(styles)
-
+  
   // Get styles to remove
   const remove = Array.prototype.filter.call(el.style, (style: any) => {
     const findStyle = styleMap.find((newStyle: any) => {
       return newStyle.name === style && newStyle.value === el.style[style]
     })
-    return findStyle === null
+    return findStyle === undefined
   })
 
   // Add and remove styles
@@ -157,7 +157,7 @@ interface Style {
 }
 
 function getStyleMap(styles: string): Style[] {
-  return styles.split('').reduce((arr: any, style: any) => {
+  return styles.split(';').reduce((arr: any, style: any) => {
     const col = style.indexOf(':')
     if (col) {
       arr.push({

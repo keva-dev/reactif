@@ -66,7 +66,7 @@ export default defineComponent({
     return `
       ${Loading(this.state.isLoading)}
       <h2>FUHCM RSS (${this.state.limit})</h2>
-      <button @click="reload">Reload</button> <span>${(this.state.isLoading) ? "Loading..." : ""}</span>
+      <button @click="reload">Reload</button> <span if="state.isLoading">Loading</span>
       <ul>
         ${this.state.data.map(i => { const id = i.guid.replace('https://daihoc.fpt.edu.vn/?p=', '')
           return `
