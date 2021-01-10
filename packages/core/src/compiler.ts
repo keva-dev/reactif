@@ -26,18 +26,19 @@ function nodeTraversal(nodes: NodeListOf<ChildNode>) {
 }
 
 export function compileDirectives(node: HTMLElement) {
-  if (node.nodeType !== 1) return
-  
-  if (node.innerText) {
-    node.textContent = node.textContent
+  if (node.nodeType === 3) {
+    node.nodeValue = node.nodeValue
       .replace(new RegExp(`{{ (.+?) }}`, 'g'), (matched: string, index: number, original: string) => {
         const matchedStr = matched.substring(3).slice(0, -3)
         const statePath = matchedStr.split('.').join('.')
         let result = extractAttribute(context, statePath)
+        if (!result) return matched
         if (result.value) result = result.value
         return result as unknown as string
-      }).trim()
+      })
   }
+  
+  if (node.nodeType !== 1) return
 
   const onDirective = node.getAttributeNames()?.find(e => e.startsWith('@'))
   if (onDirective) {
@@ -134,21 +135,25 @@ function countNegative(node: HTMLElement, attStr: string) {
   }
 }
 
-function generateIterateNode(iterateNode: Node, loopFactors: string, item: object) {
-  iterateNode.textContent = iterateNode.textContent
-    .replace(new RegExp(`{{ ${loopFactors}(.+?)? }}`, 'g'), (matched: string, index: number, original: string) => {
-      const matchedStr = matched.substring(3).slice(0, -3)
-      if (matchedStr.indexOf('.') === -1) {
-        return item as unknown as string
-      }
-      const statePath = matchedStr.split('.').slice(1).join('.')
-      const result = extractAttribute(item, statePath)
-      return result as unknown as string
-    }).trim()
-
+function generateIterateNode(iterateNode: Node, loopFactor: string, item: object) {
+  if (iterateNode.nodeType === 3) {
+    iterateNode.nodeValue = iterateNode.nodeValue
+      .replace(new RegExp(`{{ ${loopFactor}(.+?)? }}`, 'g'), (matched: string, index: number, original: string) => {
+        const matchedStr = matched.substring(3).slice(0, -3)
+        if (matchedStr.indexOf('.') === -1) {
+          return item as unknown as string
+        }
+        const statePath = matchedStr.split('.').slice(1).join('.')
+        let result = extractAttribute(item, statePath)
+        if (!result) return matched
+        if (result.value) result = result.value
+        return result as unknown as string
+      })
+  }
+  
   if (iterateNode.childNodes.length) {
     iterateNode.childNodes.forEach(child => {
-      generateIterateNode(child, loopFactors, item)
+      generateIterateNode(child, loopFactor, item)
     })
   }
 }
