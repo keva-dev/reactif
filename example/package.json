@@ -15,6 +15,6 @@
     "since 2017-06"
   ],
   "dependencies": {
-    "ractix": "^0.2.2"
+    "ractix": "^0.2.3"
   }
 }
