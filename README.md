@@ -62,7 +62,7 @@ const HelloWorld = {
         <label>Name:</label>
         <input type="text" model="state.yourName" placeholder="Enter a name here">
         <hr>
-        <h1>Hello ${this.state.yourName}!</h1>
+        <h1>Hello {{ state.yourName }}!</h1>
       </div>
     `
   }
@@ -130,8 +130,8 @@ const Book = {
   render() {
     return `
       <h2>List Books</h2>
-      <div if="state.data">${this.state.data}</div>
-      <div if="!state.data>Loading...</div>
+      <div if="state.data">{{ state.data }}</div>
+      <div else>Loading...</div>
     `
   }
 }
@@ -154,6 +154,19 @@ async function loadData() {
 Also, please don't forget to pass your loadData (which is a side-effect function) to the `.onMounted` function like in the above code.
 
 For better performance, multiple property updates may be batched into a single, asynchronous render.
+
+#### Computed
+
+Will takes a getter function and returns an immutable reactive ref object for the returned value from the getter.
+
+```javascript
+const count = ref(1)
+const plusOne = computed(() => count.value + 1)
+
+console.log(plusOne.value) // 2
+
+plusOne.value++ // error
+```
 
 ### Conditional Rendering
 
@@ -237,7 +250,7 @@ const InputApp = {
   render() {
     return `
       <input model="state.message" placeholder="Edit me" />
-      <p>Message is: ${this.state.message}</p>
+      <p>Message is: {{ state.message }}</p>
     `
   }
 }
@@ -262,7 +275,7 @@ const Data = {
   render() {
     return `
       <div>Data Book</div>
-      <div>${this.state.data}</div>
+      <div>{{ state.data }}</div>
       <button @click="reload">Reload Data</button>
     `
   }
@@ -368,11 +381,10 @@ const Child = {
     }
   },
   render() {
-    const { state, heading, coin } = this
     return `
-      <h3>${heading}</h3>
+      <h3>{{ heading }}</h3>
       <p>I am a child component</p>
-      <div>Coin: ${coin.value}</div>
+      <div>Coin: {{ coin }}</div>
     `
   }
 }
