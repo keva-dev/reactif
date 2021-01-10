@@ -31,8 +31,6 @@ export function includes(arr: any, id: string | number) {
 
 export function extractAttribute(obj: object, is: string | string[], value?: any): any {
   try {
-    if (Array.isArray(obj))
-      return obj
     if (typeof is === 'string')
       return extractAttribute(obj, is.split('.'), value)
     else if (is.length === 1 && value !== undefined)

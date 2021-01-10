@@ -1,7 +1,7 @@
+import { NODE_TYPE_CONST } from './const'
 import { lifeCycle } from './lifeCycle'
 import { ComponentObject, RouterContextFn } from './types'
 import { extractAttribute } from './utils'
-import { NODE_TYPE_CONST } from './const'
 
 let routerContextFn: RouterContextFn = null
 let context: object = null
@@ -32,9 +32,8 @@ export function compileDirectives(node: HTMLElement) {
       .replace(new RegExp(`{{ (.+?) }}`, 'g'), (matched: string, index: number, original: string) => {
         const matchedStr = matched.substring(3).slice(0, -3)
         const statePath = matchedStr.split('.').join('.')
-        let result = extractAttribute(context, statePath)
-        if (!result) return matched
-        if (result.value) result = result.value
+        const result = extractAttribute(context, statePath)
+        if (result?.value !== undefined) { return result.value }
         return result as unknown as string
       })
     return
@@ -50,10 +49,18 @@ export function compileDirectives(node: HTMLElement) {
     node.removeAttribute(onDirective)
   }
   
+  if (node.getAttribute('html')) {
+    const statePath = node.getAttribute('html')
+    node.innerHTML = extractAttribute(context, statePath)
+    node.removeAttribute('html')
+    return
+  }
+  
   if (node.getAttribute('if')) {
     const { negativeCount, statePath } = countNegative(node, 'if')
     node.removeAttribute('if')
-    const state = extractAttribute(context, statePath)
+    let state = extractAttribute(context, statePath)
+    if (state?.value !== undefined) { state = state.value }
     if (negativeCount % 2 === 0 ? !state : state) {
       // Child component with if
       if (childComponents[node.tagName.toLowerCase()]) {
@@ -65,13 +72,14 @@ export function compileDirectives(node: HTMLElement) {
     } else {
       // Process else
       if (node.nextElementSibling?.getAttribute('else') !== null) {
-        node.nextElementSibling.remove()
+        node.nextElementSibling?.remove()
       }
     }
   } else if (node.getAttribute('show')) {
     const { negativeCount, statePath } = countNegative(node, 'show')
     node.removeAttribute('show')
-    const state = extractAttribute(context, statePath)
+    let state = extractAttribute(context, statePath)
+    if (state?.value !== undefined) { state = state.value }
     if (negativeCount % 2 === 0 ? !state : state) {
       node.style.display = 'none'
     } else {
@@ -100,7 +108,7 @@ export function compileDirectives(node: HTMLElement) {
   if (node.getAttribute('model')) {
     const statePath = node.getAttribute('model')
     // @ts-ignore
-    node.addEventListener('input', e => extractAttribute(context, statePath, e.target.value))
+    node.addEventListener('input', e => extractAttribute(context, statePath, e.target.value), false)
     node.setAttribute('value', extractAttribute(context, statePath))
     node.removeAttribute('model')
   }
@@ -146,9 +154,8 @@ function generateIterateNode(iterateNode: Node, loopFactor: string, item: object
           return item as unknown as string
         }
         const statePath = matchedStr.split('.').slice(1).join('.')
-        let result = extractAttribute(item, statePath)
-        if (!result) return matched
-        if (result.value) result = result.value
+        const result = extractAttribute(item, statePath)
+        if (result?.value !== undefined) { return result.value }
         return result as unknown as string
       })
   }
