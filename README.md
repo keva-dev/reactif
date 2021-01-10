@@ -155,9 +155,37 @@ Also, please don't forget to pass your loadData (which is a side-effect function
 
 For better performance, multiple property updates may be batched into a single, asynchronous render.
 
+#### Ref
+
+Takes an inner value and returns a reactive and mutable ref object. The ref object has a single property .value 
+that points to the inner value.
+
+```javascript
+const count = ref(0)
+console.log(count.value) // 0
+
+count.value++
+console.log(count.value) // 1
+```
+
+When a ref is returned as a property on the render context (the object returned from setup()) and accessed in the template, it automatically unwraps to the inner value. There is no need to append `.value` in the template:
+
+```javascript
+export default {
+  setup() {
+    return {
+      count: ref(0)
+    }
+  }
+  render() {
+    return `<div>{{ count }}</div>`
+  }
+}
+```
+
 #### Computed
 
-Will takes a getter function and returns an immutable reactive ref object for the returned value from the getter.
+Takes a getter function and returns an immutable reactive ref object for the returned value from the getter.
 
 ```javascript
 const count = ref(1)
