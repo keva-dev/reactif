@@ -59,10 +59,14 @@ function useLifeCycle() {
     // Set reactive flag 'currentComponent' to know the hook owner (which component call it)
     globalState.currentComponent = component
     // Mount hooks (onMounted, onUnmounted) and get Context (states, methods)
-    const context = {
-      $router: {
-        params: routerContextFn ? routerContextFn().params : null
+    const routerCtx = routerContextFn ? routerContextFn() : null
+    const $router = {
+      get params() {
+        return routerCtx.params() || null
       }
+    }
+    const context = {
+      $router
     }
     const contextBinder = component.setup ? component.setup(props, context) : Object.create(null)
     globalState.currentComponent = undefined

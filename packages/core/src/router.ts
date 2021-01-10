@@ -101,9 +101,7 @@ export function useRouter(routesArray: Route[]): Router {
   
   function routerContextFn() {
     return {
-      params: function() {
-        return params
-      }
+      params: () => params
     }
   }
 

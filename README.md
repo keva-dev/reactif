@@ -440,7 +440,7 @@ import { Router } from 'ractix'
 
 const Book = {
   render(props, context) {
-    const id = context.$router.params().id
+    const id = context.$router.params.id
     return `<div>Book ID: ${id}</div>`
   }
 }

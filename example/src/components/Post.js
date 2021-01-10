@@ -19,7 +19,7 @@ export default defineComponent({
 
     async function loadData() {
       mutations.setIsLoading(true)
-      const id = context.$router.params().id
+      const id = context.$router.params.id
       await sleep(500)
       state.data = await getArticle(id)
       mutations.setIsLoading(false)
