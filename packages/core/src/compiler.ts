@@ -36,6 +36,7 @@ export function compileDirectives(node: HTMLElement) {
         if (result.value) result = result.value
         return result as unknown as string
       })
+    return
   }
   
   if (node.nodeType !== 1) return
