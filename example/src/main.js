@@ -8,6 +8,7 @@ import NextTickDemo from './components/NextTick'
 import WhacAMole from './components/whac-a-mole/WhacAMole'
 import List from './components/List'
 import Nested from './components/Nested'
+import Computed from './components/Computed'
 import CopyRight from './components/Copyright'
 
 const routes = [
@@ -18,6 +19,7 @@ const routes = [
   { path: '/nextTick', component: NextTickDemo },
   { path: '/whac-a-mole', component: WhacAMole },
   { path: '/list', component: List },
+  { path: '/computed', component: Computed },
   { path: '/nested', component: Nested }
 ]
 const router = Router.useRouter(routes)
