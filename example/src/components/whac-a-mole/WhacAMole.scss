@@ -1,11 +1,11 @@
 .container {
-  width: 100%;
+  max-width: 1080px;
+  margin: auto;
   display: flex;
+  align-items: center;
+  justify-content: space-between;
 
   .game-container {
-    flex: 0 0 30%;
-    margin-top: 25vh;
-
     h2 {
       text-align: center;
     }
@@ -51,6 +51,15 @@
     }
   }
   .code-container {
-    flex: 1;
+    width: 150%;
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .container {
+    flex-direction: column;
+    .code-container {
+      width: 100%;
+    }
   }
 }
