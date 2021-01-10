@@ -17,7 +17,7 @@ export default defineComponent({
   },
   render() {
     return `
-      <div>Test ${this.double.value}</div>
+      <div>Test {{ double }}</div>
       <button @click="increase">Increase</button>
     `
   }

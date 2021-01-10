@@ -27,6 +27,17 @@ function nodeTraversal(nodes: NodeListOf<ChildNode>) {
 
 export function compileDirectives(node: HTMLElement) {
   if (node.nodeType !== 1) return
+  
+  if (node.innerText) {
+    node.textContent = node.textContent
+      .replace(new RegExp(`{{ (.+?) }}`, 'g'), (matched: string, index: number, original: string) => {
+        const matchedStr = matched.substring(3).slice(0, -3)
+        const statePath = matchedStr.split('.').join('.')
+        let result = extractAttribute(context, statePath)
+        if (result.value) result = result.value
+        return result as unknown as string
+      }).trim()
+  }
 
   const onDirective = node.getAttributeNames()?.find(e => e.startsWith('@'))
   if (onDirective) {
@@ -127,7 +138,6 @@ function generateIterateNode(iterateNode: Node, loopFactors: string, item: objec
   iterateNode.textContent = iterateNode.textContent
     .replace(new RegExp(`{{ ${loopFactors}(.+?)? }}`, 'g'), (matched: string, index: number, original: string) => {
       const matchedStr = matched.substring(3).slice(0, -3)
-      console.log(matchedStr)
       if (matchedStr.indexOf('.') === -1) {
         return item as unknown as string
       }
