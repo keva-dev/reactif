@@ -37,12 +37,10 @@ export default defineComponent({
       ${Loading(this.store.state.isLoading)}
       <a href="#"><button>Back to home</button></a>
       <button @click="loadData" style="float: right;">Reload</button> <span show="state.isLoading">Loading</span>
-      ${this.state.data ? `<div>
-        <h2>${this.state.data.title}</h2>
-        <div>
-            ${this.state.data.content}
-        </div>
-      </div>` : ''}
+      <div if="state.data">
+        <h2>{{ state.data.title }}</h2>
+        <div html="state.data.content"></div>
+      </div>
     `
   }
 })

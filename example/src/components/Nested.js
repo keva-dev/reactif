@@ -25,13 +25,12 @@ const Child = {
     }
   },
   render() {
-    const { state, heading, coin } = this
     return `
       <div style="margin: 1rem; padding: 1rem; border: 1px solid black;">
-        <h3>${heading}</h3>
-        <div>Internal Count State: ${state.count}</div>
-        <div>Coin: ${coin.value}</div>
-        <input model="state.text"/> -> ${state.text || 'Empty'}
+        <h3>{{ heading }}</h3>
+        <div>Internal Count State: {{ state.count }}</div>
+        <div>Coin: {{ coin }}</div>
+        <input model="state.text"/> -> <span if="state.text">{{ state.text }}</span><span else>Empty</span>
       </div>
     `
   }

@@ -1,3 +1,4 @@
+import { NODE_TYPE_CONST } from './const'
 import { lifeCycle } from './lifeCycle'
 import { ComponentObject, RouterContextFn } from './types'
 import { extractAttribute } from './utils'
@@ -26,7 +27,19 @@ function nodeTraversal(nodes: NodeListOf<ChildNode>) {
 }
 
 export function compileDirectives(node: HTMLElement) {
-  if (node.nodeType !== 1) return
+  if (node.nodeType === NODE_TYPE_CONST.TEXT_NODE) {
+    node.nodeValue = node.nodeValue
+      .replace(new RegExp(`{{ (.+?) }}`, 'g'), (matched: string, index: number, original: string) => {
+        const matchedStr = matched.substring(3).slice(0, -3)
+        const statePath = matchedStr.split('.').join('.')
+        const result = extractAttribute(context, statePath)
+        if (result?.value !== undefined) { return result.value }
+        return result as unknown as string
+      })
+    return
+  }
+  
+  if (node.nodeType !== NODE_TYPE_CONST.ELEMENT_NODE) return
 
   const onDirective = node.getAttributeNames()?.find(e => e.startsWith('@'))
   if (onDirective) {
@@ -36,10 +49,18 @@ export function compileDirectives(node: HTMLElement) {
     node.removeAttribute(onDirective)
   }
   
+  if (node.getAttribute('html')) {
+    const statePath = node.getAttribute('html')
+    node.innerHTML = extractAttribute(context, statePath)
+    node.removeAttribute('html')
+    return
+  }
+  
   if (node.getAttribute('if')) {
     const { negativeCount, statePath } = countNegative(node, 'if')
     node.removeAttribute('if')
-    const state = extractAttribute(context, statePath)
+    let state = extractAttribute(context, statePath)
+    if (state?.value !== undefined) { state = state.value }
     if (negativeCount % 2 === 0 ? !state : state) {
       // Child component with if
       if (childComponents[node.tagName.toLowerCase()]) {
@@ -51,13 +72,14 @@ export function compileDirectives(node: HTMLElement) {
     } else {
       // Process else
       if (node.nextElementSibling?.getAttribute('else') !== null) {
-        node.nextElementSibling.remove()
+        node.nextElementSibling?.remove()
       }
     }
   } else if (node.getAttribute('show')) {
     const { negativeCount, statePath } = countNegative(node, 'show')
     node.removeAttribute('show')
-    const state = extractAttribute(context, statePath)
+    let state = extractAttribute(context, statePath)
+    if (state?.value !== undefined) { state = state.value }
     if (negativeCount % 2 === 0 ? !state : state) {
       node.style.display = 'none'
     } else {
@@ -68,7 +90,7 @@ export function compileDirectives(node: HTMLElement) {
       }
     }
   }
-
+  
   if (node.getAttribute('each')) {
     let statePath = node.getAttribute('each')
     const loopFactors = statePath.split(' in ')
@@ -86,7 +108,7 @@ export function compileDirectives(node: HTMLElement) {
   if (node.getAttribute('model')) {
     const statePath = node.getAttribute('model')
     // @ts-ignore
-    node.addEventListener('input', e => extractAttribute(context, statePath, e.target.value))
+    node.addEventListener('input', e => extractAttribute(context, statePath, e.target.value), false)
     node.setAttribute('value', extractAttribute(context, statePath))
     node.removeAttribute('model')
   }
@@ -123,22 +145,24 @@ function countNegative(node: HTMLElement, attStr: string) {
   }
 }
 
-function generateIterateNode(iterateNode: Node, loopFactors: string, item: object) {
-  iterateNode.textContent = iterateNode.textContent
-    .replace(new RegExp(`{{ ${loopFactors}(.+?)? }}`, 'g'), (matched: string, index: number, original: string) => {
-      const matchedStr = matched.substring(3).slice(0, -3)
-      console.log(matchedStr)
-      if (matchedStr.indexOf('.') === -1) {
-        return item as unknown as string
-      }
-      const statePath = matchedStr.split('.').slice(1).join('.')
-      const result = extractAttribute(item, statePath)
-      return result as unknown as string
-    }).trim()
-
+function generateIterateNode(iterateNode: Node, loopFactor: string, item: object) {
+  if (iterateNode.nodeType === NODE_TYPE_CONST.TEXT_NODE) {
+    iterateNode.nodeValue = iterateNode.nodeValue
+      .replace(new RegExp(`{{ ${loopFactor}(.+?)? }}`, 'g'), (matched: string, index: number, original: string) => {
+        const matchedStr = matched.substring(3).slice(0, -3)
+        if (matchedStr.indexOf('.') === -1) {
+          return item as unknown as string
+        }
+        const statePath = matchedStr.split('.').slice(1).join('.')
+        const result = extractAttribute(item, statePath)
+        if (result?.value !== undefined) { return result.value }
+        return result as unknown as string
+      })
+  }
+  
   if (iterateNode.childNodes.length) {
     iterateNode.childNodes.forEach(child => {
-      generateIterateNode(child, loopFactors, item)
+      generateIterateNode(child, loopFactor, item)
     })
   }
 }

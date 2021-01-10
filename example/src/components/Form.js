@@ -1,4 +1,4 @@
-import { defineComponent, reactive, onMounted, onUnmounted } from 'ractix'
+import { defineComponent, reactive, onMounted, onUnmounted, computed, ref } from 'ractix'
 
 export default defineComponent({
   setup() {
@@ -9,6 +9,8 @@ export default defineComponent({
         lastName: ''
       }
     })
+
+    const isSubmitted = ref(false)
 
     let interval
 
@@ -24,35 +26,35 @@ export default defineComponent({
 
     const submit = (e) => {
       e.preventDefault()
-      return false
+      isSubmitted.value = true
     }
+
+    const isValidated = computed(() => !!(state.form.firstName.length && state.form.lastName.length))
 
     return {
       state,
+      isSubmitted,
+      isValidated,
       submit
     }
   },
   render() {
-    const { state } = this
     return `
-      <div class="form">
+      <div class="form" if="!isSubmitted">
         <a href="#"><button>Back to home</button></a>
-        <h2>Demo Form, Count: <span>${state.count}</span></h2>
+        <h2>Demo Form, Count: <span>{{ state.count }}</span></h2>
         <form @submit="submit">
-          <label for="firstName">First Name ${state.form.firstName.length ? 'is ' + state.form.firstName : '' }</label>
+          <label for="firstName">First Name <span v-if="state.form.firstName">is {{ state.form.firstName }}</span></label>
           <input type="text" model="state.form.firstName" placeholder="Your name..">
       
-          <label for="lastName">Last Name ${state.form.lastName.length ? 'is ' + state.form.lastName : '' }</label>
+          <label for="lastName">Last Name <span v-if="state.form.lastName">is {{ state.form.lastName }}</span></label>
           <input type="text" model="state.form.lastName" placeholder="Your last name..">
-      
-          ${state.form.firstName.length && state.form.lastName.length ? `<label for="country">Country</label>
-          <select id="country" name="country">
-            <option value="vn">Vietnam</option>
-            <option value="usa">United States</option>
-          </select>` : '' }
-          
-          <input type="submit" value="Submit" ${state.form.firstName.length && state.form.lastName.length ? '' : 'hidden' }>
+                    
+          <input show="isValidated" type="submit" value="Submit">
         </form>
+      </div>
+      <div else>
+        <h2>Your form has been sent!</h2>
       </div>
     `
   }
