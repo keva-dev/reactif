@@ -1,6 +1,7 @@
 import { lifeCycle } from './lifeCycle'
 import { ComponentObject, RouterContextFn } from './types'
 import { extractAttribute } from './utils'
+import { NODE_TYPE_CONST } from './const'
 
 let routerContextFn: RouterContextFn = null
 let context: object = null
@@ -26,7 +27,7 @@ function nodeTraversal(nodes: NodeListOf<ChildNode>) {
 }
 
 export function compileDirectives(node: HTMLElement) {
-  if (node.nodeType === 3) {
+  if (node.nodeType === NODE_TYPE_CONST.TEXT_NODE) {
     node.nodeValue = node.nodeValue
       .replace(new RegExp(`{{ (.+?) }}`, 'g'), (matched: string, index: number, original: string) => {
         const matchedStr = matched.substring(3).slice(0, -3)
@@ -39,7 +40,7 @@ export function compileDirectives(node: HTMLElement) {
     return
   }
   
-  if (node.nodeType !== 1) return
+  if (node.nodeType !== NODE_TYPE_CONST.ELEMENT_NODE) return
 
   const onDirective = node.getAttributeNames()?.find(e => e.startsWith('@'))
   if (onDirective) {
@@ -81,7 +82,7 @@ export function compileDirectives(node: HTMLElement) {
       }
     }
   }
-
+  
   if (node.getAttribute('each')) {
     let statePath = node.getAttribute('each')
     const loopFactors = statePath.split(' in ')
@@ -137,7 +138,7 @@ function countNegative(node: HTMLElement, attStr: string) {
 }
 
 function generateIterateNode(iterateNode: Node, loopFactor: string, item: object) {
-  if (iterateNode.nodeType === 3) {
+  if (iterateNode.nodeType === NODE_TYPE_CONST.TEXT_NODE) {
     iterateNode.nodeValue = iterateNode.nodeValue
       .replace(new RegExp(`{{ ${loopFactor}(.+?)? }}`, 'g'), (matched: string, index: number, original: string) => {
         const matchedStr = matched.substring(3).slice(0, -3)
