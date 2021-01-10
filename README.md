@@ -10,7 +10,7 @@
 
 ## Features
 
-~800 SLOC, tiny in size, just 3 KB minified and gzipped runtime size
+~1000 SLOC, tiny in size, just ~5 KB minified and gzipped runtime size
 - Zero dependencies, no JSX, no need to transpile, no virtual DOM overhead
 - Two-way data binding which is similar to Vue.js's [Reactive System](https://v3.vuejs.org/guide/reactivity.html)
 - Uses an efficient native DOM diffing algorithm to [update only the things that have changed](https://s8.gifyu.com/images/diffing.gif)
@@ -37,10 +37,10 @@
 
 ## Install
 
-- Via CDN:
+- UNPKG CDN:
 
-Ractix can also be run directly in the browser with no build tool (via UMD import), just take your idea and turn it 
-into reality in no time!
+Ractix doesn't require any special toolchain, compiler, plugins etc. It's a tiny (~5k) package that gives you 
+everything you need to start building directly in the browser. Just take your idea and turn it into reality in no time!
 
 Just import the CDN JS file to your `index.html`:
 
@@ -49,7 +49,7 @@ Just import the CDN JS file to your `index.html`:
   <div id="app"></div>
 </html>
 
-<script src="https://cdn.jsdelivr.net/npm/ractix@latest/dist/ractix.min.js"></script>
+<script src="https://unpkg.com/ractix@0.2.3/dist/ractix.min.js"></script>
 <script>
 const HelloWorld = {
   setup() {
@@ -75,6 +75,8 @@ Ractix.render(HelloWorld, '#app')
 The Vue-like APIs are easy to understand and work with (especially if you're coming from a Vue.js background)
 
 - Via NPM:
+
+You can also install directly into your project using NPM:
 
 ```
 npm install ractix
