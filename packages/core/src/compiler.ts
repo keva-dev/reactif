@@ -103,7 +103,7 @@ export function compileDirectives(node: HTMLElement) {
     const fragment = document.createDocumentFragment()
     state?.forEach((item: object) => {
       const iterateNode = node.cloneNode(true)
-      generateIterateNode(iterateNode, loopFactors[0], item)
+      generateForEachNode(iterateNode, loopFactors[0], item)
       fragment.appendChild(iterateNode)
     })
     node.replaceWith(fragment)
@@ -149,42 +149,38 @@ function countNegative(node: HTMLElement, attStr: string) {
   }
 }
 
-function generateIterateNode(iterateNode: Node | HTMLElement, loopFactor: string, item: object) {
+function replaceNodeValueByLoopFactor(value: string, loopFactor: string, state: object): string {
+  return value.replace(new RegExp(`{{ ${loopFactor}(.+?)? }}`, 'g'), (matched: string, index: number, original: string) => {
+    const matchedStr = matched.substring(3).slice(0, -3)
+    if (matchedStr.indexOf('.') === -1) {
+      return state as unknown as string
+    }
+    const statePath = matchedStr.split('.').slice(1).join('.')
+    const result = extractAttribute(state, statePath)
+    if (result?.value !== undefined) { return result.value }
+    return result as unknown as string
+  })
+}
+
+function generateForEachNode(iterateNode: Node | HTMLElement, loopFactor: string, item: object) {
   if (iterateNode.nodeType === NODE_TYPE_CONST.TEXT_NODE) {
-    iterateNode.nodeValue = iterateNode.nodeValue
-      .replace(new RegExp(`{{ ${loopFactor}(.+?)? }}`, 'g'), (matched: string, index: number, original: string) => {
-        const matchedStr = matched.substring(3).slice(0, -3)
-        if (matchedStr.indexOf('.') === -1) {
-          return item as unknown as string
-        }
-        const statePath = matchedStr.split('.').slice(1).join('.')
-        const result = extractAttribute(item, statePath)
-        if (result?.value !== undefined) { return result.value }
-        return result as unknown as string
-      })
+    iterateNode.nodeValue = replaceNodeValueByLoopFactor(iterateNode.nodeValue, loopFactor, item)
   }
   
   if (iterateNode.nodeType === NODE_TYPE_CONST.ELEMENT_NODE) {
     if ('attributes' in iterateNode) {
       Array.from(iterateNode.attributes).forEach(attr => {
-        console.log(`${attr.nodeName}=${attr.nodeValue}`)
-        attr.nodeValue = attr.nodeValue.replace(new RegExp(`{{ ${loopFactor}(.+?)? }}`, 'g'), (matched: string, index: number, original: string) => {
-          const matchedStr = matched.substring(3).slice(0, -3)
-          if (matchedStr.indexOf('.') === -1) {
-            return item as unknown as string
-          }
-          const statePath = matchedStr.split('.').slice(1).join('.')
-          const result = extractAttribute(item, statePath)
-          if (result?.value !== undefined) { return result.value }
-          return result as unknown as string
-        })
+        replaceNodeValueByLoopFactor(attr.nodeValue, loopFactor, item)
+      })
+      Array.from(iterateNode.attributes).forEach(attr => {
+        attr.nodeValue = replaceNodeValueByLoopFactor(attr.nodeValue, loopFactor, item)
       })
     }
   }
   
   if (iterateNode.childNodes.length) {
     iterateNode.childNodes.forEach(child => {
-      generateIterateNode(child, loopFactor, item)
+      generateForEachNode(child, loopFactor, item)
     })
   }
 }
