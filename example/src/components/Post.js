@@ -3,8 +3,6 @@ import { getArticle } from '../services/fuhcm'
 import useStore from '../store/store'
 import sleep from '../utils/sleep'
 
-import Loading from './Loading'
-
 export default defineComponent({
   setup(props, context) {
     const store = useStore()
@@ -34,7 +32,7 @@ export default defineComponent({
   },
   render() {
     return `
-      ${Loading(this.store.state.isLoading)}
+      <div show="store.state.isLoading" class="loading-overlay"></div>
       <a href="#"><button>Back to home</button></a>
       <button @click="loadData" style="float: right;">Reload</button> <span show="state.isLoading">Loading</span>
       <div if="state.data">

@@ -25,10 +25,9 @@ export default defineComponent({
     }
   },
   render() {
-    const { state } = this
     return `
       <div id="nextTick">
-          ${state.a} ${state.b} ${state.c}
+          {{ state.a }} -- {{ state.b }} -- {{ state.c }}
       </div>
     `
   }

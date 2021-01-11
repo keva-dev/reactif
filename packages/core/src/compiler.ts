@@ -101,7 +101,7 @@ export function compileDirectives(node: HTMLElement) {
     const state = extractAttribute(context, loopFactors[1])
     node.removeAttribute('each')
     const fragment = document.createDocumentFragment()
-    state.forEach((item: object) => {
+    state?.forEach((item: object) => {
       const iterateNode = node.cloneNode(true)
       generateIterateNode(iterateNode, loopFactors[0], item)
       fragment.appendChild(iterateNode)
@@ -149,7 +149,7 @@ function countNegative(node: HTMLElement, attStr: string) {
   }
 }
 
-function generateIterateNode(iterateNode: Node, loopFactor: string, item: object) {
+function generateIterateNode(iterateNode: Node | HTMLElement, loopFactor: string, item: object) {
   if (iterateNode.nodeType === NODE_TYPE_CONST.TEXT_NODE) {
     iterateNode.nodeValue = iterateNode.nodeValue
       .replace(new RegExp(`{{ ${loopFactor}(.+?)? }}`, 'g'), (matched: string, index: number, original: string) => {
@@ -162,6 +162,24 @@ function generateIterateNode(iterateNode: Node, loopFactor: string, item: object
         if (result?.value !== undefined) { return result.value }
         return result as unknown as string
       })
+  }
+  
+  if (iterateNode.nodeType === NODE_TYPE_CONST.ELEMENT_NODE) {
+    if ('attributes' in iterateNode) {
+      Array.from(iterateNode.attributes).forEach(attr => {
+        console.log(`${attr.nodeName}=${attr.nodeValue}`)
+        attr.nodeValue = attr.nodeValue.replace(new RegExp(`{{ ${loopFactor}(.+?)? }}`, 'g'), (matched: string, index: number, original: string) => {
+          const matchedStr = matched.substring(3).slice(0, -3)
+          if (matchedStr.indexOf('.') === -1) {
+            return item as unknown as string
+          }
+          const statePath = matchedStr.split('.').slice(1).join('.')
+          const result = extractAttribute(item, statePath)
+          if (result?.value !== undefined) { return result.value }
+          return result as unknown as string
+        })
+      })
+    }
   }
   
   if (iterateNode.childNodes.length) {

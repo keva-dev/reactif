@@ -4,8 +4,6 @@ import sleep from '../utils/sleep'
 
 import useStore from '../store/store'
 
-import Loading from './Loading'
-
 export default defineComponent({
   setup() {
     const { state, mutations } = useStore()
@@ -29,7 +27,9 @@ export default defineComponent({
     async function loadData() {
       setIsLoading(true)
       await sleep(500)
-      setData(await getAllArticles(state.limit))
+      const data = await getAllArticles(state.limit)
+      data.forEach(e => e.guid = e.guid.replace('https://daihoc.fpt.edu.vn/?p=', ''))
+      setData(data)
       setIsLoading(false)
       document.title = 'ReOdd Demo Homepage'
     }
@@ -64,16 +64,11 @@ export default defineComponent({
   },
   render() {
     return `
-      ${Loading(this.state.isLoading)}
+      <div show="state.isLoading" class="loading-overlay"></div>
       <h2>FUHCM RSS ({{ state.limit }})</h2>
       <button @click="reload">Reload</button> <span show="state.isLoading">Loading</span>
       <ul>
-        ${this.state.data.map(i => { const id = i.guid.replace('https://daihoc.fpt.edu.vn/?p=', '')
-          return `
-            <a href="#/posts/${id}"><li>${i.title} (at ${i.pubDate})</li></a>
-          `
-        }).join('')}
-      </ul>
+        <a each="i in state.data" href="#/posts/{{ i.guid }}"><li>{{ i.title }} (at {{ i.pubDate }})</li></a></ul>
       <div>
         <button @click="loadMore">Load more...</button> <span show="state.isLoading">Loading</span>
       </div>
