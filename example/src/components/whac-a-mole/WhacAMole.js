@@ -92,7 +92,7 @@ export default defineComponent({
         </div>
         
         <div class="code-container">
-          <iframe height="840" style="width: 100%;" scrolling="no" title="Ractix Game" src="https://codepen.io/tuhuynh27/embed/eYdKrvK?height=265&theme-id=dark&default-tab=js" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+          <iframe height="840" style="width: 100%;" scrolling="no" title="Ractix Game" src="https://codepen.io/tuhuynh27/embed/eYdKrvK?height=265&theme-id=dark&default-tab=html" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
     See the Pen <a href='https://codepen.io/tuhuynh27/pen/eYdKrvK'>Ractix Game</a> by Tu Huynh
     (<a href='https://codepen.io/tuhuynh27'>@tuhuynh27</a>) on <a href='https://codepen.io'>CodePen</a>.</iframe>
         </div>

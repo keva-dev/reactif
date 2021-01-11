@@ -46,29 +46,22 @@ Just import the CDN JS file to your `index.html`:
 
 ```html
 <html>
-  <div id="app"></div>
+  <label>Name:</label>
+  <input type="text" model="state.yourName" placeholder="Enter a name here">
+  <hr>
+  <h1>Hello {{ state.yourName }}!</h1>
 </html>
 
-<script src="https://unpkg.com/ractix@0.2.5/dist/ractix.min.js"></script>
+<script src="https://unpkg.com/ractix@0.2.6/dist/ractix.min.js"></script>
 <script>
 const HelloWorld = {
   setup() {
     const state = Ractix.reactive({ yourName: '' })
     return { state }
-  },
-  render() {
-    return `
-      <div>
-        <label>Name:</label>
-        <input type="text" model="state.yourName" placeholder="Enter a name here">
-        <hr>
-        <h1>Hello {{ state.yourName }}!</h1>
-      </div>
-    `
   }
 }
 
-Ractix.render(HelloWorld, '#app')
+Ractix.render(HelloWorld)
 </script>
 ```
 

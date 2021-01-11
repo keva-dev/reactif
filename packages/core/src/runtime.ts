@@ -46,10 +46,19 @@ function useRuntime() {
   }
 
   // Mount component to a selector
-  function addComponent(elem: HTMLElement | DocumentFragment, component: ComponentObject, routerContextFn?: RouterContextFn, props?: Data) {
+  function addComponent(selector: string | HTMLElement, component: ComponentObject, routerContextFn?: RouterContextFn, props?: Data) {
     // If the selector is not valid, or the component is already mounted, then skip
     if (components.find(e => e.component === component)) {
-      throw new Error('Duplicated render')
+      console.log('Duplicated')
+      return
+    }
+    
+    let elem: HTMLElement = null
+    if (typeof selector === 'string') {
+      elem = !selector ? <HTMLElement>document.querySelector('body') :
+        <HTMLElement>document.querySelector(selector)
+    } else {
+      elem = selector
     }
   
     const instance: ComponentInstance = {
@@ -79,35 +88,41 @@ function useRuntime() {
     const contextBinder = component.setup ? component.setup(props, context) : Object.create(null)
     globalState.currentComponent = undefined
     
-    const renderer: () => string = component.render.bind(contextBinder)
+    const renderer: () => string = component.render?.bind(contextBinder)
   
     // Observe DOM changes
     let firstMount: boolean = false
     function mutationHandler(mutationList: MutationRecord[], observer: MutationObserver) {
-      const r = mutationList[0].removedNodes[0]
-      if (r?.isEqualNode(elem)) {
-        cleanUp(component)
-        // Disconnect
-        observer.disconnect();
-        return
-      } else {
-        if (!firstMount) {
-          firstMount = true
-          // Run onMounted hooks
-          instance.onMountedHooks.forEach(fn => fn())
-        }
+      mutationList.forEach(e => {
+        e.removedNodes.forEach(ee => {
+          if (ee?.isEqualNode(elem)) {
+            cleanUp(component)
+            // Disconnect
+            observer.disconnect();
+            return
+          }
+        })
+      })
+  
+      if (!firstMount) {
+        firstMount = true
+        // Run onMounted hooks
+        instance.onMountedHooks.forEach(fn => fn())
       }
     }
     // Add listeners to the DOM, to watch it changes
+    // TODO: Need to review this
     const observerOptions = {
       childList: true,
       subtree: true
     }
     const observer = new MutationObserver(mutationHandler);
-    observer.observe(elem.parentNode, observerOptions);
+    observer.observe(document.querySelector('body'), observerOptions);
     
+    const templateString = component.render ? renderer() : elem.innerHTML
+  
     makeFuncReactiveAndExecuteIt(() => {
-      const template = compile(stringToDOM(renderer()), routerContextFn, contextBinder, component.components)
+      const template = compile(stringToDOM(templateString), routerContextFn, contextBinder, component.components)
       patch(template, elem)
     })
   }

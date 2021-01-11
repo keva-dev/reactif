@@ -1,7 +1,7 @@
 export interface ComponentObject {
   components?: Record<string, ComponentObject>
   setup?: (props?: Data, context?: Data) => Data
-  render: () => string
+  render?: () => string
 }
 
 export type HandlerFunc = () => void

@@ -44,6 +44,7 @@ const Parent = {
     const state = reactive({
       childToggle: true,
     })
+
     const toggleChild = () => state.childToggle = !state.childToggle
 
     const coin = ref(0)
