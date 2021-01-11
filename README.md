@@ -49,7 +49,7 @@ Just import the CDN JS file to your `index.html`:
   <div id="app"></div>
 </html>
 
-<script src="https://unpkg.com/ractix@0.2.4/dist/ractix.min.js"></script>
+<script src="https://unpkg.com/ractix@0.2.5/dist/ractix.min.js"></script>
 <script>
 const HelloWorld = {
   setup() {

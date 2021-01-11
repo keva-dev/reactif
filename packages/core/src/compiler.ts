@@ -45,6 +45,21 @@ export function compileDirectives(node: HTMLElement) {
   }
   
   if (node.nodeType !== NODE_TYPE_CONST.ELEMENT_NODE) return
+  
+  if (node.getAttribute('each')) {
+    let statePath = node.getAttribute('each')
+    const loopFactors = statePath.split(' in ')
+    const state = extractAttribute(context, loopFactors[1])
+    node.removeAttribute('each')
+    const fragment = document.createDocumentFragment()
+    state?.forEach((item: object, index: number) => {
+      const iterateNode = node.cloneNode(true)
+      generateForEachNode(iterateNode, loopFactors[0], item, index)
+      compileDirectives(<HTMLElement>iterateNode)
+      fragment.appendChild(iterateNode)
+    })
+    node.replaceWith(fragment)
+  }
 
   const onDirective = node.getAttributeNames()?.find(e => e.startsWith('@'))
   if (onDirective) {
@@ -105,20 +120,6 @@ export function compileDirectives(node: HTMLElement) {
       }
     }
   }
-  
-  if (node.getAttribute('each')) {
-    let statePath = node.getAttribute('each')
-    const loopFactors = statePath.split(' in ')
-    const state = extractAttribute(context, loopFactors[1])
-    node.removeAttribute('each')
-    const fragment = document.createDocumentFragment()
-    state?.forEach((item: object) => {
-      const iterateNode = node.cloneNode(true)
-      generateForEachNode(iterateNode, loopFactors[0], item)
-      fragment.appendChild(iterateNode)
-    })
-    node.replaceWith(fragment)
-  }
 
   if (node.getAttribute('model')) {
     const statePath = node.getAttribute('model')
@@ -160,7 +161,7 @@ function countNegative(node: HTMLElement, attStr: string) {
   }
 }
 
-function replaceNodeValueByLoopFactor(value: string, loopFactor: string, state: object): string {
+function replaceNodeValueByLoopFactor(value: string, loopFactor: string, state: object | string | number): string {
   return value.replace(new RegExp(`{{ ${loopFactor}(.+?)? }}`, 'g'), (matched: string, index: number, original: string) => {
     const matchedStr = matched.substring(3).slice(0, -3)
     if (matchedStr.indexOf('.') === -1) {
@@ -173,7 +174,7 @@ function replaceNodeValueByLoopFactor(value: string, loopFactor: string, state: 
   })
 }
 
-function generateForEachNode(iterateNode: Node | HTMLElement, loopFactor: string, item: object) {
+function generateForEachNode(iterateNode: Node | HTMLElement, loopFactor: string, item: object, index: number) {
   if (iterateNode.nodeType === NODE_TYPE_CONST.TEXT_NODE) {
     iterateNode.nodeValue = replaceNodeValueByLoopFactor(iterateNode.nodeValue, loopFactor, item)
   }
@@ -182,16 +183,18 @@ function generateForEachNode(iterateNode: Node | HTMLElement, loopFactor: string
     if ('attributes' in iterateNode) {
       Array.from(iterateNode.attributes).forEach(attr => {
         replaceNodeValueByLoopFactor(attr.nodeValue, loopFactor, item)
+        replaceNodeValueByLoopFactor(attr.nodeValue, 'index', index)
       })
       Array.from(iterateNode.attributes).forEach(attr => {
         attr.nodeValue = replaceNodeValueByLoopFactor(attr.nodeValue, loopFactor, item)
+        attr.nodeValue = replaceNodeValueByLoopFactor(attr.nodeValue, 'index', index)
       })
     }
   }
   
   if (iterateNode.childNodes.length) {
     iterateNode.childNodes.forEach(child => {
-      generateForEachNode(child, loopFactor, item)
+      generateForEachNode(child, loopFactor, item, index)
     })
   }
 }

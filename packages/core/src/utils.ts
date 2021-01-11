@@ -11,7 +11,7 @@ export function getParam(paramName: string, url: string) {
   const regex = new RegExp(`[?&]${name}(=([^&#]*)|&|#|$)`);
   const results = regex.exec(href);
   if (!results) return null;
-  if (!results[2]) return '';
+  if (!results[2]) return ''
   return decodeURIComponent(results[2].replace(/\+/g, ' '));
 }
 
@@ -29,7 +29,7 @@ export function includes(arr: any, id: string | number) {
   return arr.indexOf(id) !== -1;
 }
 
-export function extractAttribute(obj: object, is: string | string[], value?: any): any {
+export function extractAttribute(obj: object | string | number, is: string | string[], value?: any): any {
   try {
     if (typeof is === 'string')
       return extractAttribute(obj, is.split('.'), value)
