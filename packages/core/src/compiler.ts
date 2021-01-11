@@ -7,14 +7,18 @@ let routerContextFn: RouterContextFn = null
 let context: object = null
 let childComponents: Record<string, ComponentObject> = null
 
-export function stringToHTML(str: string, _routerContextFn: RouterContextFn, _context: object, _childComponents: Record<string, ComponentObject>): HTMLElement {
+export function stringToDOM(str: string): HTMLElement {
   const parser = new DOMParser()
   const doc = parser.parseFromString(str.trim(), 'text/html')
+  return doc.body
+}
+
+export function compile(nodes: HTMLElement, _routerContextFn: RouterContextFn, _context: object, _childComponents: Record<string, ComponentObject>): HTMLElement {
   routerContextFn = _routerContextFn
   context = _context || Object.create(null)
   childComponents = _childComponents || Object.create(null)
-  nodeTraversal(doc.body.childNodes)
-  return doc.body
+  nodeTraversal(nodes.childNodes)
+  return nodes
 }
 
 function nodeTraversal(nodes: NodeListOf<ChildNode>) {

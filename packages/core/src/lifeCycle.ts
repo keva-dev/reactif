@@ -1,8 +1,8 @@
-import { ComponentObject, Data, HandlerFunc, MemoizedHandlerFunc, RouterContextFn } from './types'
-import { globalState } from './globalState'
-import { stringToHTML } from './compiler'
-import { patch } from './patch'
+import { stringToDOM, compile } from './compiler'
 import { createReactiveState } from './createState'
+import { globalState } from './globalState'
+import { patch } from './patch'
+import { ComponentObject, Data, HandlerFunc, MemoizedHandlerFunc, RouterContextFn } from './types'
 
 type ComponentInstance = {
   component: ComponentObject,
@@ -11,6 +11,12 @@ type ComponentInstance = {
   onMountedHooks: HandlerFunc[]
   onUnmountedHooks: HandlerFunc[]
   watchEffects: HandlerFunc[]
+}
+
+function makeFuncReactiveAndExecuteIt(fn: HandlerFunc) {
+  globalState.currentFn = fn;
+  fn()
+  globalState.currentFn = undefined
 }
 
 // LifeCycle instance will be created by useLifeCycle hook
@@ -44,18 +50,18 @@ function useLifeCycle() {
     if (components.find(e => e.component === component)) {
       throw new Error('Duplicated render')
     }
-    
+  
     const instance: ComponentInstance = {
       component,
       routerContextFn,
       dependencies: [],
       onMountedHooks: [],
       onUnmountedHooks: [],
-      watchEffects: [],
+      watchEffects: []
     }
     components.push(instance)
 
-    // Run hooks like: onMounted, onUnmounted
+    // Attach hooks: onMounted, onUnmounted
     // Set reactive flag 'currentComponent' to know the hook owner (which component call it)
     globalState.currentComponent = component
     // Mount hooks (onMounted, onUnmounted) and get Context (states, methods)
@@ -70,10 +76,16 @@ function useLifeCycle() {
     }
     const contextBinder = component.setup ? component.setup(props, context) : Object.create(null)
     globalState.currentComponent = undefined
-    const renderer: () => string = component.render.bind(contextBinder)
-  
-    let firstMount: boolean = false
     
+    const renderer: () => string = component.render.bind(contextBinder)
+    
+    makeFuncReactiveAndExecuteIt(() => {
+      const template = compile(stringToDOM(renderer()), routerContextFn, contextBinder, component.components)
+      patch(template, elem)
+    })
+    
+    // Observe DOM changes
+    let firstMount: boolean = false
     function mutationHandler(mutationList: MutationRecord[], observer: MutationObserver) {
       const r = mutationList[0].removedNodes[0]
       if (r?.isEqualNode(elem)) {
@@ -89,7 +101,6 @@ function useLifeCycle() {
         }
       }
     }
-
     // Add listeners to the DOM, to watch it changes
     const observerOptions = {
       childList: true,
@@ -97,17 +108,6 @@ function useLifeCycle() {
     }
     const observer = new MutationObserver(mutationHandler);
     observer.observe(elem.parentNode, observerOptions);
-
-    function makeFuncReactiveAndExecuteIt(fn: HandlerFunc) {
-      globalState.currentFn = fn;
-      fn()
-      globalState.currentFn = undefined
-    }
-
-    makeFuncReactiveAndExecuteIt(() => {
-      const templateHTML = stringToHTML(renderer(), routerContextFn, contextBinder, component.components)
-      patch(templateHTML, elem)
-    })
   }
 
   function addState<T extends object>(_state: T, component: ComponentObject): T {
