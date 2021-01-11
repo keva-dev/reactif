@@ -19,10 +19,10 @@ function makeFuncReactiveAndExecuteIt(fn: HandlerFunc) {
   globalState.currentFn = undefined
 }
 
-// LifeCycle instance will be created by useLifeCycle hook
+// Runtime instance will be created by useRuntime hook
 // It will manage all component creation and its hooks such as:
 // Mount, Unmount, Update...
-function useLifeCycle() {
+function useRuntime() {
   let components: ComponentInstance[] = []
   
   // Find
@@ -78,12 +78,7 @@ function useLifeCycle() {
     globalState.currentComponent = undefined
     
     const renderer: () => string = component.render.bind(contextBinder)
-    
-    makeFuncReactiveAndExecuteIt(() => {
-      const template = compile(stringToDOM(renderer()), routerContextFn, contextBinder, component.components)
-      patch(template, elem)
-    })
-    
+  
     // Observe DOM changes
     let firstMount: boolean = false
     function mutationHandler(mutationList: MutationRecord[], observer: MutationObserver) {
@@ -108,6 +103,11 @@ function useLifeCycle() {
     }
     const observer = new MutationObserver(mutationHandler);
     observer.observe(elem.parentNode, observerOptions);
+    
+    makeFuncReactiveAndExecuteIt(() => {
+      const template = compile(stringToDOM(renderer()), routerContextFn, contextBinder, component.components)
+      patch(template, elem)
+    })
   }
 
   function addState<T extends object>(_state: T, component: ComponentObject): T {
@@ -150,4 +150,4 @@ function useLifeCycle() {
   }
 }
 
-export const lifeCycle = useLifeCycle()
+export const runtime = useRuntime()

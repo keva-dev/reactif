@@ -1,5 +1,5 @@
 import { NODE_TYPE_CONST } from './const'
-import { lifeCycle } from './lifeCycle'
+import { runtime } from './runtime'
 import { ComponentObject, RouterContextFn } from './types'
 import { extractAttribute } from './utils'
 
@@ -69,7 +69,7 @@ export function compileDirectives(node: HTMLElement) {
       // Child component with if
       if (childComponents[node.tagName.toLowerCase()]) {
         const ChildComponent = childComponents[node.tagName.toLowerCase()]
-        lifeCycle.forceUnmountComponent(ChildComponent)
+        runtime.forceUnmountComponent(ChildComponent)
       }
       node.remove()
       return
@@ -131,7 +131,7 @@ export function compileDirectives(node: HTMLElement) {
         node.removeAttribute(e)
       })
       
-      lifeCycle.addComponent(node, ChildComponent, routerContextFn, props)
+      runtime.addComponent(node, ChildComponent, routerContextFn, props)
     }
   }
 }

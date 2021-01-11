@@ -1,6 +1,6 @@
 import { globalState } from './globalState'
 import { HandlerFunc } from './types'
-import { lifeCycle } from './lifeCycle'
+import { runtime } from './runtime'
 
 export function watchEffect(fn: HandlerFunc): HandlerFunc {
   const memoized = {
@@ -12,7 +12,7 @@ export function watchEffect(fn: HandlerFunc): HandlerFunc {
   }
   
   if (globalState.currentComponent) {
-    lifeCycle.addWatchEffect(memoized, globalState.currentComponent, stopWatcher)
+    runtime.addWatchEffect(memoized, globalState.currentComponent, stopWatcher)
   }
   
   return stopWatcher

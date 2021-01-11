@@ -1,6 +1,6 @@
 import { ComponentObject, RouterContextFn } from './types'
 import { Router } from './router'
-import { lifeCycle } from './lifeCycle'
+import { runtime } from './runtime'
 
 export function createComponent(component: ComponentObject | Router, selector: string, routerContextFn?: RouterContextFn): void {
   if ("renderer" in component) {
@@ -9,5 +9,5 @@ export function createComponent(component: ComponentObject | Router, selector: s
   }
   
   const elem = <HTMLElement>document.querySelector(selector)
-  lifeCycle.addComponent(elem, component, routerContextFn)
+  runtime.addComponent(elem, component, routerContextFn)
 }

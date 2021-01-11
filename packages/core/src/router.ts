@@ -1,4 +1,4 @@
-import { lifeCycle } from './lifeCycle'
+import { runtime } from './runtime'
 import { ComponentObject, HandlerFunc } from './types'
 import { createComponent } from './createComponent'
 import { cleanPath, isObject, includes } from './utils'
@@ -108,7 +108,7 @@ export function useRouter(routesArray: Route[]): Router {
   function renderer(selector: string): void {
     onRouterChange(() => {
       if (currentComponent) {
-        lifeCycle.forceUnmountComponent(currentComponent)
+        runtime.forceUnmountComponent(currentComponent)
       }
       match(getPath(), selector)
     })
