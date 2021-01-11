@@ -52,7 +52,7 @@ Just import the CDN JS file to your `index.html`:
   <h1>Hello {{ state.yourName }}!</h1>
 </html>
 
-<script src="https://unpkg.com/ractix@0.2.6/dist/ractix.min.js"></script>
+<script src="https://unpkg.com/ractix@latest/dist/ractix.min.js"></script>
 <script>
 const HelloWorld = {
   setup() {
