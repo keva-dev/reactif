@@ -68,7 +68,7 @@ export default defineComponent({
       <h2>FUHCM RSS ({{ state.limit }})</h2>
       <button @click="reload">Reload</button> <span show="state.isLoading">Loading</span>
       <ul>
-        <a each="i in state.data" href="#/posts/{{ i.guid }}"><li>{{ i.title }} (at {{ i.pubDate }})</li></a></ul>
+        <a each="i in state.data" to="#/posts/{{ i.guid }}"><li>{{ i.title }} (at {{ i.pubDate }})</li></a></ul>
       <div>
         <button @click="loadMore">Load more...</button> <span show="state.isLoading">Loading</span>
       </div>

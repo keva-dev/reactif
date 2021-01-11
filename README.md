@@ -478,13 +478,30 @@ router.render(router, '#app')
 Inside component Book, you can access `:id` param like this:
 
 ```javascript
-import { Router } from 'ractix'
-
 const Book = {
   render(props, context) {
-    const id = context.$router.params.id
+    const { id } = context.$router.params
     return `<div>Book ID: ${id}</div>`
   }
+}
+```
+
+To add router link to components, use directive `to`:
+
+```javascript
+<div>
+  <p to="/home">Click to go to home</p>
+</div>
+```
+
+Or in `setup()`, you can perform router redirect by:
+```javascript
+setup(props, context) {
+  function goHome() {
+    context.$router.go('/home') // This will perform a redirection to /home
+  }
+  
+  return { goHome }
 }
 ```
 

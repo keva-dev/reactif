@@ -2,6 +2,7 @@ import { NODE_TYPE_CONST } from './const'
 import { runtime } from './runtime'
 import { ComponentObject, RouterContextFn } from './types'
 import { extractAttribute } from './utils'
+import { go } from './router'
 
 let routerContextFn: RouterContextFn = null
 let context: object = null
@@ -51,6 +52,16 @@ export function compileDirectives(node: HTMLElement) {
     const methodPath = node.getAttribute(onDirective)
     node.addEventListener(directive, extractAttribute(context, methodPath))
     node.removeAttribute(onDirective)
+  }
+  
+  if (node.getAttribute('to')) {
+    const path = node.getAttribute('to')
+    node.addEventListener('click', (e) => {
+      e.preventDefault()
+      go(path)
+    })
+    node.removeAttribute('to')
+    node.setAttribute('href', path)
   }
   
   if (node.getAttribute('html')) {

@@ -2,6 +2,7 @@ import { stringToDOM, compile } from './compiler'
 import { createReactiveState } from './createState'
 import { globalState } from './globalState'
 import { patch } from './patch'
+import { go } from './router'
 import { ComponentObject, Data, HandlerFunc, MemoizedHandlerFunc, RouterContextFn } from './types'
 
 type ComponentInstance = {
@@ -69,7 +70,8 @@ function useRuntime() {
     const $router = {
       get params() {
         return routerCtx.params() || null
-      }
+      },
+      go
     }
     const context = {
       $router

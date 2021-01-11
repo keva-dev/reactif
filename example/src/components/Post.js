@@ -6,6 +6,12 @@ import sleep from '../utils/sleep'
 export default defineComponent({
   setup(props, context) {
     const store = useStore()
+    const {
+      seasonEnd,
+      currentWeek,
+      // ...
+    } = store
+
     const { mutations } = store
     const state = reactive({
       data: null,
@@ -17,7 +23,7 @@ export default defineComponent({
 
     async function loadData() {
       mutations.setIsLoading(true)
-      const id = context.$router.params.id
+      const { id } = context.$router.params
       await sleep(500)
       state.data = await getArticle(id)
       mutations.setIsLoading(false)
@@ -33,7 +39,7 @@ export default defineComponent({
   render() {
     return `
       <div show="store.state.isLoading" class="loading-overlay"></div>
-      <a href="#"><button>Back to home</button></a>
+      <a to="/"><button>Back to home</button></a>
       <button @click="loadData" style="float: right;">Reload</button> <span show="state.isLoading">Loading</span>
       <div if="state.data">
         <h2>{{ state.data.title }}</h2>

@@ -21,6 +21,10 @@ export interface Router {
   renderer: (selector: string) => void
 }
 
+export function go(path: string): void {
+  window.location.hash = '#' + path
+}
+
 export function useRouter(routesArray: Route[]): Router {
   let params: Record<string, string> = Object.create(null)
   const routes: Record<string, ComponentObject> = Object.create(null)

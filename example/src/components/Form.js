@@ -41,7 +41,7 @@ export default defineComponent({
   render() {
     return `
       <div if="!isSubmitted" class="form">
-        <a href="#"><button>Back to home</button></a>
+        <a to="/"><button>Back to home</button></a>
         <h2>Demo Form, Count: <span>{{ state.count }}</span></h2>
         <form @submit="submit">
           <label for="firstName">First Name <span v-if="state.form.firstName">is {{ state.form.firstName }}</span></label>
