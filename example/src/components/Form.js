@@ -40,7 +40,7 @@ export default defineComponent({
   },
   render() {
     return `
-      <div class="form" if="!isSubmitted">
+      <div if="!isSubmitted" class="form">
         <a href="#"><button>Back to home</button></a>
         <h2>Demo Form, Count: <span>{{ state.count }}</span></h2>
         <form @submit="submit">
