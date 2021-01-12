@@ -1,8 +1,10 @@
 import { defineComponent, reactive, computed, onMounted, onUnmounted } from 'ractix'
 import './WhacAMole.scss'
+import useDebug from '../hooks/useDebug'
 
 export default defineComponent({
   setup() {
+    useDebug('WhacAMole')
     let interval = null
 
     const initMoles = ['one', 'zero', 'one', 'zero', 'one', 'zero', 'one', 'zero', 'one']
@@ -76,7 +78,7 @@ export default defineComponent({
   },
   render() {
     return `
-      <button to="/">← Back to home</button>
+      <button to="/home">← Back to home</button>
       <div class="container">
         <div class="game-container">
           <h2 if="state.hasWon">YOU WON LEVEL {{ state.level }} in {{ time }}s</h2>

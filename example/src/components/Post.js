@@ -39,7 +39,7 @@ export default defineComponent({
   render() {
     return `
       <div show="store.state.isLoading" class="loading-overlay"></div>
-      <a to="/"><button>Back to home</button></a>
+      <a to="/home"><button>Back to home</button></a>
       <button @click="loadData" style="float: right;">Reload</button> <span show="state.isLoading">Loading</span>
       <div if="state.data">
         <h2>{{ state.data.title }}</h2>

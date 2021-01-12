@@ -1,6 +1,4 @@
-// Attributes that might be changed dynamically
-// Examples: <input value="something"/> <button hide></button>
-const dynamicAttributes = ['checked', 'selected', 'value', 'hide']
+import { DYNAMIC_ATTRIBUTES } from './const'
 
 interface Attribute {
   att: string,
@@ -12,7 +10,7 @@ export function diffAtts(template: HTMLElement, el: HTMLElement): void {
   const elAtts = getAttributes(el)
   
   const remove = elAtts.filter((att: Attribute) => {
-    if (dynamicAttributes.indexOf(att.att) > -1) return false
+    if (DYNAMIC_ATTRIBUTES.indexOf(att.att) > -1) return false
     const getAtt = templateAtts.find((newAtt: Attribute) => {
       return att.att === newAtt.att
     })
@@ -30,8 +28,8 @@ export function diffAtts(template: HTMLElement, el: HTMLElement): void {
   removeAttributes(el, remove)
 }
 
-function getDynamicAttributes(node: HTMLElement, atts: Attribute, isTemplate?: boolean) {
-  dynamicAttributes.forEach((prop) => {
+function getDYNAMIC_ATTRIBUTES(node: HTMLElement, atts: Attribute, isTemplate?: boolean) {
+  DYNAMIC_ATTRIBUTES.forEach((prop) => {
     // @ts-ignore
     if ((!node[prop] && node[prop] !== 0) || (isTemplate && node.tagName.toLowerCase() === 'option' && prop === 'selected')
       || (isTemplate && node.tagName.toLowerCase() === 'select' && prop === 'value')) return
@@ -42,7 +40,7 @@ function getDynamicAttributes(node: HTMLElement, atts: Attribute, isTemplate?: b
 
 function getBaseAttributes(node: HTMLElement, isTemplate?: boolean) {
   return Array.prototype.reduce.call(node.attributes, (arr: any, attribute: any) => {
-    if ((dynamicAttributes.indexOf(attribute?.name) < 0 || (isTemplate && attribute?.name === 'selected'))
+    if ((DYNAMIC_ATTRIBUTES.indexOf(attribute?.name) < 0 || (isTemplate && attribute?.name === 'selected'))
       && (attribute?.name.length > 7 ? attribute?.name.slice(0, 7) !== 'default' : true))
     {
       arr.push(getAttribute(attribute?.name, attribute?.value))
@@ -61,7 +59,7 @@ function getAttribute(name: string, value: string): Attribute {
 function getAttributes(node: HTMLElement, isTemplate?: boolean) {
   if (node.nodeType !== 1) return []
   const atts = getBaseAttributes(node, isTemplate)
-  getDynamicAttributes(node, atts, isTemplate)
+  getDYNAMIC_ATTRIBUTES(node, atts, isTemplate)
   return atts
 }
 

@@ -6,8 +6,18 @@ export default defineComponent({
       count: 0,
       form: {
         firstName: '',
-        lastName: ''
-      }
+        lastName: '',
+        country: 'SG'
+      },
+      countries: [
+        { name: 'Vietnam', code: 'VN' },
+        { name: 'Singapore', code: 'SG' }
+      ]
+    })
+
+    const country = computed(() => {
+      const found = state.countries.find(e => e.code === state.form.country)
+      return found ? found.name : null
     })
 
     const isSubmitted = ref(false)
@@ -33,6 +43,7 @@ export default defineComponent({
 
     return {
       state,
+      country,
       isSubmitted,
       isValidated,
       submit
@@ -41,15 +52,20 @@ export default defineComponent({
   render() {
     return `
       <div if="!isSubmitted" class="form">
-        <a to="/"><button>Back to home</button></a>
+        <a to="/home"><button>Back to home</button></a>
         <h2>Demo Form, Count: <span>{{ state.count }}</span></h2>
         <form @submit="submit">
-          <label for="firstName">First Name <span v-if="state.form.firstName">is {{ state.form.firstName }}</span></label>
-          <input type="text" model="state.form.firstName" placeholder="Your name..">
+          <p>First Name <span show="state.form.firstName">is {{ state.form.firstName }}</span></p>
+          <input type="text" model="state.form.firstName" placeholder="Your name.."/>
       
-          <label for="lastName">Last Name <span v-if="state.form.lastName">is {{ state.form.lastName }}</span></label>
-          <input type="text" model="state.form.lastName" placeholder="Your last name..">
-                    
+          <p>Last Name <span show="state.form.lastName">is {{ state.form.lastName }}</span></p>
+          <input type="text" model="state.form.lastName" placeholder="Your last name.."/>
+          
+          <p>Chosen country: {{ country }}</p>
+          <select model="state.form.country">
+            <option each="item in state.countries" value="{{ item.code }}">{{ item.name }}</option>
+          </select>
+          
           <input show="isValidated" type="submit" value="Submit">
         </form>
       </div>

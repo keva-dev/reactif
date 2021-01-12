@@ -12,12 +12,12 @@ import Computed from './components/Computed'
 import CopyRight from './components/Copyright'
 
 const routes = [
-  { path: '/', component: Index },
+  { path: '/home', component: Index },
   { path: '/posts/:id', component: Post },
   { path: '/form', component: Form },
   { path: '/todo', component: TodoList },
   { path: '/nextTick', component: NextTickDemo },
-  { path: '/whac-a-mole', component: WhacAMole },
+  { path: '/', component: WhacAMole },
   { path: '/list', component: List },
   { path: '/computed', component: Computed },
   { path: '/nested', component: Nested }

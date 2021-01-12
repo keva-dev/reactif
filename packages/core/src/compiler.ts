@@ -3,6 +3,7 @@ import { runtime } from './runtime'
 import { ComponentObject, RouterContextFn } from './types'
 import { extractAttribute } from './utils'
 import { go } from './router'
+import { DYNAMIC_ATTRIBUTES } from './const'
 
 let routerContextFn: RouterContextFn = null
 let context: object = null
@@ -36,10 +37,11 @@ export function compileDirectives(node: HTMLElement) {
     node.nodeValue = node.nodeValue
       .replace(new RegExp(`{{ (.+?) }}`, 'g'), (matched: string, index: number, original: string) => {
         const matchedStr = matched.substring(3).slice(0, -3)
-        const statePath = matchedStr.split('.').join('.')
-        const result = extractAttribute(context, statePath)
-        if (result?.value !== undefined) { return result.value }
-        return result as unknown as string
+        const statePathOrig = matchedStr.split('.').join('.')
+        const { statePath, isPositive } = extractBooleanState(statePathOrig)
+        let result = extractAttribute(context, statePath)
+        if (result?.value !== undefined) { result = result.value }
+        return isPositive ? result : !result as unknown as string
       })
     return
   }
@@ -60,74 +62,6 @@ export function compileDirectives(node: HTMLElement) {
     })
     node.replaceWith(fragment)
   }
-
-  const onDirective = node.getAttributeNames()?.find(e => e.startsWith('@'))
-  if (onDirective) {
-    const directive = onDirective.substring(1)
-    const methodPath = node.getAttribute(onDirective)
-    node.addEventListener(directive, extractAttribute(context, methodPath))
-    node.removeAttribute(onDirective)
-  }
-  
-  if (node.getAttribute('to')) {
-    const path = node.getAttribute('to')
-    node.addEventListener('click', (e) => {
-      e.preventDefault()
-      go(path)
-    })
-    node.removeAttribute('to')
-    node.setAttribute('href', path)
-  }
-  
-  if (node.getAttribute('html')) {
-    const statePath = node.getAttribute('html')
-    node.innerHTML = extractAttribute(context, statePath)
-    node.removeAttribute('html')
-    return
-  }
-  
-  if (node.getAttribute('if')) {
-    const { negativeCount, statePath } = countNegative(node, 'if')
-    node.removeAttribute('if')
-    let state = extractAttribute(context, statePath)
-    if (state?.value !== undefined) { state = state.value }
-    if (negativeCount % 2 === 0 ? !state : state) {
-      // Child component with if
-      if (childComponents[node.tagName.toLowerCase()]) {
-        const ChildComponent = childComponents[node.tagName.toLowerCase()]
-        runtime.forceUnmountComponent(ChildComponent)
-      }
-      node.remove()
-      return
-    } else {
-      // Process else
-      if (node.nextElementSibling?.getAttribute('else') !== null) {
-        node.nextElementSibling?.remove()
-      }
-    }
-  } else if (node.getAttribute('show')) {
-    const { negativeCount, statePath } = countNegative(node, 'show')
-    node.removeAttribute('show')
-    let state = extractAttribute(context, statePath)
-    if (state?.value !== undefined) { state = state.value }
-    if (negativeCount % 2 === 0 ? !state : state) {
-      node.style.display = 'none'
-    } else {
-      // Process else
-      if (node.nextElementSibling?.getAttribute('else') !== null) {
-        // @ts-ignore
-        node.nextElementSibling?.style.display = 'none'
-      }
-    }
-  }
-
-  if (node.getAttribute('model')) {
-    const statePath = node.getAttribute('model')
-    // @ts-ignore
-    node.addEventListener('input', e => extractAttribute(context, statePath, e.target.value), false)
-    node.setAttribute('value', extractAttribute(context, statePath))
-    node.removeAttribute('model')
-  }
   
   if (childComponents[node.tagName.toLowerCase()]) {
     if (node.childNodes.length <= 1) {
@@ -146,18 +80,120 @@ export function compileDirectives(node: HTMLElement) {
       runtime.addComponent(node, ChildComponent, routerContextFn, props)
     }
   }
+  
+  if (node.getAttribute('to')) {
+    const path = node.getAttribute('to')
+    node.addEventListener('click', (e) => {
+      e.preventDefault()
+      go(path)
+    })
+    node.removeAttribute('to')
+    node.setAttribute('href', path)
+  }
+
+  const onDirectives = node.getAttributeNames()?.filter(e => e.startsWith('@'))
+  if (onDirectives.length) {
+    onDirectives.forEach(o => {
+      const directive = o.substring(1)
+      const methodPath = node.getAttribute(o)
+      node.addEventListener(directive, extractAttribute(context, methodPath))
+      node.removeAttribute(o)
+    })
+  }
+  
+  const extractDirectives = node.getAttributeNames()?.filter(e => e.startsWith(':'))
+  if (extractDirectives.length) {
+    extractDirectives.forEach(d => {
+      const attributeName = d.substring(1)
+      const statePathOrig = node.getAttribute(d)
+      const { statePath, isPositive } = extractBooleanState(statePathOrig)
+      let state = extractAttribute(context, statePath)
+      if (state?.value !== undefined) { state = state.value }
+      if (DYNAMIC_ATTRIBUTES.includes(attributeName)) {
+        if (isPositive ? state : !state) {
+          node.setAttribute(attributeName, '')
+        } else {
+          node.removeAttribute(attributeName)
+        }
+      } else {
+        node.setAttribute(attributeName, isPositive ? state : !state)
+      }
+      node.removeAttribute(d)
+    })
+  }
+  
+  if (node.getAttribute('html')) {
+    const statePath = node.getAttribute('html')
+    node.innerHTML = extractAttribute(context, statePath)
+    node.removeAttribute('html')
+    return
+  }
+  
+  if (node.getAttribute('if')) {
+    const statePathOrig = node.getAttribute('if')
+    const { statePath, isPositive } = extractBooleanState(statePathOrig)
+    node.removeAttribute('if')
+    let state = extractAttribute(context, statePath)
+    if (state?.value !== undefined) { state = state.value }
+    if (isPositive ? !state : state) {
+      // Child component with if
+      if (childComponents[node.tagName.toLowerCase()]) {
+        const ChildComponent = childComponents[node.tagName.toLowerCase()]
+        runtime.forceUnmountComponent(ChildComponent)
+      }
+      node.remove()
+      return
+    } else {
+      // Process else
+      if (node.nextElementSibling?.getAttribute('else') !== null) {
+        node.nextElementSibling?.remove()
+      }
+    }
+  } else if (node.getAttribute('show')) {
+    const statePathOrig = node.getAttribute('show')
+    const { statePath, isPositive } = extractBooleanState(statePathOrig)
+    node.removeAttribute('show')
+    let state = extractAttribute(context, statePath)
+    if (state?.value !== undefined) { state = state.value }
+    if (isPositive ? !state : state) {
+      node.style.display = 'none'
+    } else {
+      // Process else
+      if (node.nextElementSibling?.getAttribute('else') !== null) {
+        // @ts-ignore
+        node.nextElementSibling?.style.display = 'none'
+      }
+    }
+  }
+
+  if (node.getAttribute('model')) {
+    const statePath = node.getAttribute('model')
+    if (node.nodeName === 'INPUT') {
+      node.addEventListener('input', e => {
+        // @ts-ignore
+        extractAttribute(context, statePath, e.target.value)
+      }, false)
+      node.setAttribute('value', extractAttribute(context, statePath))
+    }
+    if (node.nodeName === 'SELECT') {
+      node.addEventListener('change', e => {
+        // @ts-ignore
+        extractAttribute(context, statePath, e.target.value)
+      }, false)
+    }
+    node.removeAttribute('model')
+  }
 }
 
-function countNegative(node: HTMLElement, attStr: string) {
-  let statePath = node.getAttribute(attStr)
+function extractBooleanState(statePath: string) {
   let negativeCount = 0
   while (statePath.startsWith('!')) {
     negativeCount++
     statePath = statePath.substring(1)
   }
   return {
-    negativeCount,
-    statePath
+    statePath,
+    isPositive: negativeCount % 2 === 0
   }
 }
 
