@@ -47,3 +47,81 @@ export function extractAttribute(obj: object | string | number, is: string | str
     return null
   }
 }
+
+export interface FuncArg {
+  type: FuncArgType
+  value: unknown
+}
+export type FuncArgType = 'value' | 'variable'
+export function parseFunctionStr(str: string): { fnName: string, argsArr: FuncArg[] } {
+  str = str.trim()
+  let fnName = null
+  let argsStart = false
+  const argsArr = []
+  let s = ''
+  for (let i = 0; i < str.length; i++) {
+    const peek = str[i + 1]
+    
+    if (str[i] === '(') {
+      fnName = s
+      s = ''
+      argsStart = true
+      continue
+    }
+    
+    if (argsStart) {
+      if (str[i] === ',') {
+        argsArr.push(resolveType(s))
+        s = ''
+      } else if (str[i] === ')') {
+        argsArr.push(resolveType(s))
+        s = ''
+        break
+      } else {
+        s += str[i]
+      }
+      continue
+    }
+    
+    s += str[i]
+  }
+  
+  if (!fnName) fnName = s
+  
+  return {
+    fnName,
+    argsArr
+  }
+}
+
+function resolveType(str: string): FuncArg {
+  str = str.trim()
+  if (str.startsWith(`'`) && str.endsWith(`'`)) {
+    return {
+      type: 'value',
+      value: str.substring(1).slice(0, -1)
+    }
+  }
+  // @ts-ignore
+  if (!isNaN(str)) {
+    return {
+      type: 'value',
+      value: Number(str)
+    }
+  }
+  const specialType = getSpecialValue(str)
+  return {
+    type: specialType === 'variable' ? 'variable' : 'value',
+    value: str
+  }
+}
+
+function getSpecialValue(str: string): unknown {
+  switch(str) {
+    case 'true': return true
+    case 'false': return false
+    case 'undefined': return undefined
+    case 'null': return null
+    default: return 'variable'
+  }
+}

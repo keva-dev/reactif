@@ -39,8 +39,8 @@ export default defineComponent({
       document.title = 'Ractix Game Demo: Whac a Mole!'
     })
 
-    function circleClick(e) {
-      state.moleGrid[parseInt(e.target.getAttribute('index'))] = 'zero'
+    function circleClick(e, i) {
+      state.moleGrid[parseInt(i)] = 'zero'
     }
 
     function startGameInterval() {
@@ -73,7 +73,7 @@ export default defineComponent({
       time,
       nextLevel,
       circleClick,
-      next: startGameInterval
+      next: startGameInterval,
     }
   },
   render() {
@@ -81,13 +81,14 @@ export default defineComponent({
       <button to="/home">← Back to home</button>
       <div class="container">
         <div class="game-container">
+          <button @click="test(1)">Test</button>
           <h2 if="state.hasWon">YOU WON LEVEL {{ state.level }} in {{ time }}s</h2>
           <h2 else>Whac a Mole (Level {{ state.level }})</h2>
           <p show="!state.hasWon" class="guide">To win the game, clear all the Brown</p>
           <div show="!state.hasWon" class="game-box">
             <div each="item in state.moleGrid" id="circle"
               index="{{ index }}" class="{{ item }}"
-              @click="circleClick">    
+              @click="circleClick({{ index }})">    
             </div>
           </div>
           <p if="state.hasWon" class="won-text"><button @click="next">Challenge with level {{ nextLevel }}</button></p>

@@ -1,7 +1,7 @@
 import { NODE_TYPE_CONST } from './const'
 import { runtime } from './runtime'
 import { ComponentObject, RouterContextFn } from './types'
-import { extractAttribute } from './utils'
+import { extractAttribute, parseFunctionStr } from './utils'
 import { go } from './router'
 import { DYNAMIC_ATTRIBUTES } from './const'
 
@@ -92,35 +92,45 @@ export function compileDirectives(node: HTMLElement) {
   }
 
   const onDirectives = node.getAttributeNames()?.filter(e => e.startsWith('@'))
-  if (onDirectives.length) {
-    onDirectives.forEach(o => {
-      const directive = o.substring(1)
-      const methodPath = node.getAttribute(o)
-      node.addEventListener(directive, extractAttribute(context, methodPath))
-      node.removeAttribute(o)
+  onDirectives.forEach(o => {
+    const directive = o.substring(1)
+    const methodStr = node.getAttribute(o)
+    
+    const { fnName, argsArr } = parseFunctionStr(methodStr)
+    const args = argsArr.map(a => {
+      if (a.type === 'value') {
+        return a.value
+      }
+      return extractAttribute(context, <string>a.value)
     })
-  }
+    args.unshift(null)
+  
+    const method = extractAttribute(context, fnName)
+    node.addEventListener(directive, e => {
+      args[0] = e
+      method.apply(null, args)
+    })
+    node.removeAttribute(o)
+  })
   
   const extractDirectives = node.getAttributeNames()?.filter(e => e.startsWith(':'))
-  if (extractDirectives.length) {
-    extractDirectives.forEach(d => {
-      const attributeName = d.substring(1)
-      const statePathOrig = node.getAttribute(d)
-      const { statePath, isPositive } = extractBooleanState(statePathOrig)
-      let state = extractAttribute(context, statePath)
-      if (state?.value !== undefined) { state = state.value }
-      if (DYNAMIC_ATTRIBUTES.includes(attributeName)) {
-        if (isPositive ? state : !state) {
-          node.setAttribute(attributeName, '')
-        } else {
-          node.removeAttribute(attributeName)
-        }
+  extractDirectives.forEach(d => {
+    const attributeName = d.substring(1)
+    const statePathOrig = node.getAttribute(d)
+    const { statePath, isPositive } = extractBooleanState(statePathOrig)
+    let state = extractAttribute(context, statePath)
+    if (state?.value !== undefined) { state = state.value }
+    if (DYNAMIC_ATTRIBUTES.includes(attributeName)) {
+      if (isPositive ? state : !state) {
+        node.setAttribute(attributeName, '')
       } else {
-        node.setAttribute(attributeName, isPositive ? state : !state)
+        node.removeAttribute(attributeName)
       }
-      node.removeAttribute(d)
-    })
-  }
+    } else {
+      node.setAttribute(attributeName, isPositive ? state : !state)
+    }
+    node.removeAttribute(d)
+  })
   
   if (node.getAttribute('html')) {
     const statePath = node.getAttribute('html')
@@ -218,12 +228,13 @@ function generateForEachNode(iterateNode: Node | HTMLElement, loopFactor: string
   if (iterateNode.nodeType === NODE_TYPE_CONST.ELEMENT_NODE) {
     if ('attributes' in iterateNode) {
       Array.from(iterateNode.attributes).forEach(attr => {
-        replaceNodeValueByLoopFactor(attr.nodeValue, loopFactor, item)
-        replaceNodeValueByLoopFactor(attr.nodeValue, 'index', index)
-      })
-      Array.from(iterateNode.attributes).forEach(attr => {
         attr.nodeValue = replaceNodeValueByLoopFactor(attr.nodeValue, loopFactor, item)
         attr.nodeValue = replaceNodeValueByLoopFactor(attr.nodeValue, 'index', index)
+        // const onDirectives = iterateNode.getAttributeNames()?.filter(e => e.startsWith('@'))
+        // onDirectives.forEach((n: ChildNode) => {
+        //   n.nodeValue = replaceNodeValueByLoopFactor(attr.nodeValue, loopFactor, item)
+        //   n.nodeValue = replaceNodeValueByLoopFactor(attr.nodeValue, 'index', index)
+        // })
       })
     }
   }
