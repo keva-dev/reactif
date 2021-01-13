@@ -60,8 +60,6 @@ export function parseFunctionStr(str: string): { fnName: string, argsArr: FuncAr
   const argsArr = []
   let s = ''
   for (let i = 0; i < str.length; i++) {
-    const peek = str[i + 1]
-    
     if (str[i] === '(') {
       fnName = s
       s = ''
