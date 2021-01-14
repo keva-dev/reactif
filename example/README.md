@@ -10,9 +10,3 @@ Visit: [https://ractix-demo.netlify.app](https://ractix-demo.netlify.app)
 ## Native DOM diffing
 
 [https://s8.gifyu.com/images/diffing.gif](https://s8.gifyu.com/images/diffing.gif)
-
-## Screenshot
-
-![](./src/screenshots/screenshot1.png)
-
-![](./src/screenshots/screenshot2.png)

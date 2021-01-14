@@ -56,18 +56,16 @@ export type FuncArgType = 'value' | 'variable'
 export function parseFunctionStr(str: string): { fnName: string, argsArr: FuncArg[] } {
   str = str.trim()
   let fnName = null
-  let argsStart = false
   const argsArr = []
   let s = ''
   for (let i = 0; i < str.length; i++) {
     if (str[i] === '(') {
       fnName = s
       s = ''
-      argsStart = true
       continue
     }
     
-    if (argsStart) {
+    if (fnName) {
       if (str[i] === ',') {
         argsArr.push(resolveType(s))
         s = ''
@@ -100,8 +98,8 @@ function resolveType(str: string): FuncArg {
       value: str.substring(1).slice(0, -1)
     }
   }
-  // @ts-ignore
-  if (!isNaN(str)) {
+  
+  if (!isNaN(Number(str))) {
     return {
       type: 'value',
       value: Number(str)
