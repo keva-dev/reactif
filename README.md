@@ -1,6 +1,6 @@
-# Reactive UI library
+# Ractix: Reactive UI library
 
-![](https://i.imgur.com/MS3IKww.jpg)
+![](https://i.imgur.com/rqqPOdu.png)
 
 ![Travis (.org)](https://img.shields.io/travis/tuhuynh27/ractix?style=flat-square)
 ![Lines of code](https://img.shields.io/tokei/lines/github/tuhuynh27/ractix?style=flat-square)
@@ -11,12 +11,16 @@
 ## Features
 
 ~1000 SLOC, tiny in size, just ~5 KB minified and gzipped runtime size
-- Zero dependencies, no JSX, no need to transpile, no virtual DOM overhead
-- Two-way data binding which is similar to Vue.js's [Reactive System](https://v3.vuejs.org/guide/reactivity.html)
+- Zero dependencies, no transpiler necessary, no virtual DOM
+- Two-way data binding which is similar to Vue.js [Reactive System](https://v3.vuejs.org/guide/reactivity.html)
 - Uses an efficient native DOM diffing algorithm to [update only the things that have changed](https://s8.gifyu.com/images/diffing.gif)
 - Has an "out-of-the-box" Vuex-like data store and Router
 - Embeddable and perfectly suitable for small-and-tiny-sized single page applications
 - Functional style (inspired by Vue 3 Composition API) with TypeScript ready
+
+Ractix offers the right balance between the runtime size and development utilities for solving small but daily 
+puzzles. Its API is heavily inspired by Vue.js but it contains just the bare minimum to build a modern frontend 
+project. No reinventing the wheel, but rather taking the good parts of what’s there and making the simplest tool possible.
 
 ## Table of Contents
 
