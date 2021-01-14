@@ -10,17 +10,17 @@
 
 ## Features
 
-~1000 SLOC, tiny in size, just ~5 KB minified and gzipped runtime size
+~1000 SLOC, tiny in size, just 5 KB minified and gzipped runtime size
 - Zero dependencies, no transpiler necessary, no virtual DOM
 - Two-way data binding which is similar to Vue.js [Reactive System](https://v3.vuejs.org/guide/reactivity.html)
 - Uses an efficient native DOM diffing algorithm to [update only the things that have changed](https://s8.gifyu.com/images/diffing.gif)
 - Has an "out-of-the-box" Vuex-like data store and Router
 - Embeddable and perfectly suitable for small-and-tiny-sized single page applications
-- Functional style (inspired by Vue 3 Composition API) with TypeScript ready
+- Functional style (inspired by [Vue 3 Composition API](https://composition-api.vuejs.org/)) with TypeScript ready
 
 Ractix offers the right balance between the runtime size and development utilities for solving small but daily 
-puzzles. Its API is heavily inspired by Vue.js but it contains just the bare minimum to build a modern frontend 
-project. No reinventing the wheel, but rather taking the good parts of what’s there and making the simplest tool possible.
+puzzles. Its API is inspired by Vue.js but it contains just the bare minimum to build a modern frontend 
+project. Not really reinventing the wheel, but rather taking the good parts of what’s there and making the simplest tool possible.
 
 ## Table of Contents
 
@@ -43,8 +43,8 @@ project. No reinventing the wheel, but rather taking the good parts of what’s 
 
 - UNPKG CDN:
 
-Ractix doesn't require any special toolchain, compiler, plugins etc. It's a tiny (~5k) package that gives you 
-everything you need to start building directly in the browser. Just take your idea and turn it into reality in no time!
+Ractix is packaged to be used directly in the browser, and doesn't require any build or tools. It's a tiny (~5k) 
+package that gives you everything you need to start building directly in the browser. Just take your idea and turn it into reality in no time!
 
 Just import the CDN JS file to your `index.html`:
 

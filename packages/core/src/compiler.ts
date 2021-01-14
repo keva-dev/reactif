@@ -48,6 +48,43 @@ export function compileDirectives(node: HTMLElement) {
   
   if (node.nodeType !== NODE_TYPE_CONST.ELEMENT_NODE) return
   
+  if (node.getAttribute('if')) {
+    const statePathOrig = node.getAttribute('if')
+    const { statePath, isPositive } = extractBooleanState(statePathOrig)
+    node.removeAttribute('if')
+    let state = extractAttribute(context, statePath)
+    if (state?.value !== undefined) { state = state.value }
+    if (isPositive ? !state : state) {
+      // Child component with if
+      if (childComponents[node.tagName.toLowerCase()]) {
+        const ChildComponent = childComponents[node.tagName.toLowerCase()]
+        runtime.forceUnmountComponent(ChildComponent)
+      }
+      node.remove()
+      return
+    } else {
+      // Process else
+      if (node.nextElementSibling?.getAttribute('else') !== null) {
+        node.nextElementSibling?.remove()
+      }
+    }
+  } else if (node.getAttribute('show')) {
+    const statePathOrig = node.getAttribute('show')
+    const { statePath, isPositive } = extractBooleanState(statePathOrig)
+    node.removeAttribute('show')
+    let state = extractAttribute(context, statePath)
+    if (state?.value !== undefined) { state = state.value }
+    if (isPositive ? !state : state) {
+      node.style.display = 'none'
+    } else {
+      // Process else
+      if (node.nextElementSibling?.getAttribute('else') !== null) {
+        // @ts-ignore
+        node.nextElementSibling?.style.display = 'none'
+      }
+    }
+  }
+  
   if (node.getAttribute('each')) {
     let statePath = node.getAttribute('each')
     const loopFactors = statePath.split(' in ')
@@ -64,21 +101,24 @@ export function compileDirectives(node: HTMLElement) {
   }
   
   if (childComponents[node.tagName.toLowerCase()]) {
-    if (node.childNodes.length <= 1) {
-      const ChildComponent = childComponents[node.tagName.toLowerCase()]
-      
-      // Parse props
-      const propsAtts = node.getAttributeNames()
-      const props: Record<string, unknown> = Object.create(null)
-      propsAtts.forEach(e => {
-        const propName = e.startsWith(':') ? e.substring(1) : e
-        const statePath = node.getAttribute(e)
-        props[propName] = e.startsWith(':') ? extractAttribute(context, statePath) : statePath
-        node.removeAttribute(e)
-      })
-      
-      runtime.addComponent(node, ChildComponent, routerContextFn, props)
+    // Currently not support <slot></slot>
+    if (node.childNodes.length > 1) {
+      node.childNodes.forEach(c => c.remove())
     }
+  
+    const ChildComponent = childComponents[node.tagName.toLowerCase()]
+  
+    // Parse props
+    const propsAtts = node.getAttributeNames()
+    const props: Record<string, unknown> = Object.create(null)
+    propsAtts.forEach(e => {
+      const propName = e.startsWith(':') ? e.substring(1) : e
+      const statePath = node.getAttribute(e)
+      props[propName] = e.startsWith(':') ? extractAttribute(context, statePath) : statePath
+      node.removeAttribute(e)
+    })
+    runtime.addComponent(node, ChildComponent, routerContextFn, props)
+    return
   }
   
   if (node.getAttribute('to')) {
@@ -138,43 +178,6 @@ export function compileDirectives(node: HTMLElement) {
     node.removeAttribute('html')
     return
   }
-  
-  if (node.getAttribute('if')) {
-    const statePathOrig = node.getAttribute('if')
-    const { statePath, isPositive } = extractBooleanState(statePathOrig)
-    node.removeAttribute('if')
-    let state = extractAttribute(context, statePath)
-    if (state?.value !== undefined) { state = state.value }
-    if (isPositive ? !state : state) {
-      // Child component with if
-      if (childComponents[node.tagName.toLowerCase()]) {
-        const ChildComponent = childComponents[node.tagName.toLowerCase()]
-        runtime.forceUnmountComponent(ChildComponent)
-      }
-      node.remove()
-      return
-    } else {
-      // Process else
-      if (node.nextElementSibling?.getAttribute('else') !== null) {
-        node.nextElementSibling?.remove()
-      }
-    }
-  } else if (node.getAttribute('show')) {
-    const statePathOrig = node.getAttribute('show')
-    const { statePath, isPositive } = extractBooleanState(statePathOrig)
-    node.removeAttribute('show')
-    let state = extractAttribute(context, statePath)
-    if (state?.value !== undefined) { state = state.value }
-    if (isPositive ? !state : state) {
-      node.style.display = 'none'
-    } else {
-      // Process else
-      if (node.nextElementSibling?.getAttribute('else') !== null) {
-        // @ts-ignore
-        node.nextElementSibling?.style.display = 'none'
-      }
-    }
-  }
 
   if (node.getAttribute('model')) {
     const statePath = node.getAttribute('model')
@@ -230,11 +233,6 @@ function generateForEachNode(iterateNode: Node | HTMLElement, loopFactor: string
       Array.from(iterateNode.attributes).forEach(attr => {
         attr.nodeValue = replaceNodeValueByLoopFactor(attr.nodeValue, loopFactor, item)
         attr.nodeValue = replaceNodeValueByLoopFactor(attr.nodeValue, 'index', index)
-        // const onDirectives = iterateNode.getAttributeNames()?.filter(e => e.startsWith('@'))
-        // onDirectives.forEach((n: ChildNode) => {
-        //   n.nodeValue = replaceNodeValueByLoopFactor(attr.nodeValue, loopFactor, item)
-        //   n.nodeValue = replaceNodeValueByLoopFactor(attr.nodeValue, 'index', index)
-        // })
       })
     }
   }

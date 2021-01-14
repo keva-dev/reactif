@@ -46,10 +46,11 @@ function useRuntime() {
   }
 
   // Mount component to a selector
-  function addComponent(selector: string | HTMLElement = 'body', component: ComponentObject, routerContextFn?: RouterContextFn, props?: Data) {
+  function addComponent(selector: string | HTMLElement = 'body', component: ComponentObject,
+                        routerContextFn?: RouterContextFn, props?: Data) {
     // If the selector is not valid, or the component is already mounted, then skip
     if (components.find(e => e.component === component)) {
-      console.log('Duplicated')
+      console.error('Render duplicated')
       return
     }
     
