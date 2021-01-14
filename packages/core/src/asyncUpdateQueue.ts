@@ -5,9 +5,6 @@ export function useAsyncUpdateQueue() {
   let isQueueSleep: boolean = true
   
   function add(fn: HandlerFunc) {
-    if (queue.has(fn)) {
-      return
-    }
     queue.add(fn)
     if (isQueueSleep) {
       isQueueSleep = false
@@ -16,13 +13,11 @@ export function useAsyncUpdateQueue() {
   }
   
   function processRenderPhase() {
-    if (queue.size) {
-      queue.forEach(fn => {
-        fn()
-      })
-      queue.clear()
-      isQueueSleep = true
-    }
+    queue.forEach(fn => {
+      fn()
+    })
+    queue.clear()
+    isQueueSleep = true
   }
   
   function nextTick(callback?: () => void): Promise<void> | void {

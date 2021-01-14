@@ -247,6 +247,7 @@ function generateForEachNode(iterateNode: Node | HTMLElement, loopFactor: string
     }
   }
   
+  // Recursive
   if (iterateNode.childNodes.length) {
     iterateNode.childNodes.forEach(child => {
       generateForEachNode(child, loopFactor, item, index)
