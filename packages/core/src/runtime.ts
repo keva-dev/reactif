@@ -49,9 +49,10 @@ function useRuntime() {
   function addComponent(selector: string | HTMLElement = 'body', component: ComponentObject,
     routerContextFn?: RouterContextFn, props?: Data) {
     // If the selector is not valid, or the component is already mounted, then skip
-    if (components.find(e => e.component === component)) {
+    // TODO: Need to fix child component
+    if (pickComponent(component)) {
       console.error('Render duplicated')
-      return
+      forceUnmountComponent(component)
     }
     
     const elem: HTMLElement = typeof selector === 'string' ? <HTMLElement>document.querySelector(selector) : selector
