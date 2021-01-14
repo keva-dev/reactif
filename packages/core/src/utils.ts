@@ -2,19 +2,18 @@
 export function cleanPath(path: string) {
   // remove leading/trailing slashes + hash symbol
   // e.g: '#////posts/:id///' -> posts/:id
-  return path.replace(/^[\#]*[\/]*(.*)/, '$1').replace(/\/+$/, '');
+  return path.replace(/^[\#]*[\/]*(.*)/, '$1').replace(/\/+$/, '')
 }
 
 export function getParam(paramName: string, url: string) {
-  const href = url || window.location.href;
-  const name = paramName.replace(/[[]]/g, '\\$&');
-  const regex = new RegExp(`[?&]${name}(=([^&#]*)|&|#|$)`);
-  const results = regex.exec(href);
-  if (!results) return null;
+  const href = url || window.location.href
+  const name = paramName.replace(/[[]]/g, '\\$&')
+  const regex = new RegExp(`[?&]${name}(=([^&#]*)|&|#|$)`)
+  const results = regex.exec(href)
+  if (!results) return null
   if (!results[2]) return ''
-  return decodeURIComponent(results[2].replace(/\+/g, ' '));
+  return decodeURIComponent(results[2].replace(/\+/g, ' '))
 }
-
 
 // -------- COMMON FUNCTIONS ----------
 export function convertToArray(arr: any): any {
@@ -26,22 +25,19 @@ export function isObject(obj: any) {
 }
 
 export function includes(arr: any, id: string | number) {
-  return arr.indexOf(id) !== -1;
+  return arr.indexOf(id) !== -1
 }
 
 export function extractAttribute(obj: object | string | number, is: string | string[], value?: any): any {
   try {
     if (typeof is === 'string')
       return extractAttribute(obj, is.split('.'), value)
-    else if (is.length === 1 && value !== undefined)
-    { // @ts-ignore
+    else if (is.length === 1 && value !== undefined) { // @ts-ignore
       return obj[is[0]] = value
-    }
-    else if (is.length === 0)
+    } else if (is.length === 0)
       return obj
-    else
-    { // @ts-ignore
-      return extractAttribute(obj[is[0]], is.slice(1), value);
+    else { // @ts-ignore
+      return extractAttribute(obj[is[0]], is.slice(1), value)
     }
   } catch (e) {
     return null
@@ -52,7 +48,9 @@ export interface FuncArg {
   type: FuncArgType
   value: unknown
 }
+
 export type FuncArgType = 'value' | 'variable'
+
 export function parseFunctionStr(str: string): { fnName: string, argsArr: FuncArg[] } {
   str = str.trim()
   let fnName = null
@@ -113,11 +111,16 @@ function resolveType(str: string): FuncArg {
 }
 
 function getSpecialValue(str: string): unknown {
-  switch(str) {
-    case 'true': return true
-    case 'false': return false
-    case 'undefined': return undefined
-    case 'null': return null
-    default: return 'variable'
+  switch (str) {
+    case 'true':
+      return true
+    case 'false':
+      return false
+    case 'undefined':
+      return undefined
+    case 'null':
+      return null
+    default:
+      return 'variable'
   }
 }

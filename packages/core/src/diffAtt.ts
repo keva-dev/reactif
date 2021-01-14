@@ -41,8 +41,7 @@ function getDYNAMIC_ATTRIBUTES(node: HTMLElement, atts: Attribute, isTemplate?: 
 function getBaseAttributes(node: HTMLElement, isTemplate?: boolean) {
   return Array.prototype.reduce.call(node.attributes, (arr: any, attribute: any) => {
     if ((DYNAMIC_ATTRIBUTES.indexOf(attribute?.name) < 0 || (isTemplate && attribute?.name === 'selected'))
-      && (attribute?.name.length > 7 ? attribute?.name.slice(0, 7) !== 'default' : true))
-    {
+      && (attribute?.name.length > 7 ? attribute?.name.slice(0, 7) !== 'default' : true)) {
       arr.push(getAttribute(attribute?.name, attribute?.value))
     }
     return arr
@@ -71,7 +70,7 @@ function addAttributes(el: HTMLElement, atts: Attribute[]) {
     if (attribute.att === 'class') {
       el.className = attribute?.value
     } else if (attribute.att === 'style') {
-      diffStyles(el, attribute?.value);
+      diffStyles(el, attribute?.value)
     } else {
       if (attribute.att in el) {
         try {
@@ -82,11 +81,13 @@ function addAttributes(el: HTMLElement, atts: Attribute[]) {
             // @ts-ignore
             el[attribute.att] = true
           }
-        } catch (e) {}
+        } catch (e) {
+        }
       }
       try {
         el.setAttribute(attribute.att, attribute?.value)
-      } catch (e) {}
+      } catch (e) {
+      }
     }
   })
 }
@@ -94,7 +95,7 @@ function addAttributes(el: HTMLElement, atts: Attribute[]) {
 export function addDefaultAtts(node: HTMLElement): void {
   // Only run on elements
   if (node.nodeType !== 1) return
-
+  
   // Check for default attributes
   // Add/remove as needed
   Array.prototype.forEach.call(node.attributes, (attribute: any) => {
@@ -102,7 +103,7 @@ export function addDefaultAtts(node: HTMLElement): void {
     addAttributes(node, [getAttribute(attribute.name.slice(7).toLowerCase(), attribute.value)])
     removeAttributes(node, [getAttribute(attribute.name, attribute.value)])
   })
-
+  
   // If there are child nodes, recursively check them
   if (node.childNodes) {
     node.childNodes.forEach((childNode: HTMLElement) => {
@@ -123,11 +124,13 @@ function removeAttributes(el: HTMLElement, atts: Attribute[]) {
         try {
           // @ts-ignore
           el[attribute.att] = ''
-        } catch (e) {}
+        } catch (e) {
+        }
       }
       try {
         el.removeAttribute(attribute.att)
-      } catch (e) {}
+      } catch (e) {
+      }
     }
   })
 }
@@ -143,7 +146,7 @@ function diffStyles(el: HTMLElement, styles: string) {
     })
     return findStyle === undefined
   })
-
+  
   // Add and remove styles
   removeStyles(el, remove)
   changeStyles(el, styleMap)

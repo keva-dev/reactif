@@ -1,6 +1,6 @@
-import { HandlerFunc } from './types'
 import { globalState } from './globalState'
 import { runtime } from './runtime'
+import { HandlerFunc } from './types'
 
 export function onUnmounted(fn: HandlerFunc) {
   if (globalState.currentComponent) {

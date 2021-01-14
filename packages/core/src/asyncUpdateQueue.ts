@@ -3,8 +3,8 @@ import { HandlerFunc } from './types'
 export function useAsyncUpdateQueue() {
   const queue: Set<HandlerFunc> = new Set<HandlerFunc>()
   let isQueueSleep: boolean = true
-
-  function add(fn: HandlerFunc){
+  
+  function add(fn: HandlerFunc) {
     if (queue.has(fn)) {
       return
     }
@@ -14,7 +14,7 @@ export function useAsyncUpdateQueue() {
       setTimeout(processRenderPhase, 0)
     }
   }
-
+  
   function processRenderPhase() {
     if (queue.size) {
       queue.forEach(fn => {
@@ -24,7 +24,7 @@ export function useAsyncUpdateQueue() {
       isQueueSleep = true
     }
   }
-
+  
   function nextTick(callback?: () => void): Promise<void> | void {
     if (!callback) {
       return new Promise<void>((resolve) => {
@@ -33,7 +33,7 @@ export function useAsyncUpdateQueue() {
     }
     setTimeout(callback, 0)
   }
-
+  
   return { add, nextTick }
 }
 

@@ -1,9 +1,8 @@
-import { NODE_TYPE_CONST } from './const'
+import { DYNAMIC_ATTRIBUTES, NODE_TYPE_CONST } from './const'
+import { go } from './router'
 import { runtime } from './runtime'
 import { ComponentObject, RouterContextFn } from './types'
 import { extractAttribute, parseFunctionStr } from './utils'
-import { go } from './router'
-import { DYNAMIC_ATTRIBUTES } from './const'
 
 let routerContextFn: RouterContextFn = null
 let context: object = null
@@ -15,7 +14,8 @@ export function stringToDOM(str: string): HTMLElement {
   return doc.body
 }
 
-export function compile(nodes: HTMLElement, _routerContextFn: RouterContextFn, _context: object, _childComponents: Record<string, ComponentObject>): HTMLElement {
+export function compile(nodes: HTMLElement, _routerContextFn: RouterContextFn,
+  _context: object, _childComponents: Record<string, ComponentObject>): HTMLElement {
   routerContextFn = _routerContextFn
   context = _context || Object.create(null)
   childComponents = _childComponents || Object.create(null)
@@ -35,14 +35,17 @@ function nodeTraversal(nodes: NodeListOf<ChildNode>) {
 export function compileDirectives(node: HTMLElement) {
   if (node.nodeType === NODE_TYPE_CONST.TEXT_NODE) {
     node.nodeValue = node.nodeValue
-      .replace(new RegExp(`{{ (.+?) }}`, 'g'), (matched: string, index: number, original: string) => {
-        const matchedStr = matched.substring(3).slice(0, -3)
-        const statePathOrig = matchedStr.split('.').join('.')
-        const { statePath, isPositive } = extractBooleanState(statePathOrig)
-        let result = extractAttribute(context, statePath)
-        if (result?.value !== undefined) { result = result.value }
-        return isPositive ? result : !result as unknown as string
-      })
+     .replace(new RegExp(`{{ (.+?) }}`, 'g'),
+       (matched: string, index: number, original: string) => {
+       const matchedStr = matched.substring(3).slice(0, -3)
+       const statePathOrig = matchedStr.split('.').join('.')
+       const { statePath, isPositive } = extractBooleanState(statePathOrig)
+       let result = extractAttribute(context, statePath)
+       if (result?.value !== undefined) {
+         result = result.value
+       }
+       return isPositive ? result : !result as unknown as string
+     })
     return
   }
   
@@ -53,7 +56,9 @@ export function compileDirectives(node: HTMLElement) {
     const { statePath, isPositive } = extractBooleanState(statePathOrig)
     node.removeAttribute('if')
     let state = extractAttribute(context, statePath)
-    if (state?.value !== undefined) { state = state.value }
+    if (state?.value !== undefined) {
+      state = state.value
+    }
     if (isPositive ? !state : state) {
       // Child component with if
       if (childComponents[node.tagName.toLowerCase()]) {
@@ -73,7 +78,9 @@ export function compileDirectives(node: HTMLElement) {
     const { statePath, isPositive } = extractBooleanState(statePathOrig)
     node.removeAttribute('show')
     let state = extractAttribute(context, statePath)
-    if (state?.value !== undefined) { state = state.value }
+    if (state?.value !== undefined) {
+      state = state.value
+    }
     if (isPositive ? !state : state) {
       node.style.display = 'none'
     } else {
@@ -105,9 +112,9 @@ export function compileDirectives(node: HTMLElement) {
     if (node.childNodes.length > 1) {
       node.childNodes.forEach(c => c.remove())
     }
-  
+    
     const ChildComponent = childComponents[node.tagName.toLowerCase()]
-  
+    
     // Parse props
     const propsAtts = node.getAttributeNames()
     const props: Record<string, unknown> = Object.create(null)
@@ -130,7 +137,7 @@ export function compileDirectives(node: HTMLElement) {
     node.removeAttribute('to')
     node.setAttribute('href', path)
   }
-
+  
   const onDirectives = node.getAttributeNames()?.filter(e => e.startsWith('@'))
   onDirectives.forEach(o => {
     const directive = o.substring(1)
@@ -144,7 +151,7 @@ export function compileDirectives(node: HTMLElement) {
       return extractAttribute(context, <string>a.value)
     })
     args.unshift(null)
-  
+    
     const method = extractAttribute(context, fnName)
     node.addEventListener(directive, e => {
       args[0] = e
@@ -159,7 +166,9 @@ export function compileDirectives(node: HTMLElement) {
     const statePathOrig = node.getAttribute(d)
     const { statePath, isPositive } = extractBooleanState(statePathOrig)
     let state = extractAttribute(context, statePath)
-    if (state?.value !== undefined) { state = state.value }
+    if (state?.value !== undefined) {
+      state = state.value
+    }
     if (DYNAMIC_ATTRIBUTES.includes(attributeName)) {
       if (isPositive ? state : !state) {
         node.setAttribute(attributeName, '')
@@ -178,7 +187,7 @@ export function compileDirectives(node: HTMLElement) {
     node.removeAttribute('html')
     return
   }
-
+  
   if (node.getAttribute('model')) {
     const statePath = node.getAttribute('model')
     if (node.nodeName === 'INPUT') {
@@ -186,7 +195,6 @@ export function compileDirectives(node: HTMLElement) {
         // @ts-ignore
         extractAttribute(context, statePath, e.target.value)
       }, false)
-      node.setAttribute('value', extractAttribute(context, statePath))
     }
     if (node.nodeName === 'SELECT') {
       node.addEventListener('change', e => {
@@ -218,7 +226,9 @@ function replaceNodeValueByLoopFactor(value: string, loopFactor: string, state: 
     }
     const statePath = matchedStr.split('.').slice(1).join('.')
     const result = extractAttribute(state, statePath)
-    if (result?.value !== undefined) { return result.value }
+    if (result?.value !== undefined) {
+      return result.value
+    }
     return result as unknown as string
   })
 }

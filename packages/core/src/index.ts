@@ -1,12 +1,12 @@
-import { defineComponent as _defineComponent } from './defineComponent'
-import { createState, createRef } from './createState'
+import { asyncUpdateQueue as _asyncUpdateQueue } from './asyncUpdateQueue'
+import { computed as _computed } from './computed'
 import { createComponent } from './createComponent'
+import { createRef, createState } from './createState'
+import { defineComponent as _defineComponent } from './defineComponent'
 import { onMounted as _onMounted } from './onMounted'
 import { onUnmounted as _onUnmounted } from './onUnmounted'
-import { useRouter } from './router'
-import { asyncUpdateQueue as _asyncUpdateQueue } from './asyncUpdateQueue'
 import { readonly as _readonly } from './readonly'
-import { computed as _computed } from './computed'
+import { useRouter } from './router'
 import { watchEffect as _watchEffect } from './watchEffect'
 
 export const defineComponent = _defineComponent

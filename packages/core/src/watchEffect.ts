@@ -1,6 +1,6 @@
 import { globalState } from './globalState'
-import { HandlerFunc } from './types'
 import { runtime } from './runtime'
+import { HandlerFunc } from './types'
 
 export function watchEffect(fn: HandlerFunc): HandlerFunc {
   const memoized = {

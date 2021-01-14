@@ -5,6 +5,7 @@ export interface ComponentObject {
 }
 
 export type HandlerFunc = () => void
+
 export interface MemoizedHandlerFunc {
   function: HandlerFunc
 }
@@ -16,4 +17,5 @@ export interface Data {
 export interface RouterContext {
   params: () => Record<string, string>
 }
+
 export type RouterContextFn = () => RouterContext
