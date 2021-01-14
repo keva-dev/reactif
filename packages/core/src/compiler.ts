@@ -87,7 +87,7 @@ export function compileDirectives(node: HTMLElement) {
       // Process else
       if (node.nextElementSibling?.getAttribute('else') !== null) {
         // @ts-ignore
-        node.nextElementSibling?.style.display = 'none'
+        node.nextElementSibling.style.display = 'none'
       }
     }
   }
