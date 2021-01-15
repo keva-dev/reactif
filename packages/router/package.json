@@ -1,5 +1,5 @@
 {
-  "name": "ractix",
+  "name": "@ractix/router",
   "private": false,
   "version": "0.3.1",
   "description": "Lightweight Reactive & Functional library core for building modern UI on the web",
@@ -7,16 +7,16 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/tuhuynh27/ractix.git",
-    "directory": "packages/core"
+    "directory": "packages/router"
   },
   "main": "dist/index.js",
   "scripts": {
     "test": "jest",
     "build:es": "tsc --declaration",
-    "build:umd": "NODE_ENV=development parcel build src/index.ts --no-minify --out-dir=dist --out-file=ractix.js --no-source-maps --global Ractix --experimental-scope-hoisting",
-    "build:umd:min": "NODE_ENV=production parcel build src/index.ts --out-dir=dist --out-file=ractix.min.js --no-source-maps --global Ractix --experimental-scope-hoisting --detailed-report",
-    "build:es:module": "NODE_ENV=development parcel build src/index.ts --no-minify --out-dir=dist --out-file=ractix.es.js --no-source-maps",
-    "build:es:module:min": "NODE_ENV=production parcel build src/index.ts --out-dir=dist --out-file=ractix.es.min.js --no-source-maps --detailed-report",
+    "build:umd": "NODE_ENV=development parcel build src/index.ts --no-minify --out-dir=dist --out-file=ractix-router.js --no-source-maps --global RactixRouter --experimental-scope-hoisting",
+    "build:umd:min": "NODE_ENV=production parcel build src/index.ts --out-dir=dist --out-file=ractix-router.min.js --no-source-maps --global RactixRouter --experimental-scope-hoisting --detailed-report",
+    "build:es:module": "NODE_ENV=development parcel build src/index.ts --no-minify --out-dir=dist --out-file=ractix-router.es.js --no-source-maps",
+    "build:es:module:min": "NODE_ENV=production parcel build src/index.ts --out-dir=dist --out-file=ractix-router.es.min.js --no-source-maps --detailed-report",
     "build": "rm -rf dist && npm run build:es && npm run build:umd && npm run build:umd:min && npm run build:es:module && npm run build:es:module:min",
     "build:dev": "rm -rf dist && npm run build:es"
   },

@@ -1,0 +1,13 @@
+node_modules
+.github
+.idea
+.cache
+src
+.git
+tests
+.gitignore
+.npmignore
+package-lock.json
+yarn.lock
+tsconfig.json
+jest.config.js

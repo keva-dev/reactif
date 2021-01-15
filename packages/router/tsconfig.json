@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "module": "CommonJS",
+    "esModuleInterop": true,
+    "target": "es5",
+    "noImplicitAny": true,
+    "moduleResolution": "node",
+    "sourceMap": false,
+    "outDir": "dist",
+    "baseUrl": ".",
+    "inlineSourceMap": false,
+    "lib": [
+      "dom",
+      "es6"
+    ]
+  },
+  "include": [
+    "**/*"
+  ],
+  "exclude": [
+    "tests/**/*"
+  ]
+}

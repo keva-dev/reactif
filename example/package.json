@@ -15,6 +15,7 @@
     "since 2017-06"
   ],
   "dependencies": {
-    "ractix": "^0.2.6"
+    "ractix": "^0.3.1",
+    "@ractix/router": "^0.3.1"
   }
 }
