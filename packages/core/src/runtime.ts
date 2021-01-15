@@ -1,13 +1,12 @@
 import { createReactiveState } from './createState'
 import { globalState } from './globalState'
-import { ComponentObject, HandlerFunc, MemoizedHandlerFunc, RouterContextFn } from './types'
+import { ComponentObject, HandlerFunc, MemoizedHandlerFunc, Data, RouterContext } from './types'
 import { compile, stringToDOM } from './compiler'
 import { patch } from './patch'
 
 export type ComponentInstance = {
   component: ComponentObject,
   childComponents: ComponentInstance[],
-  routerContextFn: RouterContextFn,
   dependencies: HandlerFunc[],
   onMountedHooks: HandlerFunc[]
   onUnmountedHooks: HandlerFunc[]
@@ -15,29 +14,31 @@ export type ComponentInstance = {
 }
 
 export interface Runtime {
-  addChildComponents(node: HTMLElement, parentComponent: ComponentObject, component: ComponentObject, routerContextFn: any, props: any): void
+  addChildComponent(node: HTMLElement, parentComponent: ComponentObject, component: ComponentObject, props: Data): void
   pickComponent(o: ComponentObject): ComponentInstance
   addState<T extends object>(_state: T, component: ComponentObject): T
   addOnMountedHook(handler: HandlerFunc, component: ComponentObject): void
   addOnUnmountedHook(handler: HandlerFunc, component: ComponentObject): void
   addWatchEffect(fn: MemoizedHandlerFunc, component: ComponentObject, stopWatcher: HandlerFunc): void
-  mount(selector: string | HTMLElement, component: ComponentObject, parent?: ComponentObject): void
+  mount(selector: string | HTMLElement, component: ComponentObject, parentInstance?: ComponentInstance): void
   unmount(instance: ComponentInstance): void
   forceUnmount(component: ComponentObject): void
+  mountRouter(router: RouterContext): void
 }
 
 export function useRuntime(component: ComponentObject): Runtime {
   let root: ComponentInstance = {
     component,
     childComponents: [],
-    routerContextFn: null,
     dependencies: [],
     onMountedHooks: [],
     onUnmountedHooks: [],
     watchEffects: []
   }
+  let routerContext: RouterContext = null
+  
   const runtimeInstance = {
-    addChildComponents,
+    addChildComponent,
     pickComponent,
     addState,
     addOnMountedHook,
@@ -45,23 +46,23 @@ export function useRuntime(component: ComponentObject): Runtime {
     addWatchEffect,
     mount,
     unmount,
-    forceUnmount
+    forceUnmount,
+    mountRouter
   }
   
-  function addChildComponents(node: HTMLElement, parentComponent: ComponentObject, component: ComponentObject, routerContextFn: any, props: any): void {
+  function addChildComponent(node: HTMLElement, parentComponent: ComponentObject, component: ComponentObject, props: any): void {
     const parentInstance = pickComponent(parentComponent)
     if (!parentComponent) return
     const child: ComponentInstance = {
       component,
       childComponents: [],
-      routerContextFn: null,
       dependencies: [],
       onMountedHooks: [],
       onUnmountedHooks: [],
       watchEffects: []
     }
     parentInstance.childComponents.push(child)
-    mount(node, component)
+    mount(node, component, props, parentInstance)
   }
   
   function pickComponent(o: ComponentObject): ComponentInstance {
@@ -106,13 +107,13 @@ export function useRuntime(component: ComponentObject): Runtime {
     instance.watchEffects.push(stopWatcher)
   }
   
-  function mount(selector: string | HTMLElement, component: ComponentObject, parent?: ComponentObject): void {
+  function mount(selector: string | HTMLElement, component: ComponentObject, props: Data, parentInstance?: ComponentInstance): void {
     const elem: HTMLElement = typeof selector === 'string' ? <HTMLElement>document.querySelector(selector) : selector
     const instance = pickComponent(component)
     
     globalState.currentComponent = component
     globalState.currentRuntime = runtimeInstance
-    const contextBinder = component.setup ? component.setup(Object.create(null), Object.create(null)) : Object.create(null)
+    const contextBinder = component.setup ? component.setup(props, Object.create(null)) : Object.create(null)
     globalState.currentRuntime = undefined
     globalState.currentComponent = undefined
   
@@ -124,6 +125,9 @@ export function useRuntime(component: ComponentObject): Runtime {
         e.removedNodes.forEach(ee => {
           if (ee?.isEqualNode(elem)) {
             unmount(instance)
+            // Remove child component from parent component
+            parentInstance.childComponents =
+              parentInstance.childComponents.filter(e => e.component !== instance.component)
             // Disconnect
             observer.disconnect()
             return
@@ -147,7 +151,7 @@ export function useRuntime(component: ComponentObject): Runtime {
     const templateString = component.render ? renderer() : elem.innerHTML
     makeFuncReactiveAndExecuteIt(() => {
       globalState.currentRuntime = runtimeInstance
-      const template = compile(stringToDOM(templateString), null, contextBinder, component, component.components)
+      const template = compile(stringToDOM(templateString), routerContext, contextBinder, component, component.components)
       patch(template, elem)
       globalState.currentRuntime = undefined
     })
@@ -171,6 +175,10 @@ export function useRuntime(component: ComponentObject): Runtime {
   function forceUnmount(component: ComponentObject): void {
     const instance = pickComponent(component)
     if (instance) unmount(instance)
+  }
+  
+  function mountRouter(_routerContext: RouterContext): void {
+    routerContext = _routerContext
   }
   
   return runtimeInstance

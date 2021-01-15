@@ -15,7 +15,9 @@ export interface Data {
 }
 
 export interface RouterContext {
-  params: () => Record<string, string>
+  renderer(render: (c: ComponentObject) => void, forceUnmount: (c: ComponentObject) => void): void
+  routerContextFn: () => {
+    params: () => Record<string, string>,
+    go: (path: string) => void
+  }
 }
-
-export type RouterContextFn = () => RouterContext
