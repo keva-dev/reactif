@@ -1,128 +1,90 @@
-import { compile, stringToDOM } from './compiler'
 import { createReactiveState } from './createState'
 import { globalState } from './globalState'
+import { ComponentObject, HandlerFunc, MemoizedHandlerFunc, Data, RouterInstance } from './types'
+import { compile, stringToDOM } from './compiler'
 import { patch } from './patch'
-import { go } from './router'
-import { ComponentObject, Data, HandlerFunc, MemoizedHandlerFunc, RouterContextFn } from './types'
 
-type ComponentInstance = {
+export type ComponentInstance = {
   component: ComponentObject,
-  routerContextFn: RouterContextFn,
+  childComponents: ComponentInstance[],
   dependencies: HandlerFunc[],
   onMountedHooks: HandlerFunc[]
   onUnmountedHooks: HandlerFunc[]
   watchEffects: HandlerFunc[]
 }
 
-function makeFuncReactiveAndExecuteIt(fn: HandlerFunc) {
-  globalState.currentFn = fn
-  fn()
-  globalState.currentFn = undefined
+export interface Runtime {
+  addChildComponent(node: HTMLElement, parentComponent: ComponentObject, component: ComponentObject, props: Data): void
+  pickComponent(o: ComponentObject): ComponentInstance
+  addState<T extends object>(_state: T, component: ComponentObject): T
+  addOnMountedHook(handler: HandlerFunc, component: ComponentObject): void
+  addOnUnmountedHook(handler: HandlerFunc, component: ComponentObject): void
+  addWatchEffect(fn: MemoizedHandlerFunc, component: ComponentObject, stopWatcher: HandlerFunc): void
+  mount(selector: string | HTMLElement, component: ComponentObject, parentInstance?: ComponentInstance): void
+  unmount(instance: ComponentInstance): void
+  forceUnmount(component: ComponentObject): void
+  mountRouter(_routerContext: RouterInstance): void
+  getRoot(): ComponentObject
 }
 
-// Runtime instance will be created by useRuntime hook
-// It will manage all component creation and its hooks such as:
-// Mount, Unmount, Update...
-function useRuntime() {
-  let components: ComponentInstance[] = []
+export function useRuntime(component: ComponentObject): Runtime {
+  const root: ComponentInstance = {
+    component,
+    childComponents: [],
+    dependencies: [],
+    onMountedHooks: [],
+    onUnmountedHooks: [],
+    watchEffects: []
+  }
+  let routerInstance: RouterInstance = null
   
-  // Find
-  function pickComponent(component: ComponentObject) {
-    return components.find(e => e.component === component)
+  const runtimeInstance: Runtime = {
+    addChildComponent,
+    pickComponent,
+    addState,
+    addOnMountedHook,
+    addOnUnmountedHook,
+    addWatchEffect,
+    mount,
+    unmount,
+    forceUnmount,
+    mountRouter,
+    getRoot
   }
   
-  // Clean Up component on unmounted or force unmount
-  function cleanUp(component: ComponentObject) {
-    const instance = pickComponent(component)
-    if (!instance) return
-    // Run onUnmounted hooks
-    instance.onUnmountedHooks.forEach(fn => fn())
-    // Remove dependencies
-    instance.dependencies.forEach(fn => fn())
-    // Remove watchEffects
-    instance.watchEffects.forEach(fn => fn())
-    // Remove instance
-    components = components.filter(e => e.component !== instance.component)
+  function getRoot(): ComponentObject {
+    return root.component
   }
   
-  // Mount component to a selector
-  function addComponent(selector: string | HTMLElement = 'body', component: ComponentObject,
-    routerContextFn?: RouterContextFn, props?: Data) {
-    // If the selector is not valid, or the component is already mounted, then skip
-    // TODO: Need to fix child component
-    if (pickComponent(component)) {
-      console.error('Render duplicated')
-      forceUnmountComponent(component)
-    }
-    
-    const elem: HTMLElement = typeof selector === 'string' ? <HTMLElement>document.querySelector(selector) : selector
-    
-    const instance: ComponentInstance = {
+  function addChildComponent(node: HTMLElement, parentComponent: ComponentObject, component: ComponentObject, props: any): void {
+    const parentInstance = pickComponent(parentComponent)
+    if (!parentComponent) return
+    const child: ComponentInstance = {
       component,
-      routerContextFn,
+      childComponents: [],
       dependencies: [],
       onMountedHooks: [],
       onUnmountedHooks: [],
       watchEffects: []
     }
-    components.push(instance)
-    
-    // Attach hooks: onMounted, onUnmounted
-    // Set reactive flag 'currentComponent' to know the hook owner (which component call it)
-    globalState.currentComponent = component
-    // Mount hooks (onMounted, onUnmounted) and get Context (states, methods)
-    const routerCtx = routerContextFn ? routerContextFn() : null
-    const $router = {
-      get params() {
-        return routerCtx.params() || null
-      },
-      go
-    }
-    const context = {
-      $router
-    }
-    const contextBinder = component.setup ? component.setup(props, context) : Object.create(null)
-    globalState.currentComponent = undefined
-    
-    const renderer: () => string = component.render?.bind(contextBinder)
-    
-    // Observe DOM changes
-    let firstMount: boolean = false
-    
-    function mutationHandler(mutationList: MutationRecord[], observer: MutationObserver) {
-      mutationList.forEach(e => {
-        e.removedNodes.forEach(ee => {
-          if (ee?.isEqualNode(elem)) {
-            cleanUp(component)
-            // Disconnect
-            observer.disconnect()
-            return
-          }
-        })
-      })
-      
-      if (!firstMount) {
-        firstMount = true
-        // Run onMounted hooks
-        instance.onMountedHooks.forEach(fn => fn())
+    parentInstance.childComponents.push(child)
+    mount(node, component, props, parentInstance)
+  }
+  
+  function pickComponent(o: ComponentObject): ComponentInstance {
+    const stack: ComponentInstance[] = []
+    stack.push(root);
+    while (stack.length > 0) {
+      const node = stack.pop();
+      if (node.component === o) {
+        return node;
+      } else if (node.childComponents.length) {
+        for (let ii = 0; ii < node.childComponents.length; ii += 1) {
+          stack.push(node.childComponents[ii]);
+        }
       }
     }
-    
-    // Add listeners to the DOM, to watch it changes
-    // TODO: Need to review this
-    const observerOptions = {
-      childList: true,
-      subtree: true
-    }
-    const observer = new MutationObserver(mutationHandler)
-    observer.observe(document.querySelector('body'), observerOptions)
-    
-    const templateString = component.render ? renderer() : elem.innerHTML
-  
-    makeFuncReactiveAndExecuteIt(() => {
-      const template = compile(stringToDOM(templateString), routerContextFn, contextBinder, component.components)
-      patch(template, elem)
-    })
+    return null;
   }
   
   function addState<T extends object>(_state: T, component: ComponentObject): T {
@@ -132,17 +94,17 @@ function useRuntime() {
     return state
   }
   
-  function addOnMountedHook(handler: HandlerFunc, component: ComponentObject) {
+  function addOnMountedHook(handler: HandlerFunc, component: ComponentObject): void {
     const instance = pickComponent(component)
     instance.onMountedHooks.push(handler)
   }
   
-  function addOnUnmountedHook(handler: HandlerFunc, component: ComponentObject) {
+  function addOnUnmountedHook(handler: HandlerFunc, component: ComponentObject): void {
     const instance = pickComponent(component)
     instance.onUnmountedHooks.push(handler)
   }
   
-  function addWatchEffect(fn: MemoizedHandlerFunc, component: ComponentObject, stopWatcher: HandlerFunc) {
+  function addWatchEffect(fn: MemoizedHandlerFunc, component: ComponentObject, stopWatcher: HandlerFunc): void {
     globalState.currentFn = fn
     fn.function()
     globalState.currentFn = undefined
@@ -151,18 +113,96 @@ function useRuntime() {
     instance.watchEffects.push(stopWatcher)
   }
   
-  function forceUnmountComponent(component: ComponentObject) {
-    cleanUp(component)
+  function mount(selector: string | HTMLElement, component: ComponentObject, props: Data, parentInstance?: ComponentInstance): void {
+    const elem: HTMLElement = typeof selector === 'string' ? <HTMLElement>document.querySelector(selector) : selector
+    const instance = pickComponent(component)
+  
+    const routerCtx = routerInstance ? routerInstance.routerContextFn() : Object.create(null)
+    const $router = {
+      get params() {
+        return routerCtx.params() || null
+      },
+      go: routerCtx.go
+    }
+    const context = {
+      $router
+    }
+    
+    globalState.currentComponent = component
+    globalState.currentRuntime = runtimeInstance
+    const contextBinder = component.setup ? component.setup(props, context) : Object.create(null)
+    globalState.currentRuntime = undefined
+    globalState.currentComponent = undefined
+  
+    const renderer: () => string = component.render?.bind(contextBinder)
+  
+    let firstMount = false
+    function mutationHandler(mutationList: MutationRecord[], observer: MutationObserver) {
+      mutationList.forEach(e => {
+        e.removedNodes.forEach(ee => {
+          if (ee?.isEqualNode(elem)) {
+            unmount(instance)
+            // Remove child component from parent component
+            parentInstance.childComponents =
+              parentInstance.childComponents.filter(e => e.component !== instance.component)
+            // Disconnect
+            observer.disconnect()
+            return
+          }
+        })
+      })
+      if (!firstMount) {
+        firstMount = true
+        instance.onMountedHooks.forEach(fn => fn())
+      }
+    }
+    // TODO: Need to review this
+    const observerOptions = {
+      childList: true,
+      subtree: true
+    }
+    const observer = new MutationObserver(mutationHandler)
+    observer.observe(document.querySelector('body'), observerOptions)
+  
+    // Render
+    const templateString = component.render ? renderer() : elem.innerHTML
+    makeFuncReactiveAndExecuteIt(() => {
+      globalState.currentRuntime = runtimeInstance
+      const template = compile(stringToDOM(templateString), routerInstance, contextBinder, component, component.components)
+      patch(template, elem)
+      globalState.currentRuntime = undefined
+    })
   }
   
-  return {
-    addState,
-    addComponent,
-    addOnMountedHook,
-    addOnUnmountedHook,
-    addWatchEffect,
-    forceUnmountComponent
+  function unmount(instance: ComponentInstance): void {
+    // Run onUnmounted hooks
+    instance.onUnmountedHooks.forEach(fn => fn())
+    // Remove dependencies
+    instance.dependencies.forEach(fn => fn())
+    // Remove watchEffects
+    instance.watchEffects.forEach(fn => fn())
+    // Recursive clean up child component
+    if (instance.childComponents.length) {
+      instance.childComponents.forEach(ch => unmount(ch))
+    }
+    // Remove all child components
+    instance.childComponents = []
   }
+  
+  function forceUnmount(component: ComponentObject): void {
+    const instance = pickComponent(component)
+    if (instance) unmount(instance)
+  }
+  
+  function mountRouter(_routerContext: RouterInstance): void {
+    routerInstance = _routerContext
+  }
+  
+  return runtimeInstance
 }
 
-export const runtime = useRuntime()
+function makeFuncReactiveAndExecuteIt(fn: HandlerFunc) {
+  globalState.currentFn = fn
+  fn()
+  globalState.currentFn = undefined
+}

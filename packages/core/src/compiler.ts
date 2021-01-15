@@ -1,11 +1,11 @@
 import { DYNAMIC_ATTRIBUTES, NODE_TYPE_CONST } from './const'
-import { go } from './router'
-import { runtime } from './runtime'
-import { ComponentObject, RouterContextFn } from './types'
+import { globalState } from './globalState'
+import { ComponentObject, RouterInstance } from './types'
 import { extractAttribute, parseFunctionStr } from './utils'
 
-let routerContextFn: RouterContextFn = null
+let routerInstance: RouterInstance = null
 let context: object = null
+let currentComponent: ComponentObject = null
 let childComponents: Record<string, ComponentObject> = null
 
 export function stringToDOM(str: string): HTMLElement {
@@ -14,10 +14,11 @@ export function stringToDOM(str: string): HTMLElement {
   return doc.body
 }
 
-export function compile(nodes: HTMLElement, _routerContextFn: RouterContextFn,
-  _context: object, _childComponents: Record<string, ComponentObject>): HTMLElement {
-  routerContextFn = _routerContextFn
+export function compile(nodes: HTMLElement, _routerInstance: RouterInstance,
+  _context: object, _currentComponent: ComponentObject, _childComponents: Record<string, ComponentObject>): HTMLElement {
+  routerInstance = _routerInstance
   context = _context || Object.create(null)
+  currentComponent = _currentComponent || null
   childComponents = _childComponents || Object.create(null)
   nodeTraversal(nodes.childNodes)
   return nodes
@@ -33,6 +34,9 @@ function nodeTraversal(nodes: NodeListOf<ChildNode>) {
 }
 
 export function compileDirectives(node: HTMLElement) {
+  const runtime = globalState.currentRuntime
+  if (!runtime) return
+  
   if (node.nodeType === NODE_TYPE_CONST.TEXT_NODE) {
     node.nodeValue = node.nodeValue
      .replace(new RegExp(`{{ (.+?) }}`, 'g'),
@@ -51,6 +55,13 @@ export function compileDirectives(node: HTMLElement) {
   
   if (node.nodeType !== NODE_TYPE_CONST.ELEMENT_NODE) return
   
+  if (node.tagName === 'ROUTER-VIEW') {
+    routerInstance.renderer((component: ComponentObject) => {
+      runtime.addChildComponent(node, runtime.getRoot(), component, Object.create({}))
+    }, runtime.forceUnmount)
+    return
+  }
+  
   if (node.getAttribute('if')) {
     const statePathOrig = node.getAttribute('if')
     const { statePath, isPositive } = extractBooleanState(statePathOrig)
@@ -60,11 +71,6 @@ export function compileDirectives(node: HTMLElement) {
       state = state.value
     }
     if (isPositive ? !state : state) {
-      // Child component with if
-      if (childComponents[node.tagName.toLowerCase()]) {
-        const ChildComponent = childComponents[node.tagName.toLowerCase()]
-        runtime.forceUnmountComponent(ChildComponent)
-      }
       node.remove()
       return
     } else {
@@ -124,15 +130,16 @@ export function compileDirectives(node: HTMLElement) {
       props[propName] = e.startsWith(':') ? extractAttribute(context, statePath) : statePath
       node.removeAttribute(e)
     })
-    runtime.addComponent(node, ChildComponent, routerContextFn, props)
+    runtime.addChildComponent(node, currentComponent, ChildComponent, props)
     return
   }
   
   if (node.getAttribute('to')) {
     const path = node.getAttribute('to')
+    const routerCtxFn = routerInstance.routerContextFn()
     node.addEventListener('click', (e) => {
       e.preventDefault()
-      go(path)
+      routerCtxFn.go(path)
     })
     node.removeAttribute('to')
     node.setAttribute('href', path)

@@ -1,6 +1,4 @@
-import { createComponent } from './createComponent'
-import { runtime } from './runtime'
-import { ComponentObject, HandlerFunc } from './types'
+import { ComponentObject, HandlerFunc, RouterInstance } from './types'
 import { cleanPath, includes, isObject } from './utils'
 
 const REGEX_PARAMS = /([:*])(\w+)/g
@@ -17,15 +15,11 @@ export interface Route {
   component: ComponentObject
 }
 
-export interface Router {
-  renderer: (selector: string) => void
-}
-
 export function go(path: string): void {
   window.location.hash = '#' + path
 }
 
-export function useRouter(routesArray: Route[]): Router {
+export function useRouter(routesArray: Route[]): RouterInstance {
   let params: Record<string, string> = Object.create(null)
   const routes: Record<string, ComponentObject> = Object.create(null)
   let currentComponent: ComponentObject = null
@@ -63,11 +57,10 @@ export function useRouter(routesArray: Route[]): Router {
     return { paramNames, pattern }
   }
   
-  function match(browserPath: string, selector: string): void {
+  function match(browserPath: string): ComponentObject {
     if (isObject(routes[browserPath])) {
       currentComponent = routes[browserPath]
-      createComponent(routes[browserPath], selector, routerContextFn)
-      return
+      return routes[browserPath]
     }
     
     // Assign url params
@@ -84,8 +77,7 @@ export function useRouter(routesArray: Route[]): Router {
         if (match) {
           params = regexToParams(match, paramNames)
           currentComponent = routes[routerPath]
-          createComponent(routes[routerPath], selector, routerContextFn)
-          return
+          return routes[routerPath]
         }
       }
     }
@@ -93,32 +85,36 @@ export function useRouter(routesArray: Route[]): Router {
     // Handle 404
     if (isObject(routes['*'])) {
       currentComponent = routes['*']
-      createComponent(routes['*'], selector, routerContextFn)
-      return
+      return routes[browserPath]
     }
     
-    currentComponent = null
-    createComponent({
+    const default404Route = {
       render: () => `Not found`
-    }, selector)
+    }
+    currentComponent = default404Route
+    return default404Route
   }
   
   function routerContextFn() {
     return {
-      params: () => params
+      params: () => params,
+      go
     }
   }
   
-  function renderer(selector: string): void {
+  function renderer(render: (c: ComponentObject) => void, forceUnmount: (c: ComponentObject) => void): void {
     onRouterChange(() => {
       if (currentComponent) {
-        runtime.forceUnmountComponent(currentComponent)
+        forceUnmount(currentComponent)
       }
-      match(getPath(), selector)
+      render(match(getPath()))
     })
     
-    match(getPath(), selector)
+    render(match(getPath()))
   }
   
-  return { renderer }
+  return {
+    renderer,
+    routerContextFn
+  }
 }
