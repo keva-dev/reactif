@@ -1,9 +1,9 @@
 import { DYNAMIC_ATTRIBUTES, NODE_TYPE_CONST } from './const'
 import { globalState } from './globalState'
-import { ComponentObject, RouterContext } from './types'
+import { ComponentObject, RouterInstance } from './types'
 import { extractAttribute, parseFunctionStr } from './utils'
 
-let routerContext: RouterContext = null
+let routerInstance: RouterInstance = null
 let context: object = null
 let currentComponent: ComponentObject = null
 let childComponents: Record<string, ComponentObject> = null
@@ -14,9 +14,9 @@ export function stringToDOM(str: string): HTMLElement {
   return doc.body
 }
 
-export function compile(nodes: HTMLElement, _routerContext: RouterContext,
+export function compile(nodes: HTMLElement, _routerInstance: RouterInstance,
   _context: object, _currentComponent: ComponentObject, _childComponents: Record<string, ComponentObject>): HTMLElement {
-  routerContext = _routerContext
+  routerInstance = _routerInstance
   context = _context || Object.create(null)
   currentComponent = _currentComponent || null
   childComponents = _childComponents || Object.create(null)
@@ -56,7 +56,7 @@ export function compileDirectives(node: HTMLElement) {
   if (node.nodeType !== NODE_TYPE_CONST.ELEMENT_NODE) return
   
   if (node.tagName === 'ROUTER-VIEW') {
-    routerContext.renderer((component: ComponentObject) => {
+    routerInstance.renderer((component: ComponentObject) => {
       runtime.addChildComponent(node, runtime.getRoot(), component, Object.create({}))
     }, runtime.forceUnmount)
     return
@@ -136,7 +136,7 @@ export function compileDirectives(node: HTMLElement) {
   
   if (node.getAttribute('to')) {
     const path = node.getAttribute('to')
-    const routerCtxFn = routerContext.routerContextFn()
+    const routerCtxFn = routerInstance.routerContextFn()
     node.addEventListener('click', (e) => {
       e.preventDefault()
       routerCtxFn.go(path)

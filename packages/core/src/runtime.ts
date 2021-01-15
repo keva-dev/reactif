@@ -1,6 +1,6 @@
 import { createReactiveState } from './createState'
 import { globalState } from './globalState'
-import { ComponentObject, HandlerFunc, MemoizedHandlerFunc, Data, RouterContext } from './types'
+import { ComponentObject, HandlerFunc, MemoizedHandlerFunc, Data, RouterInstance } from './types'
 import { compile, stringToDOM } from './compiler'
 import { patch } from './patch'
 
@@ -23,12 +23,12 @@ export interface Runtime {
   mount(selector: string | HTMLElement, component: ComponentObject, parentInstance?: ComponentInstance): void
   unmount(instance: ComponentInstance): void
   forceUnmount(component: ComponentObject): void
-  mountRouter(_routerContext: RouterContext): void
+  mountRouter(_routerContext: RouterInstance): void
   getRoot(): ComponentObject
 }
 
 export function useRuntime(component: ComponentObject): Runtime {
-  let root: ComponentInstance = {
+  const root: ComponentInstance = {
     component,
     childComponents: [],
     dependencies: [],
@@ -36,7 +36,7 @@ export function useRuntime(component: ComponentObject): Runtime {
     onUnmountedHooks: [],
     watchEffects: []
   }
-  let routerContext: RouterContext = null
+  let routerInstance: RouterInstance = null
   
   const runtimeInstance: Runtime = {
     addChildComponent,
@@ -117,7 +117,7 @@ export function useRuntime(component: ComponentObject): Runtime {
     const elem: HTMLElement = typeof selector === 'string' ? <HTMLElement>document.querySelector(selector) : selector
     const instance = pickComponent(component)
   
-    const routerCtx = routerContext.routerContextFn()
+    const routerCtx = routerInstance ? routerInstance.routerContextFn() : Object.create(null)
     const $router = {
       get params() {
         return routerCtx.params() || null
@@ -168,7 +168,7 @@ export function useRuntime(component: ComponentObject): Runtime {
     const templateString = component.render ? renderer() : elem.innerHTML
     makeFuncReactiveAndExecuteIt(() => {
       globalState.currentRuntime = runtimeInstance
-      const template = compile(stringToDOM(templateString), routerContext, contextBinder, component, component.components)
+      const template = compile(stringToDOM(templateString), routerInstance, contextBinder, component, component.components)
       patch(template, elem)
       globalState.currentRuntime = undefined
     })
@@ -194,8 +194,8 @@ export function useRuntime(component: ComponentObject): Runtime {
     if (instance) unmount(instance)
   }
   
-  function mountRouter(_routerContext: RouterContext): void {
-    routerContext = _routerContext
+  function mountRouter(_routerContext: RouterInstance): void {
+    routerInstance = _routerContext
   }
   
   return runtimeInstance

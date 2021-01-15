@@ -14,7 +14,7 @@ export interface Data {
   [key: string]: unknown
 }
 
-export interface RouterContext {
+export interface RouterInstance {
   renderer(render: (c: ComponentObject) => void, forceUnmount: (c: ComponentObject) => void): void
   routerContextFn: () => {
     params: () => Record<string, string>,

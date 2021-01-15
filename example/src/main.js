@@ -9,6 +9,7 @@ import NextTickDemo from './components/NextTick'
 import List from './components/List'
 import Nested from './components/Nested'
 import Computed from './components/Computed'
+import Copyright from './components/Copyright'
 
 const routes = [
   { path: '/', component: WhacAMole },
@@ -33,3 +34,5 @@ const App = {
 
 createApp(App).use(router)
   .mount('#app')
+
+createApp(Copyright).mount('#copyright')

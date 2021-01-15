@@ -1,13 +1,14 @@
 import { useRuntime } from './runtime'
-import { ComponentObject, RouterContext } from './types'
+import { ComponentObject, RouterInstance } from './types'
 
 export function createApp(component: ComponentObject) {
   const { mount, mountRouter } = useRuntime(component)
   const options = {
-    mount: function (selector: string) {
+    mount: function (selector: string): void {
       mount(selector, component)
+      return
     },
-    use: function (router: RouterContext) {
+    use: function (router: RouterInstance) {
       mountRouter(router)
       return options
     }

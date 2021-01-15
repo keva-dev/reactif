@@ -1,4 +1,4 @@
-import { ComponentObject, HandlerFunc, RouterContext } from './types'
+import { ComponentObject, HandlerFunc, RouterInstance } from './types'
 import { cleanPath, includes, isObject } from './utils'
 
 const REGEX_PARAMS = /([:*])(\w+)/g
@@ -19,7 +19,7 @@ export function go(path: string): void {
   window.location.hash = '#' + path
 }
 
-export function useRouter(routesArray: Route[]): RouterContext {
+export function useRouter(routesArray: Route[]): RouterInstance {
   let params: Record<string, string> = Object.create(null)
   const routes: Record<string, ComponentObject> = Object.create(null)
   let currentComponent: ComponentObject = null
