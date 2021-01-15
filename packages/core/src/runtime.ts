@@ -113,7 +113,7 @@ export function useRuntime(component: ComponentObject): Runtime {
     instance.watchEffects.push(stopWatcher)
   }
   
-  function mount(selector: string | HTMLElement, component: ComponentObject, props: Data, parentInstance?: ComponentInstance): void {
+  function mount(selector: string | HTMLElement = 'body', component: ComponentObject, props: Data, parentInstance?: ComponentInstance): void {
     const elem: HTMLElement = typeof selector === 'string' ? <HTMLElement>document.querySelector(selector) : selector
     const instance = pickComponent(component)
   
