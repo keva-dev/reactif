@@ -1,10 +1,10 @@
-import { defineComponent, onMounted, onUnmounted, watchEffect } from 'ractix'
+import { onMounted, onUnmounted, watchEffect } from 'ractix'
 import { getAllArticles } from '../services/fuhcm'
 import sleep from '../utils/sleep'
 
 import useStore from '../store/store'
 
-export default defineComponent({
+export default {
   setup() {
     const { state, mutations } = useStore()
     const { setLimit, setIsLoading, setData } = mutations
@@ -74,4 +74,4 @@ export default defineComponent({
       </div>
     `
   }
-})
+}

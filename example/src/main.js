@@ -12,6 +12,8 @@ import Nested from './components/Nested'
 import Computed from './components/Computed'
 import Copyright from './components/Copyright'
 
+import App from './App'
+
 const routes = [
   { path: '/', component: WhacAMole },
   { path: '/home', component: Home },
@@ -24,14 +26,6 @@ const routes = [
   { path: '/nested', component: Nested }
 ]
 const router = createRouter(routes)
-
-const App = {
-  render() {
-    return `
-      <router-view></router-view>
-    `
-  }
-}
 
 createApp(App).use(router)
   .mount('#app')

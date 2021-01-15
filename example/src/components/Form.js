@@ -1,6 +1,6 @@
-import { defineComponent, reactive, onMounted, onUnmounted, computed, ref } from 'ractix'
+import { reactive, onMounted, onUnmounted, computed, ref } from 'ractix'
 
-export default defineComponent({
+export default {
   setup() {
     const state = reactive({
       count: 0,
@@ -74,4 +74,4 @@ export default defineComponent({
       </div>
     `
   }
-})
+}

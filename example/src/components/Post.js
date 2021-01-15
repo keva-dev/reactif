@@ -1,9 +1,9 @@
-import { defineComponent, reactive, onMounted } from 'ractix'
+import { reactive, onMounted } from 'ractix'
 import { getArticle } from '../services/fuhcm'
 import useStore from '../store/store'
 import sleep from '../utils/sleep'
 
-export default defineComponent({
+export default {
   setup(props, context) {
     const store = useStore()
     const {
@@ -47,4 +47,4 @@ export default defineComponent({
       </div>
     `
   }
-})
+}

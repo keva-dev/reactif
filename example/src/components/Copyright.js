@@ -1,7 +1,6 @@
-import { defineComponent } from 'ractix'
 import useStore from '../store/store'
 
-export default defineComponent({
+export default {
   setup() {
     const { state } = useStore()
     return {
@@ -15,4 +14,4 @@ export default defineComponent({
       </div>
     `
   }
-})
+}

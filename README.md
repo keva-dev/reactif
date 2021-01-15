@@ -453,11 +453,24 @@ setup() {
 
 ### Router
 
+First, you need to install `@ractix/router`, for `npm` projects:
+
+```shell
+npm install @ractix/router
+```
+
+Or if you don't use build tool, you can import from CDN, and then use it from global variable `RactixRouter`:
+
+```shell
+<script src="https://unpkg.com/@ractix/router@latest/dist/ractix-router.min.js"></script>
+```
+
 To use Ractix Router, all you need to do is map your components to the routes and let Ractix Router know where to 
 render them. Here's a basic example:
 
 ```javascript
-import { createRouter } from 'ractix'
+import { createApp } from 'ractix'
+import { createRouter } from '@ractix/router' 
 
 import HelloWorld from './components/Index'
 import Book from './components/Post'
@@ -574,9 +587,24 @@ const Index = {
 
 - Todo List Example:
 
-```javascript
-import { reactive, createApp } from 'ractix'
-
+```html
+<html>
+<head><title>Todo List by Ractix</title></head>
+<body>
+  <form @submit="submit">
+    <label>
+      <span>Add Todo</span>
+      <input model="state.text" />
+    </label>
+    <button @click="addTodo" type="submit">Add</button>
+    <ul>
+        <li each="item in todos">{{ todo }}</li>
+    </ul>
+  </form>
+</body>
+<script src="https://unpkg.com/ractix@latest/dist/ractix.min.js"></script>
+<script>
+const { createApp, reactive } = Ractix
 const TodoList = {
   setup() {
     const state = reactive({
@@ -592,26 +620,12 @@ const TodoList = {
     const submit = e => e.preventDefault()
     
     return { state, addTodo, submit }
-  },
-  render() {
-    return `
-      <form @submit="submit">
-          <label>
-            <span>Add Todo</span>
-            <input model="state.text" />
-          </label>
-          <button @click="addTodo" type="submit">Add</button>
-          <ul>
-              <li each="item in todos">{{ todo }}</li>
-          </ul>
-      </form>
-    `
   }
 }
-
-createApp(TodoList).mount('#app')
+createApp(TodoList).mount()
+</script>
+</html>
 ```
-
 
 An example small single page application built by `ractix`
 

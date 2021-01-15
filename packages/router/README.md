@@ -1,4 +1,4 @@
-# Reactive UI core
+# Reactive UI Router
 
 ![](https://i.imgur.com/MS3IKww.jpg)
 

@@ -1,6 +1,6 @@
-import { defineComponent, reactive, computed } from 'ractix'
+import { reactive, computed } from 'ractix'
 
-export default defineComponent({
+export default {
   setup() {
     const state = reactive({
       count: 1
@@ -26,4 +26,4 @@ export default defineComponent({
       <button @click="increase">Increase</button>
     `
   }
-})
+}

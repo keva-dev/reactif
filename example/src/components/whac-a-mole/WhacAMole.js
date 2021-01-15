@@ -1,8 +1,8 @@
-import { defineComponent, reactive, computed, onMounted, onUnmounted } from 'ractix'
+import { reactive, computed, onMounted, onUnmounted } from 'ractix'
 import './WhacAMole.scss'
 import useDebug from '../hooks/useDebug'
 
-export default defineComponent({
+export default {
   setup() {
     useDebug('WhacAMole')
     let interval = null
@@ -100,4 +100,4 @@ export default defineComponent({
       </div>
     `
   }
-})
+}

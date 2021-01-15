@@ -1,6 +1,6 @@
-import { defineComponent, reactive } from 'ractix'
+import { reactive } from 'ractix'
 
-export default defineComponent({
+export default {
   setup() {
     const state = reactive({
       dogs: [
@@ -36,4 +36,4 @@ export default defineComponent({
       </div>
     `
   }
-})
+}
