@@ -116,10 +116,21 @@ export function useRuntime(component: ComponentObject): Runtime {
   function mount(selector: string | HTMLElement, component: ComponentObject, props: Data, parentInstance?: ComponentInstance): void {
     const elem: HTMLElement = typeof selector === 'string' ? <HTMLElement>document.querySelector(selector) : selector
     const instance = pickComponent(component)
+  
+    const routerCtx = routerContext.routerContextFn()
+    const $router = {
+      get params() {
+        return routerCtx.params() || null
+      },
+      go: routerCtx.go
+    }
+    const context = {
+      $router
+    }
     
     globalState.currentComponent = component
     globalState.currentRuntime = runtimeInstance
-    const contextBinder = component.setup ? component.setup(props, Object.create(null)) : Object.create(null)
+    const contextBinder = component.setup ? component.setup(props, context) : Object.create(null)
     globalState.currentRuntime = undefined
     globalState.currentComponent = undefined
   

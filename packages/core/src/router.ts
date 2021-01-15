@@ -77,7 +77,7 @@ export function useRouter(routesArray: Route[]): RouterContext {
         if (match) {
           params = regexToParams(match, paramNames)
           currentComponent = routes[routerPath]
-          return routes[browserPath]
+          return routes[routerPath]
         }
       }
     }
