@@ -2,9 +2,8 @@ import useStore from '../store/store'
 
 export default {
   setup() {
-    const { state } = useStore()
     return {
-      state
+      ...useStore()
     }
   },
   render() {

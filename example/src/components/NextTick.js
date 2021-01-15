@@ -1,6 +1,6 @@
-import { defineComponent, reactive, onMounted, nextTick } from 'ractix'
+import { reactive, onMounted, nextTick } from 'ractix'
 
-export default defineComponent({
+export default {
   setup() {
     const state = reactive({
       a: 0,
@@ -31,4 +31,4 @@ export default defineComponent({
       </div>
     `
   }
-})
+}

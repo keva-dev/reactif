@@ -6,12 +6,6 @@ import sleep from '../utils/sleep'
 export default {
   setup(props, context) {
     const store = useStore()
-    const {
-      seasonEnd,
-      currentWeek,
-      // ...
-    } = store
-
     const { mutations } = store
     const state = reactive({
       data: null,

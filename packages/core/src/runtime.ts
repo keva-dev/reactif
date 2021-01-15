@@ -134,7 +134,7 @@ export function useRuntime(component: ComponentObject): Runtime {
     globalState.currentRuntime = undefined
     globalState.currentComponent = undefined
   
-    const renderer: () => string = component.render?.bind(contextBinder)
+    const renderer: () => string = component.render
   
     let firstMount = false
     function mutationHandler(mutationList: MutationRecord[], observer: MutationObserver) {
