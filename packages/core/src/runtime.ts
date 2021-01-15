@@ -118,7 +118,7 @@ function useRuntime() {
     observer.observe(document.querySelector('body'), observerOptions)
     
     const templateString = component.render ? renderer() : elem.innerHTML
-    
+  
     makeFuncReactiveAndExecuteIt(() => {
       const template = compile(stringToDOM(templateString), routerContextFn, contextBinder, component.components)
       patch(template, elem)

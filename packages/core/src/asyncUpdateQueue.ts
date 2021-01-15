@@ -13,11 +13,13 @@ export function useAsyncUpdateQueue() {
   }
   
   function processRenderPhase() {
-    queue.forEach(fn => {
-      fn()
-    })
-    queue.clear()
-    isQueueSleep = true
+    if (queue.size) {
+      queue.forEach(fn => {
+        fn()
+      })
+      queue.clear()
+      isQueueSleep = true
+    }
   }
   
   function nextTick(callback?: () => void): Promise<void> | void {

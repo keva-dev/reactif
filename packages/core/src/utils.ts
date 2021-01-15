@@ -110,7 +110,7 @@ function resolveType(str: string): FuncArg {
   }
 }
 
-function getSpecialValue(str: string): unknown {
+function getSpecialValue(str: string): string | boolean {
   switch (str) {
     case 'true':
       return true
