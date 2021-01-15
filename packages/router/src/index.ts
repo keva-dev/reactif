@@ -4,22 +4,22 @@ import { cleanPath, includes, isObject } from './utils'
 const REGEX_PARAMS = /([:*])(\w+)/g
 const REGEX_REPLACE_VAR = '([^/]+)'
 
-export function onRouterChange(fn: HandlerFunc) {
+function onRouterChange(fn: HandlerFunc) {
   window.addEventListener('hashchange', () => {
     fn()
   })
 }
 
-export interface Route {
+interface Route {
   path: string,
   component: ComponentObject
 }
 
-export function go(path: string): void {
+function go(path: string): void {
   window.location.hash = '#' + path
 }
 
-export function useRouter(routesArray: Route[]): RouterInstance {
+function useRouter(routesArray: Route[]): RouterInstance {
   let params: Record<string, string> = Object.create(null)
   const routes: Record<string, ComponentObject> = Object.create(null)
   let currentComponent: ComponentObject = null
@@ -117,4 +117,10 @@ export function useRouter(routesArray: Route[]): RouterInstance {
     renderer,
     routerContextFn
   }
+}
+
+export const createRouter = useRouter
+
+export default {
+  createRouter
 }

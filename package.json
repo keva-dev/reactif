@@ -6,6 +6,7 @@
     "example"
   ],
   "resolutions": {
-    "ractix": "workspace:*"
+    "ractix": "workspace:*",
+    "@ractix/router": "workspace:*"
   }
 }

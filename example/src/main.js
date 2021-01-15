@@ -1,4 +1,5 @@
-import { createRouter, createApp } from 'ractix'
+import { createApp } from 'ractix'
+import { createRouter } from '@ractix/router'
 
 import WhacAMole from './components/whac-a-mole/WhacAMole'
 import Home from './components/Home'
