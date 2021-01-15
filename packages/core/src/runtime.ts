@@ -23,7 +23,8 @@ export interface Runtime {
   mount(selector: string | HTMLElement, component: ComponentObject, parentInstance?: ComponentInstance): void
   unmount(instance: ComponentInstance): void
   forceUnmount(component: ComponentObject): void
-  mountRouter(router: RouterContext): void
+  mountRouter(_routerContext: RouterContext): void
+  getRoot(): ComponentObject
 }
 
 export function useRuntime(component: ComponentObject): Runtime {
@@ -37,7 +38,7 @@ export function useRuntime(component: ComponentObject): Runtime {
   }
   let routerContext: RouterContext = null
   
-  const runtimeInstance = {
+  const runtimeInstance: Runtime = {
     addChildComponent,
     pickComponent,
     addState,
@@ -47,7 +48,12 @@ export function useRuntime(component: ComponentObject): Runtime {
     mount,
     unmount,
     forceUnmount,
-    mountRouter
+    mountRouter,
+    getRoot
+  }
+  
+  function getRoot(): ComponentObject {
+    return root.component
   }
   
   function addChildComponent(node: HTMLElement, parentComponent: ComponentObject, component: ComponentObject, props: any): void {

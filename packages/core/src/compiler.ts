@@ -57,7 +57,7 @@ export function compileDirectives(node: HTMLElement) {
   
   if (node.tagName === 'ROUTER-VIEW') {
     routerContext.renderer((component: ComponentObject) => {
-      runtime.addChildComponent(node, currentComponent, component, Object.create({}))
+      runtime.addChildComponent(node, runtime.getRoot(), component, Object.create({}))
     }, runtime.forceUnmount)
     return
   }
