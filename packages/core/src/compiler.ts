@@ -1,11 +1,11 @@
 import { DYNAMIC_ATTRIBUTES, NODE_TYPE_CONST } from './const'
-import { go } from './router'
-import { runtime } from './runtime'
+import { globalState } from './globalState'
 import { ComponentObject, RouterContextFn } from './types'
 import { extractAttribute, parseFunctionStr } from './utils'
 
 let routerContextFn: RouterContextFn = null
 let context: object = null
+let currentComponent: ComponentObject = null
 let childComponents: Record<string, ComponentObject> = null
 
 export function stringToDOM(str: string): HTMLElement {
@@ -15,9 +15,10 @@ export function stringToDOM(str: string): HTMLElement {
 }
 
 export function compile(nodes: HTMLElement, _routerContextFn: RouterContextFn,
-  _context: object, _childComponents: Record<string, ComponentObject>): HTMLElement {
+  _context: object, _currentComponent: ComponentObject, _childComponents: Record<string, ComponentObject>): HTMLElement {
   routerContextFn = _routerContextFn
   context = _context || Object.create(null)
+  currentComponent = _currentComponent || null
   childComponents = _childComponents || Object.create(null)
   nodeTraversal(nodes.childNodes)
   return nodes
@@ -33,6 +34,9 @@ function nodeTraversal(nodes: NodeListOf<ChildNode>) {
 }
 
 export function compileDirectives(node: HTMLElement) {
+  const runtime = globalState.currentRuntime
+  if (!runtime) return
+  
   if (node.nodeType === NODE_TYPE_CONST.TEXT_NODE) {
     node.nodeValue = node.nodeValue
      .replace(new RegExp(`{{ (.+?) }}`, 'g'),
@@ -61,10 +65,10 @@ export function compileDirectives(node: HTMLElement) {
     }
     if (isPositive ? !state : state) {
       // Child component with if
-      if (childComponents[node.tagName.toLowerCase()]) {
-        const ChildComponent = childComponents[node.tagName.toLowerCase()]
-        runtime.forceUnmountComponent(ChildComponent)
-      }
+      // if (childComponents[node.tagName.toLowerCase()]) {
+      //   const ChildComponent = childComponents[node.tagName.toLowerCase()]
+      //   runtime.forceUnmount(ChildComponent)
+      // }
       node.remove()
       return
     } else {
@@ -124,7 +128,7 @@ export function compileDirectives(node: HTMLElement) {
       props[propName] = e.startsWith(':') ? extractAttribute(context, statePath) : statePath
       node.removeAttribute(e)
     })
-    runtime.addComponent(node, ChildComponent, routerContextFn, props)
+    runtime.addChildComponents(node, currentComponent, ChildComponent, routerContextFn, props)
     return
   }
   
@@ -132,7 +136,7 @@ export function compileDirectives(node: HTMLElement) {
     const path = node.getAttribute('to')
     node.addEventListener('click', (e) => {
       e.preventDefault()
-      go(path)
+      // TODO: Go Router
     })
     node.removeAttribute('to')
     node.setAttribute('href', path)

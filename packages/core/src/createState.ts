@@ -1,11 +1,10 @@
 import { asyncUpdateQueue } from './asyncUpdateQueue'
 import { useDependency } from './dependency'
 import { globalState } from './globalState'
-import { runtime } from './runtime'
 
 export function createState<T extends object>(state: T): T {
-  if (globalState.currentComponent) {
-    return runtime.addState(state, globalState.currentComponent)
+  if (globalState.currentRuntime && globalState.currentComponent) {
+    return globalState.currentRuntime.addState(state, globalState.currentComponent)
   }
   return createReactiveState(state).state
 }
@@ -20,8 +19,8 @@ export function createRef(value: Primitive): Ref {
   const ref = {
     value
   }
-  if (globalState.currentComponent) {
-    return runtime.addState(ref, globalState.currentComponent)
+  if (globalState.currentRuntime && globalState.currentComponent) {
+    return globalState.currentRuntime.addState(ref, globalState.currentComponent)
   }
   return createReactiveState(ref).state
 }

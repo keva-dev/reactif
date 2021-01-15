@@ -1,5 +1,4 @@
 import { globalState } from './globalState'
-import { runtime } from './runtime'
 import { HandlerFunc } from './types'
 
 export function watchEffect(fn: HandlerFunc): HandlerFunc {
@@ -12,7 +11,7 @@ export function watchEffect(fn: HandlerFunc): HandlerFunc {
   }
   
   if (globalState.currentComponent) {
-    runtime.addWatchEffect(memoized, globalState.currentComponent, stopWatcher)
+    globalState.currentRuntime.addWatchEffect(memoized, globalState.currentComponent, stopWatcher)
   }
   
   return stopWatcher
