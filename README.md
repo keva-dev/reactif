@@ -66,7 +66,7 @@ const HelloWorld = {
   }
 }
 
-Ractix.render(HelloWorld)
+Ractix.createApp(HelloWorld).mount()
 </script>
 ```
 
@@ -90,7 +90,7 @@ create a new file, write a template, register some data, add some methods and th
 At the core of Vue.js is a system that enables us to declaratively render data to the DOM using straightforward template syntax:
 
 ```javascript
-import { render }  from 'ractix'
+import { createApp }  from 'ractix'
 
 const HelloWorld = {
   render() {
@@ -98,7 +98,7 @@ const HelloWorld = {
   }
 }
 
-render(HelloWorld, '#app')
+createApp(HelloWorld).mount('#app')
 ```
 
 As you can see, it's much simpler than the Vue Single File Component, writing components in this way is very useful 
@@ -115,7 +115,7 @@ Thanks to [ES6 Proxy](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Re
 reactive conversion is "deep" - it affects all nested properties of the passed object.
 
 ```javascript
-import { reactive, onMounted, render } from 'ractix'
+import { reactive, onMounted, createApp } from 'ractix'
 
 const Book = {
   setup() {
@@ -136,7 +136,7 @@ const Book = {
   }
 }
 
-render(Book, '#book')
+createApp(Book).mount('#book')
 ```
 
 You don't need to manually call `setState` because the state is already reactive, thanks to dependency tracking, the
@@ -268,7 +268,7 @@ You can use the `model` directive to create two-way data bindings on form input,
 automatically picks the correct way to update the element based on the input type. Although a bit magical, model is essentially syntax sugar for updating data on user input events.
 
 ```javascript
-import { render, reactive } from 'ractix'
+import { createApp, reactive } from 'ractix'
 
 const InputApp = {
   setup() {
@@ -283,7 +283,7 @@ const InputApp = {
   }
 }
 
-render(InputApp, '#app')
+createApp(InputApp).mount('#app')
 ```
 
 ### Event Handling
@@ -292,7 +292,7 @@ You can use the '@-something' directive, to listen to DOM events and run some
 JavaScript when they're triggered. The usage would be @click for listening on `click` event and so on.
 
 ```javascript
-import { render, reactive } from 'ractix'
+import { createApp, reactive } from 'ractix'
 
 const Data = {
   setup() {
@@ -309,7 +309,7 @@ const Data = {
   }
 }
 
-render(Data, '#data')
+createApp(Data).mount('#data')
 ```
 
 ### Lifecycle Hooks
@@ -319,7 +319,7 @@ render(Data, '#data')
 Per component, `ractix` supports injecting hooks like `onMounted` and `onUnmounted`, these functions accept a callback that will be executed when the hook is called by the component:
 
 ```javascript
-import { onMounted, onUnmounted, render } from 'ractix'
+import { onMounted, onUnmounted, createApp } from 'ractix'
 
 const HelloWorld = {
   setup() {
@@ -336,7 +336,7 @@ const HelloWorld = {
   }
 }
 
-render(HelloWorld, '#app')
+createApp(HelloWorld).mount('#app')
 ```
 
 #### watchEffect
@@ -457,7 +457,7 @@ To use Ractix Router, all you need to do is map your components to the routes an
 render them. Here's a basic example:
 
 ```javascript
-import { Router } from 'ractix'
+import { createRouter } from 'ractix'
 
 import HelloWorld from './components/Index'
 import Book from './components/Post'
@@ -469,8 +469,14 @@ const routes = [
   { path: '/**', component: NotFound } // Defining fallback route by mapping them to '**
 ]
 
-const router = Router.useRouter(routes)
-router.render(router, '#app')
+const App = {
+  render() {
+    return `<router-view></router-view>`
+  }
+}
+
+const router = createRouter(routes)
+createApp(App).use(router).mount('#app')
 ```
 
 Inside component Book, you can access `:id` param like this:
@@ -569,7 +575,7 @@ const Index = {
 - Todo List Example:
 
 ```javascript
-import { reactive, render } from 'ractix'
+import { reactive, createApp } from 'ractix'
 
 const TodoList = {
   setup() {
@@ -603,7 +609,7 @@ const TodoList = {
   }
 }
 
-render(TodoList, '#app')
+createApp(TodoList).mount('#app')
 ```
 
 
