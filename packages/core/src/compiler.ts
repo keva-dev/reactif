@@ -106,7 +106,7 @@ export function compileDirectives(node: HTMLElement, compilerObj: CompilerObject
     const fragment = document.createDocumentFragment()
     state?.forEach((item: object, index: number) => {
       const iterateNode = node.cloneNode(true)
-      generateForEachNode(iterateNode, loopFactors[0], item, index)
+      generateForEachNode(iterateNode, loopFactors[0], context, item, index)
       compileDirectives(<HTMLElement>iterateNode, compilerObj)
       fragment.appendChild(iterateNode)
     })
@@ -145,48 +145,8 @@ export function compileDirectives(node: HTMLElement, compilerObj: CompilerObject
     node.setAttribute('href', path)
   }
   
-  const onDirectives = node.getAttributeNames()?.filter(e => e.startsWith('@'))
-  onDirectives.forEach(o => {
-    const directive = o.substring(1)
-    const methodStr = node.getAttribute(o)
-    
-    const { fnName, argsArr } = parseFunctionStr(methodStr)
-    const args = argsArr.map(a => {
-      if (a.type === 'value') {
-        return a.value
-      }
-      return extractAttribute(context, <string>a.value)
-    })
-    args.unshift(null)
-    
-    const method = extractAttribute(context, fnName)
-    node.addEventListener(directive, e => {
-      args[0] = e
-      method.apply(null, args)
-    })
-    node.removeAttribute(o)
-  })
-  
-  const extractDirectives = node.getAttributeNames()?.filter(e => e.startsWith(':'))
-  extractDirectives.forEach(d => {
-    const attributeName = d.substring(1)
-    const statePathOrig = node.getAttribute(d)
-    const { statePath, isPositive } = extractBooleanState(statePathOrig)
-    let state = extractAttribute(context, statePath)
-    if (state?.value !== undefined) {
-      state = state.value
-    }
-    if (DYNAMIC_ATTRIBUTES.includes(attributeName)) {
-      if (isPositive ? state : !state) {
-        node.setAttribute(attributeName, '')
-      } else {
-        node.removeAttribute(attributeName)
-      }
-    } else {
-      node.setAttribute(attributeName, isPositive ? state : !state)
-    }
-    node.removeAttribute(d)
-  })
+  checkOn(node, context)
+  checkProps(node, context)
   
   if (node.getAttribute('model')) {
     const statePath = node.getAttribute('model')
@@ -258,16 +218,40 @@ function replaceNodeValueByLoopFactor(value: string, loopFactor: string, state: 
   })
 }
 
-function generateForEachNode(iterateNode: Node | HTMLElement, loopFactor: string, item: object, index: number) {
+function generateForEachNode(iterateNode: Node | HTMLElement, loopFactor: string, context: object, item: object, index: number) {
   if (iterateNode.nodeType === NODE_TYPE_CONST.TEXT_NODE) {
     iterateNode.nodeValue = replaceNodeValueByLoopFactor(iterateNode.nodeValue, loopFactor, item)
+    iterateNode.nodeValue = replaceNodeValueByLoopFactor(iterateNode.nodeValue, 'index', index)
   }
   
   if (iterateNode.nodeType === NODE_TYPE_CONST.ELEMENT_NODE) {
     if ('attributes' in iterateNode) {
       Array.from(iterateNode.attributes).forEach(attr => {
         attr.nodeValue = replaceNodeValueByLoopFactor(attr.nodeValue, loopFactor, item)
-        attr.nodeValue = replaceNodeValueByLoopFactor(attr.nodeValue, 'index', index)
+      })
+  
+      checkProps(iterateNode, item)
+      // @ts-ignore
+      checkProps(iterateNode, index)
+  
+      const onDirectives = iterateNode.getAttributeNames()?.filter(e => e.startsWith('@'))
+      onDirectives.forEach(o => {
+        const directive = o.substring(1)
+        const methodStr = iterateNode.getAttribute(o)
+        const { fnName, argsArr } = parseFunctionStr(methodStr)
+        const args = argsArr.map(a => {
+          if (a.value === 'index') return index
+          if (a.value === undefined) return 'undefined'
+          if (a.value === null) return 'null'
+          if (a.type === 'value') return typeof a.value === 'string' ? `'` + a.value + `'` : a.value
+          const itemValue = extractAttribute(item, <string>a.value)
+          const stateValue = extractAttribute(context, <string>a.value)
+          const v = itemValue ? itemValue : stateValue
+          return typeof v === 'string' ? `'` + v + `'` : v
+        })
+        iterateNode.setAttribute('each-' + directive, `${fnName}(${args.join(', ')})`)
+        iterateNode.removeAttribute(o)
+        checkOn(iterateNode, context)
       })
     }
   }
@@ -275,7 +259,55 @@ function generateForEachNode(iterateNode: Node | HTMLElement, loopFactor: string
   // Recursive
   if (iterateNode.childNodes.length) {
     iterateNode.childNodes.forEach(child => {
-      generateForEachNode(child, loopFactor, item, index)
+      generateForEachNode(child, loopFactor, context, item, index)
     })
   }
+}
+
+function checkOn(node: HTMLElement, context: object) {
+  const onDirectives = node.getAttributeNames()?.filter(e => e.startsWith('@') || e.startsWith('each-'))
+  onDirectives.forEach(o => {
+    const directive = o.startsWith('@') ? o.substring(1) : o.substring(5)
+    const methodStr = node.getAttribute(o)
+    
+    const { fnName, argsArr } = parseFunctionStr(methodStr)
+    const args = argsArr.map(a => {
+      if (a.type === 'value') {
+        return a.value
+      }
+      return extractAttribute(context, <string>a.value)
+    })
+    args.unshift(null)
+    
+    const method = extractAttribute(context, fnName)
+    node.addEventListener(directive, e => {
+      args[0] = e
+      method.apply(null, args)
+    })
+    node.removeAttribute(o)
+  })
+}
+
+function checkProps(node: HTMLElement, context: object) {
+  const extractDirectives = node.getAttributeNames()?.filter(e => e.startsWith(':'))
+  extractDirectives.forEach(d => {
+    const attributeName = d.substring(1)
+    const statePathOrig = node.getAttribute(d)
+    const { statePath, isPositive } = extractBooleanState(statePathOrig)
+    let state = extractAttribute(context, statePath)
+    console.log(state)
+    if (state?.value !== undefined) {
+      state = state.value
+    }
+    if (DYNAMIC_ATTRIBUTES.includes(attributeName)) {
+      if (isPositive ? state : !state) {
+        node.setAttribute(attributeName, '')
+      } else {
+        node.removeAttribute(attributeName)
+      }
+    } else {
+      node.setAttribute(attributeName, isPositive ? state : !state)
+    }
+    node.removeAttribute(d)
+  })
 }

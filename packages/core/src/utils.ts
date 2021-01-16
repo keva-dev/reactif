@@ -1,4 +1,7 @@
 export function extractAttribute(obj: object | string | number, is: string | string[], value?: any): any {
+  if (!(obj instanceof Object)) {
+    return obj
+  }
   try {
     if (typeof is === 'string')
       return extractAttribute(obj, is.split('.'), value)
@@ -76,7 +79,7 @@ function resolveType(str: string): FuncArg {
   const specialType = getSpecialValue(str)
   return {
     type: specialType === 'variable' ? 'variable' : 'value',
-    value: str
+    value: specialType === 'variable' ? str : getSpecialValue(str)
   }
 }
 

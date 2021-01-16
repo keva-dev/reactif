@@ -7,7 +7,7 @@ export default {
     useDebug('WhacAMole')
     let interval = null
 
-    const initMoles = ['one', 'zero', 'one', 'zero', 'one', 'zero', 'one', 'zero', 'one']
+    const initMoles = ['one', 'zero', 'zero', 'one', 'zero', 'zero', 'one', 'one', 'one']
     const state = reactive({
       moleGrid: initMoles,
       level: 0,
@@ -86,7 +86,7 @@ export default {
           <p show="!state.hasWon" class="guide">To win the game, clear all the Brown</p>
           <div show="!state.hasWon" class="game-box">
             <div each="item in state.moleGrid" id="circle" 
-              class="{{ item }}" @click="circleClick({{ index }})">    
+              :class="item" @click="circleClick(index)">    
             </div>
           </div>
           <p if="state.hasWon" class="won-text"><button @click="next">Challenge with level {{ nextLevel }}</button></p>
