@@ -7,7 +7,7 @@ export default {
       form: {
         firstName: '',
         lastName: '',
-        country: 'SG'
+        country: ''
       },
       countries: [
         { name: 'Vietnam', code: 'VN' },
@@ -34,12 +34,14 @@ export default {
       clearInterval(interval)
     })
 
+    const isValidated = computed(() => !!(state.form.firstName.length && state.form.lastName.length && state.form.country.length))
+
     const submit = (e) => {
       e.preventDefault()
-      isSubmitted.value = true
+      if (isValidated.value){
+        isSubmitted.value = true
+      }
     }
-
-    const isValidated = computed(() => !!(state.form.firstName.length && state.form.lastName.length))
 
     return {
       state,
@@ -61,12 +63,14 @@ export default {
           <p>Last Name <span show="state.form.lastName">is {{ state.form.lastName }}</span></p>
           <input type="text" model="state.form.lastName" placeholder="Your last name.."/>
           
-          <p>Chosen country: {{ country }}</p>
+          <p>Chosen country: {{ state.form.country }}</p>
           <select model="state.form.country">
+            <option disabled value="">Please select one</option>
             <option each="item in state.countries" value="{{ item.code }}">{{ item.name }}</option>
           </select>
           
           <input show="isValidated" type="submit" value="Submit">
+          <div else style="margin-top: 1rem; color: white; background: #03BA00;">Please fill all the fields</div>
         </form>
       </div>
       <div else>

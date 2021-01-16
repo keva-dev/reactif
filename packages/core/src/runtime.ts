@@ -3,6 +3,7 @@ import { globalState } from './globalState'
 import { ComponentObject, HandlerFunc, MemoizedHandlerFunc, Data, RouterInstance } from './types'
 import { compile, stringToDOM } from './compiler'
 import { patch } from './patch'
+import { makeFuncReactiveAndExecuteIt } from './reactive'
 
 export type ComponentInstance = {
   component: ComponentObject,
@@ -130,7 +131,7 @@ export function useRuntime(component: ComponentObject): Runtime {
     
     globalState.currentComponent = component
     globalState.currentRuntime = runtimeInstance
-    const contextBinder = component.setup ? component.setup(props, context) : Object.create(null)
+    const contextBinder = component.setup ? <object>component.setup(props, context) : <object>Object.create(null)
     globalState.currentRuntime = undefined
     globalState.currentComponent = undefined
   
@@ -168,7 +169,12 @@ export function useRuntime(component: ComponentObject): Runtime {
     const templateString = component.render ? renderer() : elem.innerHTML
     makeFuncReactiveAndExecuteIt(() => {
       globalState.currentRuntime = runtimeInstance
-      const template = compile(stringToDOM(templateString), routerInstance, contextBinder, component, component.components)
+      const compilerObj = {
+        context: contextBinder,
+        currentComponent: component,
+        routerInstance
+      }
+      const template = compile(stringToDOM(templateString), compilerObj)
       patch(template, elem)
       globalState.currentRuntime = undefined
     })
@@ -199,10 +205,4 @@ export function useRuntime(component: ComponentObject): Runtime {
   }
   
   return runtimeInstance
-}
-
-function makeFuncReactiveAndExecuteIt(fn: HandlerFunc) {
-  globalState.currentFn = fn
-  fn()
-  globalState.currentFn = undefined
 }

@@ -2,11 +2,7 @@ import { DYNAMIC_ATTRIBUTES, NODE_TYPE_CONST } from './const'
 import { globalState } from './globalState'
 import { ComponentObject, RouterInstance } from './types'
 import { extractAttribute, parseFunctionStr } from './utils'
-
-let routerInstance: RouterInstance = null
-let context: object = null
-let currentComponent: ComponentObject = null
-let childComponents: Record<string, ComponentObject> = null
+import { makeFuncReactiveAndExecuteIt } from './reactive'
 
 export function stringToDOM(str: string): HTMLElement {
   const parser = new DOMParser()
@@ -14,28 +10,32 @@ export function stringToDOM(str: string): HTMLElement {
   return doc.body
 }
 
-export function compile(nodes: HTMLElement, _routerInstance: RouterInstance,
-  _context: object, _currentComponent: ComponentObject, _childComponents: Record<string, ComponentObject>): HTMLElement {
-  routerInstance = _routerInstance
-  context = _context || Object.create(null)
-  currentComponent = _currentComponent || null
-  childComponents = _childComponents || Object.create(null)
-  nodeTraversal(nodes.childNodes)
+interface CompilerObject {
+  context: object
+  currentComponent: ComponentObject
+  routerInstance: RouterInstance
+}
+
+export function compile(nodes: HTMLElement, compilerObj: CompilerObject): HTMLElement {
+  nodeTraversal(nodes.childNodes, compilerObj)
   return nodes
 }
 
-function nodeTraversal(nodes: NodeListOf<ChildNode>) {
+function nodeTraversal(nodes: NodeListOf<ChildNode>, compilerObj: CompilerObject) {
   nodes.forEach((node: HTMLElement) => {
-    compileDirectives(node)
+    compileDirectives(node, compilerObj)
     if (node.childNodes.length) {
-      nodeTraversal(node.childNodes)
+      nodeTraversal(node.childNodes, compilerObj)
     }
   })
 }
 
-export function compileDirectives(node: HTMLElement) {
+export function compileDirectives(node: HTMLElement, compilerObj: CompilerObject) {
   const runtime = globalState.currentRuntime
   if (!runtime) return
+  
+  const { context, currentComponent, routerInstance } = compilerObj
+  const childComponents = currentComponent.components
   
   if (node.nodeType === NODE_TYPE_CONST.TEXT_NODE) {
     node.nodeValue = node.nodeValue
@@ -107,13 +107,13 @@ export function compileDirectives(node: HTMLElement) {
     state?.forEach((item: object, index: number) => {
       const iterateNode = node.cloneNode(true)
       generateForEachNode(iterateNode, loopFactors[0], item, index)
-      compileDirectives(<HTMLElement>iterateNode)
+      compileDirectives(<HTMLElement>iterateNode, compilerObj)
       fragment.appendChild(iterateNode)
     })
     node.replaceWith(fragment)
   }
   
-  if (childComponents[node.tagName.toLowerCase()]) {
+  if (childComponents && childComponents[node.tagName.toLowerCase()]) {
     // Currently not support <slot></slot>
     if (node.childNodes.length > 1) {
       node.childNodes.forEach(c => c.remove())
@@ -188,28 +188,46 @@ export function compileDirectives(node: HTMLElement) {
     node.removeAttribute(d)
   })
   
-  if (node.getAttribute('html')) {
-    const statePath = node.getAttribute('html')
-    node.innerHTML = extractAttribute(context, statePath)
-    node.removeAttribute('html')
-    return
-  }
-  
   if (node.getAttribute('model')) {
     const statePath = node.getAttribute('model')
-    if (node.nodeName === 'INPUT') {
+    if (node.nodeName === 'INPUT' || node.nodeName === 'TEXTAREA') {
+      // TODO: Chek memory leak here
+      const updateInput = () => {
+        const v = extractAttribute(context, statePath)
+        // @ts-ignore
+        node.value = v
+        node.setAttribute('value', v)
+      }
+      makeFuncReactiveAndExecuteIt(updateInput)
+      
       node.addEventListener('input', e => {
         // @ts-ignore
         extractAttribute(context, statePath, e.target.value)
       }, false)
     }
     if (node.nodeName === 'SELECT') {
+      setTimeout(() => {
+        // TODO: Chek memory leak here
+        const updateInput = () => {
+          // @ts-ignore
+          node.value = extractAttribute(context, statePath)
+        }
+        makeFuncReactiveAndExecuteIt(updateInput)
+      }, 0)
+      
       node.addEventListener('change', e => {
         // @ts-ignore
         extractAttribute(context, statePath, e.target.value)
       }, false)
     }
     node.removeAttribute('model')
+  }
+  
+  if (node.getAttribute('html')) {
+    const statePath = node.getAttribute('html')
+    node.innerHTML = extractAttribute(context, statePath)
+    node.removeAttribute('html')
+    return
   }
 }
 
