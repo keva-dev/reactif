@@ -1,4 +1,4 @@
-import { reactive, computed, onMounted, onUnmounted } from 'ractix'
+import { reactive, computed, onMounted, onUnmounted } from '@reactif/core'
 import './WhacAMole.scss'
 import useDebug from '../hooks/useDebug'
 

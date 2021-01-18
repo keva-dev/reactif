@@ -1,4 +1,4 @@
-import { reactive, onMounted, nextTick } from 'ractix'
+import { reactive, onMounted, nextTick } from '@reactif/core'
 
 export default {
   setup() {

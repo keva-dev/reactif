@@ -1,4 +1,4 @@
-import { reactive, ref, onMounted, onUnmounted } from 'ractix'
+import { reactive, ref, onMounted, onUnmounted } from '@reactif/core'
 
 const Child = {
   setup(props) {

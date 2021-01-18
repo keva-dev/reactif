@@ -1,4 +1,4 @@
-import { reactive, readonly } from 'ractix'
+import { reactive, readonly } from '@reactif/core'
 
 const state = reactive({
   limit: 30,

@@ -1,4 +1,4 @@
-import { onMounted, onUnmounted, watchEffect } from 'ractix'
+import { onMounted, onUnmounted, watchEffect } from '@reactif/core'
 import { getAllArticles } from '../services/fuhcm'
 import sleep from '../utils/sleep'
 
@@ -31,7 +31,7 @@ export default {
       data.forEach(e => e.guid = e.guid.replace('https://daihoc.fpt.edu.vn/?p=', ''))
       setData(data)
       setIsLoading(false)
-      document.title = 'ReOdd Demo Homepage'
+      document.title = 'Reactif Demo Homepage'
     }
 
     async function loadMore() {

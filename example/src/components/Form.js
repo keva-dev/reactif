@@ -1,4 +1,4 @@
-import { reactive, onMounted, onUnmounted, computed, ref } from 'ractix'
+import { reactive, onMounted, onUnmounted, computed, ref } from '@reactif/core'
 
 export default {
   setup() {

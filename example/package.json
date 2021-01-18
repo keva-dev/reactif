@@ -15,7 +15,8 @@
     "since 2017-06"
   ],
   "dependencies": {
-    "ractix": "^0.3.1",
-    "@ractix/router": "^0.3.1"
+    "@ractix/router": "^0.3.1",
+    "@reactif/core": "^0.0.2",
+    "@reactif/router": "^0.0.2"
   }
 }

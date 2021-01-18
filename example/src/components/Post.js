@@ -1,4 +1,4 @@
-import { reactive, onMounted } from 'ractix'
+import { reactive, onMounted } from '@reactif/core'
 import { getArticle } from '../services/fuhcm'
 import useStore from '../store/store'
 import sleep from '../utils/sleep'

@@ -1,11 +1,11 @@
-# Ractix Example
+# Reactif Example
 
 - Please use Parcel to bundle
 - Run from root dir: `parcel index.html`
 
 ## Live demo
 
-Visit: [https://ractix-demo.netlify.app](https://ractix-demo.netlify.app)
+Visit: [reactif.dev](https://reactif.dev)
 
 ## Native DOM diffing
 

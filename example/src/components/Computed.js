@@ -1,4 +1,4 @@
-import { reactive, computed } from 'ractix'
+import { reactive, computed } from '@reactif/core'
 
 export default {
   setup() {

@@ -1,4 +1,4 @@
-import { createApp } from 'ractix'
+import { createApp } from '@reactif/core'
 import { createRouter } from '@ractix/router'
 
 import WhacAMole from './components/whac-a-mole/WhacAMole'
