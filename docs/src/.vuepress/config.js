@@ -8,7 +8,7 @@ module.exports = {
   /**
    * Ref：https://v1.vuepress.vuejs.org/config/#description
    */
-  description: description,
+  description: 'Fast 5kB reactive & elegant functional library for rapidly building modern UIs on the web',
 
   /**
    * Extra tags to be injected to the page HTML `<head>`
@@ -40,7 +40,7 @@ module.exports = {
     nav: [
       {
         text: 'Guide',
-        link: '/guide/',
+        link: '/guide/introduction.html',
       },
       {
         text: 'Example',
@@ -57,8 +57,8 @@ module.exports = {
           title: 'Essentials',
           collapsable: false,
           children: [
-            'installation',
             'introduction',
+            'installation',
             'basic',
             'conditional',
             'list',
@@ -67,7 +67,8 @@ module.exports = {
             'lifecycle',
             'components',
             'routing',
-            'state-management'
+            'state-management',
+            'composition'
           ]
         }
       ],

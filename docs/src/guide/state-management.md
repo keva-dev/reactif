@@ -1,5 +1,10 @@
 # State Management
 
+Large applications can often grow in complexity, due to multiple pieces of state scattered across many components 
+and the interactions between them. To solve this problem, let's use a state management.
+
+## Simple State Management from Scratch
+
 It is often overlooked that the source of truth in our applications is the reactive data object - a component instance 
 only proxies access to it. Therefore, if you have a piece of state that should be shared by multiple instances, you can use a `reactive` method to make an object reactive:
 
@@ -109,3 +114,64 @@ const appB = createApp({
 :::tip
 You should never replace the original state object in your actions - the components and the store need to share reference to the same object in order for mutations to be observed.
 :::
+
+## Vuex-Like Implementation
+
+You can use `.reactive` hook to create a Store, such as:
+
+```javascript
+import { reactive, readonly } from '@reactif/core'
+
+const state = reactive({
+  limit: 20,
+  isLoading: false,
+  data: []
+})
+
+const mutations = {
+  setLimit(limit) {
+    state.limit = limit
+  },
+  setIsLoading(isLoading) {
+    state.isLoading = isLoading
+  },
+  setData(data) {
+    state.data = data
+  }
+}
+
+export default function useStore() {
+  return {
+    state: readonly(state),
+    mutations
+  }
+}
+```
+
+And then use in components:
+
+```javascript
+const Index = {
+  setup() {
+    const { state, mutations } = useStore()
+    const { setLimit, setIsLoading, setData } = mutations
+  
+    onMounted(() => {
+      loadData().catch(err => console.error(err))
+    })
+  
+    async function loadData() {
+      setIsLoading(true)
+      setData(await getAllArticles(state.limit))
+      setIsLoading(false)
+    }
+  
+    // ...
+    
+    return { state, loadData } 
+  },
+  render() {
+    // ...
+  }
+}
+```

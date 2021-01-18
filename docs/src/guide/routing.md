@@ -1,16 +1,30 @@
 # Routing
 
+Router is a separated package from Reactif Core, it brings a very simple router with no fancy feature:
+
+- Modular, component-based router configuration
+- Route params
+- HTML5 history mode or hash mode
+
+## Install
+
 First, you need to install `@reactif/router`, for npm projects:
 
 ```shell
 npm install @reactif/router
 ```
 
-Or if you don't use build tool, you can import from CDN, and then use it from global variable `ReactifRouter`:
+You can also import from CDN, and then use it from global variable `ReactifRouter`
 
 ```html
-<script src="https://unpkg.com/@reactif/router@latest/dist/reactif-router.min.js"></script>
+<script src="https://unpkg.com/@reactif/router"></script>
+<script>
+const { createRouter } = ReactifRouter
+// ...
+</script>
 ```
+
+## Usage
 
 To use Reactif Router, all you need to do is map your components to the routes and let Reactif Router know where to render them. Here's a basic example:
 
@@ -48,7 +62,7 @@ const Book = {
     return { id }
   },
   return() {
-    return `<div>Book ID: {{ id }</div>`
+    return `<div>Book ID: {{ id }}</div>`
   }
 }
 ```

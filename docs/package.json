@@ -1,7 +1,7 @@
 {
   "name": "@reactif/docs",
   "version": "0.0.1",
-  "description": "Reactif Documentation",
+  "description": "Fast 5kB reactive & elegant functional library for rapidly building modern UIs on the web",
   "main": "index.js",
   "authors": {
     "name": "Tu Huynh",
