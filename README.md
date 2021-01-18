@@ -1,6 +1,6 @@
-# Reactif &middot; ![Travis (.org)](https://img.shields.io/travis/tuhuynh27/ractix?style=flat-square) ![GitHub](https://img.shields.io/github/license/tuhuynh27/reactif?style=flat-square) ![npm](https://img.shields.io/npm/v/@reactif/core?style=flat-square)
+# Reactif &middot; ![Travis (.org)](https://img.shields.io/travis/tuhuynh27/reactif?style=flat-square) ![GitHub](https://img.shields.io/github/license/tuhuynh27/reactif?style=flat-square) ![npm](https://img.shields.io/npm/v/@reactif/core?style=flat-square)
 
-![](https://i.imgur.com/rqqPOdu.png)
+![](https://i.imgur.com/1TJ2Q0w.jpg)
 
 ## Features
 
