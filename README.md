@@ -1,13 +1,13 @@
-# Ractix: Reactive UI library
+# Reactif: Reactive UI library
 
 ![](https://i.imgur.com/rqqPOdu.png)
 
 [![Made in Vietnam](https://raw.githubusercontent.com/webuild-community/badge/master/svg/made.svg)](https://webuild.community)
-![Travis (.org)](https://img.shields.io/travis/tuhuynh27/ractix?style=flat-square)
-![Lines of code](https://img.shields.io/tokei/lines/github/tuhuynh27/ractix?style=flat-square)
-![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/tuhuynh27/ractix?style=flat-square)
-![GitHub](https://img.shields.io/github/license/tuhuynh27/ractix?style=flat-square)
-![npm](https://img.shields.io/npm/v/ractix?style=flat-square)
+![Travis (.org)](https://img.shields.io/travis/tuhuynh27/reactif?style=flat-square)
+![Lines of code](https://img.shields.io/tokei/lines/github/tuhuynh27/reactif?style=flat-square)
+![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/tuhuynh27/reactif?style=flat-square)
+![GitHub](https://img.shields.io/github/license/tuhuynh27/reactif?style=flat-square)
+![npm](https://img.shields.io/npm/v/reactif?style=flat-square)
 
 ## Features
 
@@ -19,7 +19,7 @@
 - Embeddable and perfectly suitable for small-and-tiny-sized single page applications
 - Functional style (inspired by [Vue 3 Composition API](https://composition-api.vuejs.org/)) with TypeScript ready
 
-Ractix offers the right balance between the runtime size and development utilities for solving small but daily 
+Reactif offers the right balance between the runtime size and development utilities for solving small but daily 
 puzzles. Its API is inspired by Vue.js but it contains just the bare minimum to build a modern frontend 
 project. Not really reinventing the wheel, but rather taking the good parts of what’s there and making the simplest tool possible.
 
@@ -44,7 +44,7 @@ project. Not really reinventing the wheel, but rather taking the good parts of w
 
 - UNPKG CDN:
 
-Ractix is packaged to be used directly in the browser, and doesn't require any build or tools. It's a tiny (~5k) 
+Reactif is packaged to be used directly in the browser, and doesn't require any build or tools. It's a tiny (~5k) 
 package that gives you everything you need to start building directly in the browser. Just take your idea and turn it into reality in no time!
 
 Just import the CDN JS file to your `index.html`:
@@ -57,16 +57,16 @@ Just import the CDN JS file to your `index.html`:
   <h1>Hello {{ state.yourName }}!</h1>
 </html>
 
-<script src="https://unpkg.com/ractix@latest/dist/ractix.min.js"></script>
+<script src="https://unpkg.com/reactif@latest/dist/reactif.min.js"></script>
 <script>
 const HelloWorld = {
   setup() {
-    const state = Ractix.reactive({ yourName: '' })
+    const state = Reactif.reactive({ yourName: '' })
     return { state }
   }
 }
 
-Ractix.createApp(HelloWorld).mount()
+Reactif.createApp(HelloWorld).mount()
 </script>
 ```
 
@@ -77,7 +77,7 @@ The Vue-like APIs are easy to understand and work with (especially if you're com
 You can also install directly into your project using NPM:
 
 ```
-npm install ractix
+npm install reactif
 ```
 
 ## Usage
@@ -90,7 +90,7 @@ create a new file, write a template, register some data, add some methods and th
 At the core of Vue.js is a system that enables us to declaratively render data to the DOM using straightforward template syntax:
 
 ```javascript
-import { createApp }  from 'ractix'
+import { createApp } from '@reactif/core'
 
 const HelloWorld = {
   render() {
@@ -115,7 +115,7 @@ Thanks to [ES6 Proxy](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Re
 reactive conversion is "deep" - it affects all nested properties of the passed object.
 
 ```javascript
-import { reactive, onMounted, createApp } from 'ractix'
+import { reactive, onMounted, createApp } from '@reactif/core'
 
 const Book = {
   setup() {
@@ -202,7 +202,7 @@ The directive `if` is used to conditionally render a block. The block will only 
 expression returns a truthy value.
 
 ```html
-<h1 if="state.awesome">Ractix is awesome!</h1>
+<h1 if="state.awesome">Reactif is awesome!</h1>
 ```
 
 Or you can use the `else` directive to indicate an "else block" for `if`:
@@ -268,7 +268,7 @@ You can use the `model` directive to create two-way data bindings on form input,
 automatically picks the correct way to update the element based on the input type. Although a bit magical, model is essentially syntax sugar for updating data on user input events.
 
 ```javascript
-import { createApp, reactive } from 'ractix'
+import { createApp, reactive } from '@reactif/core'
 
 const InputApp = {
   setup() {
@@ -292,7 +292,7 @@ You can use the '@-something' directive, to listen to DOM events and run some
 JavaScript when they're triggered. The usage would be @click for listening on `click` event and so on.
 
 ```javascript
-import { createApp, reactive } from 'ractix'
+import { createApp, reactive } from '@reactif/core'
 
 const Data = {
   setup() {
@@ -316,10 +316,10 @@ createApp(Data).mount('#data')
 
 #### onMounted and onUnmounted
 
-Per component, `ractix` supports injecting hooks like `onMounted` and `onUnmounted`, these functions accept a callback that will be executed when the hook is called by the component:
+Per component, `reactif` supports injecting hooks like `onMounted` and `onUnmounted`, these functions accept a callback that will be executed when the hook is called by the component:
 
 ```javascript
-import { onMounted, onUnmounted, createApp } from 'ractix'
+import { onMounted, onUnmounted, createApp } from '@reactif/core'
 
 const HelloWorld = {
   setup() {
@@ -421,13 +421,13 @@ const Child = {
 ### Composition and Reusability
 
 Composition API is a relatively new feature in Vue 3 which allows more reusability between components. Inspired by 
-it, you can write hooks in Ractix too! This is great if you want to reuse the same logic in 
+it, you can write hooks in Reactif too! This is great if you want to reuse the same logic in 
 multiple components.
 
 Let's write a hook for our count logic.
 
 ```javascript
-import { reactive } from "ractix"
+import { reactive } from "reactif"
 
 export default function useCounter(initialCount) {
   const count = reactive({ value: initialCount })
@@ -453,24 +453,24 @@ setup() {
 
 ### Router
 
-First, you need to install `@ractix/router`, for `npm` projects:
+First, you need to install `@reactif/router`, for `npm` projects:
 
 ```shell
-npm install @ractix/router
+npm install @reactif/router
 ```
 
-Or if you don't use build tool, you can import from CDN, and then use it from global variable `RactixRouter`:
+Or if you don't use build tool, you can import from CDN, and then use it from global variable `ReactifRouter`:
 
 ```shell
-<script src="https://unpkg.com/@ractix/router@latest/dist/ractix-router.min.js"></script>
+<script src="https://unpkg.com/@reactif/router@latest/dist/reactif-router.min.js"></script>
 ```
 
-To use Ractix Router, all you need to do is map your components to the routes and let Ractix Router know where to 
+To use Reactif Router, all you need to do is map your components to the routes and let Reactif Router know where to 
 render them. Here's a basic example:
 
 ```javascript
-import { createApp } from 'ractix'
-import { createRouter } from '@ractix/router' 
+import { createApp } from '@reactif/core'
+import { createRouter } from '@reactif/router' 
 
 import HelloWorld from './components/Index'
 import Book from './components/Post'
@@ -527,7 +527,7 @@ setup(props, context) {
 You can use `.reactive` hook to create a Store, such as:
 
 ```javascript
-import { reactive, readonly } from 'ractix'
+import { reactive, readonly } from '@reactif/core'
 
 const state = reactive({
   limit: 20,
@@ -589,7 +589,7 @@ const Index = {
 
 ```html
 <html>
-<head><title>Todo List by Ractix</title></head>
+<head><title>Todo List by Reactif</title></head>
 <body>
   <form @submit="submit">
     <label>
@@ -602,9 +602,9 @@ const Index = {
     </ul>
   </form>
 </body>
-<script src="https://unpkg.com/ractix@latest/dist/ractix.min.js"></script>
+<script src="https://unpkg.com/reactif@latest/dist/reactif.min.js"></script>
 <script>
-const { createApp, reactive } = Ractix
+const { createApp, reactive } = Reactif
 const TodoList = {
   setup() {
     const state = reactive({
@@ -627,8 +627,8 @@ createApp(TodoList).mount()
 </html>
 ```
 
-An example small single page application built by `ractix`
+An example small single page application built by `reactif`
 
-See [Example](https://github.com/tuhuynh27/ractix/tree/master/example)
+See [Example](https://github.com/tuhuynh27/reactif/tree/master/example)
 
-Live preview: [ractix-demo.netlify.app](https://ractix-demo.netlify.app)
+Live preview: [reactif.dev](https://reactif.dev)

@@ -1,5 +1,5 @@
 {
-  "name": "ractix",
+  "name": "reactif",
   "private": true,
   "workspaces": [
     "packages/*",
