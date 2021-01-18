@@ -1,13 +1,6 @@
-# Reactif: Reactive UI library
+# Reactif &middot; ![Travis (.org)](https://img.shields.io/travis/tuhuynh27/ractix?style=flat-square) ![GitHub](https://img.shields.io/github/license/tuhuynh27/reactif?style=flat-square) ![npm](https://img.shields.io/npm/v/@reactif/core?style=flat-square)
 
 ![](https://i.imgur.com/rqqPOdu.png)
-
-[![Made in Vietnam](https://raw.githubusercontent.com/webuild-community/badge/master/svg/made.svg)](https://webuild.community)
-![Travis (.org)](https://img.shields.io/travis/tuhuynh27/reactif?style=flat-square)
-![Lines of code](https://img.shields.io/tokei/lines/github/tuhuynh27/reactif?style=flat-square)
-![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/tuhuynh27/reactif?style=flat-square)
-![GitHub](https://img.shields.io/github/license/tuhuynh27/reactif?style=flat-square)
-![npm](https://img.shields.io/npm/v/reactif?style=flat-square)
 
 ## Features
 
@@ -22,6 +15,8 @@
 Reactif offers the right balance between the runtime size and development utilities for solving small but daily 
 puzzles. Its API is inspired by Vue.js but it contains just the bare minimum to build a modern frontend 
 project. Not really reinventing the wheel, but rather taking the good parts of what’s there and making the simplest tool possible.
+
+[![From Vietnam with <3](https://raw.githubusercontent.com/webuild-community/badge/master/svg/love-modern.svg)](https://webuild.community)
 
 ## Table of Contents
 
