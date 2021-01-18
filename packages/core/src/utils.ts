@@ -1,19 +1,35 @@
-export function extractAttribute(obj: object | string | number, is: string | string[], value?: any): any {
+export function extractState(obj: any, is: string | string[], value?: any): any {
   if (!(obj instanceof Object)) {
     return obj
   }
+  
   try {
     if (typeof is === 'string')
-      return extractAttribute(obj, is.split('.'), value)
+      return extractState(obj, is.split('.'), value)
     else if (is.length === 1 && value !== undefined) { // @ts-ignore
       return obj[is[0]] = value
-    } else if (is.length === 0)
+    } else if (is.length === 0) {
+      if ('value' in obj) { // Extract computed value
+        return obj.value
+      }
       return obj
-    else { // @ts-ignore
-      return extractAttribute(obj[is[0]], is.slice(1), value)
+    } else { // @ts-ignore
+      return extractState(obj[is[0]], is.slice(1), value)
     }
   } catch (e) {
     return null
+  }
+}
+
+export function extractBooleanState(statePath: string) {
+  let negativeCount = 0
+  while (statePath.startsWith('!')) {
+    negativeCount++
+    statePath = statePath.substring(1)
+  }
+  return {
+    statePath,
+    isPositive: negativeCount % 2 === 0
   }
 }
 
