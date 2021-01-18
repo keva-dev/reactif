@@ -13,11 +13,11 @@ export function checkOn(node: HTMLElement, context: object) {
       }
       return extractState(context, <string>a.value)
     })
-    args.unshift(null)
+    args.push(null)
     
     const method = extractState(context, fnName)
     node.addEventListener(directive, e => {
-      args[0] = e
+      args[args.length - 1] = e
       method.apply(null, args)
     })
     node.removeAttribute(o)

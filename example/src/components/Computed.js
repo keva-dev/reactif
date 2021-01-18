@@ -9,7 +9,8 @@ export default {
       state.count++
     }
     const double = computed(() => state.count * 2)
-    function callWithArgs(event, double, a, b, c) {
+    function callWithArgs(double, a, b, c, event) {
+      console.log(event)
       console.log(`${double.value} - ${a} - ${b} - ${c}`)
     }
     return {

@@ -7,12 +7,15 @@ export default {
     useDebug('WhacAMole')
     let interval = null
 
+    const codepen = new URLSearchParams(window.location.search).get('codepen')
+
     const initMoles = ['one', 'zero', 'zero', 'one', 'zero', 'zero', 'one', 'one', 'one']
     const state = reactive({
       moleGrid: initMoles,
       level: 0,
       hasWon: false,
-      initTime: 0
+      initTime: 0,
+      codepen: codepen === 'false'
     })
 
     function getRandomInt(min, max) {
@@ -39,7 +42,7 @@ export default {
       document.title = 'Ractix Game Demo: Whac a Mole!'
     })
 
-    function circleClick(e, i) {
+    function circleClick(i) {
       state.moleGrid[i] = 'zero'
     }
 
@@ -92,7 +95,7 @@ export default {
           <p if="state.hasWon" class="won-text"><button @click="next">Challenge with level {{ nextLevel }}</button></p>
         </div>
         
-        <div class="code-container">
+        <div if="!state.codepen" class="code-container">
           <iframe height="840" style="width: 100%;" scrolling="no" title="Ractix Game" src="https://codepen.io/tuhuynh27/embed/eYdKrvK?height=265&theme-id=dark&default-tab=html" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
     See the Pen <a href='https://codepen.io/tuhuynh27/pen/eYdKrvK'>Ractix Game</a> by Tu Huynh
     (<a href='https://codepen.io/tuhuynh27'>@tuhuynh27</a>) on <a href='https://codepen.io'>CodePen</a>.</iframe>
