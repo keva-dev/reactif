@@ -1,11 +1,11 @@
-import { extractState, extractBooleanState } from '../utils'
+import { getState, extractBooleanState } from '../utils'
 
 export function checkIf(node: HTMLElement, context: object) {
   if (node.getAttribute('if')) {
     const statePathOrig = node.getAttribute('if')
     const { statePath, isPositive } = extractBooleanState(statePathOrig)
     node.removeAttribute('if')
-    const state = extractState(context, statePath)
+    const state = getState(context, statePath)
     if (isPositive ? !state : state) {
       node.remove()
       return
@@ -19,7 +19,7 @@ export function checkIf(node: HTMLElement, context: object) {
     const statePathOrig = node.getAttribute('show')
     const { statePath, isPositive } = extractBooleanState(statePathOrig)
     node.removeAttribute('show')
-    const state = extractState(context, statePath)
+    const state = getState(context, statePath)
     if (isPositive ? !state : state) {
       node.style.display = 'none'
     } else {

@@ -1,23 +1,31 @@
-export function extractState(obj: any, is: string | string[], value?: any): any {
+export function getState(obj: any, path: string | string[], extractWrapper = true) {
+  return manipulateState(obj, path, extractWrapper)
+}
+
+export function setState(obj: any, path: string | string[], value: any) {
+  return manipulateState(obj, path, false, value)
+}
+
+function manipulateState(obj: any, is: string | string[], extractWrapper = true, value?: any): any {
   if (!(obj instanceof Object)) {
     return obj
   }
   
   try {
     if (typeof is === 'string')
-      return extractState(obj, is.split('.'), value)
+      return manipulateState(obj, is.split('.'), extractWrapper, value)
     else if (is.length === 1 && value !== undefined) { // @ts-ignore
       return obj[is[0]] = value
     } else if (is.length === 0) {
-      if ('value' in obj) { // Extract computed value
+      if (extractWrapper && 'value' in obj) { // Extract computed value
         return obj.value
       }
       return obj
     } else { // @ts-ignore
-      return extractState(obj[is[0]], is.slice(1), value)
+      return manipulateState(obj[is[0]], is.slice(1), extractWrapper, value)
     }
   } catch (e) {
-    return null
+    return undefined
   }
 }
 

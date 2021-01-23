@@ -9,9 +9,9 @@ export default {
       state.count++
     }
     const double = computed(() => state.count * 2)
-    function callWithArgs(double, a, b, c, event) {
+    function callWithArgs(computedVal, a, b, c, event) {
       console.log(event)
-      console.log(`${double.value} - ${a} - ${b} - ${c}`)
+      console.log(`${computedVal.value} - ${a} - ${b} - ${c}`)
     }
     return {
       state,
@@ -22,8 +22,9 @@ export default {
   },
   render() {
     return `
-      <div>Test {{ double }}</div>
-      <button @click="callWithArgs(double, true, 'string', 123)">Test Function Call With Args</button>
+      <div>Original: {{ state.count }}</div>
+      <div>Double {{ double }}</div>
+      <button :test="double" @click="callWithArgs(double, true, 'string', 123)">Test Function Call With Args</button>
       <button @click="increase">Increase</button>
     `
   }

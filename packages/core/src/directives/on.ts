@@ -1,4 +1,4 @@
-import { extractState, parseFunctionStr } from '../utils'
+import { getState, parseFunctionStr } from '../utils'
 
 export function checkOn(node: HTMLElement, context: object) {
   const onDirectives = node.getAttributeNames()?.filter(e => e.startsWith('@') || e.startsWith('each-'))
@@ -11,11 +11,11 @@ export function checkOn(node: HTMLElement, context: object) {
       if (a.type === 'value') {
         return a.value
       }
-      return extractState(context, <string>a.value)
+      return getState(context, <string>a.value, false)
     })
     args.push(null)
-    
-    const method = extractState(context, fnName)
+
+    const method = getState(context, fnName)
     node.addEventListener(directive, e => {
       args[args.length - 1] = e
       method.apply(null, args)

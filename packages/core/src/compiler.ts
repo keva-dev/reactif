@@ -6,7 +6,7 @@ import { checkTo, checkRouterView } from './directives/router'
 import { onText } from './directives/text'
 import { globalState } from './globalState'
 import { ComponentObject, RouterInstance } from './types'
-import { extractState } from './utils'
+import { getState } from './utils'
 import { checkProps } from './directives/props'
 import { checkOn } from './directives/on'
 import { onEach } from './directives/each'
@@ -57,7 +57,7 @@ export function compileDirectives(node: HTMLElement, compilerObj: CompilerObject
   if (node.getAttribute('each')) {
     let statePath = node.getAttribute('each')
     const loopFactors = statePath.split(' in ')
-    const state = extractState(context, loopFactors[1])
+    const state = getState(context, loopFactors[1])
     node.removeAttribute('each')
     const fragment = document.createDocumentFragment()
     state?.forEach((item: object, index: number) => {

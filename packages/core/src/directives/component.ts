@@ -1,6 +1,6 @@
 import { Runtime } from '../runtime'
 import { ComponentObject } from '../types'
-import { extractState } from '../utils'
+import { getState } from '../utils'
 
 export function checkChildComponent(node: HTMLElement, context: object, currentComponent: ComponentObject, runtime: Runtime) {
   const childComponents = currentComponent.components
@@ -19,7 +19,7 @@ export function checkChildComponent(node: HTMLElement, context: object, currentC
     propsAtts.forEach(e => {
       const propName = e.startsWith(':') ? e.substring(1) : e
       const statePath = node.getAttribute(e)
-      props[propName] = e.startsWith(':') ? extractState(context, statePath) : statePath
+      props[propName] = e.startsWith(':') ? getState(context, statePath) : statePath
       node.removeAttribute(e)
     })
     

@@ -1,5 +1,5 @@
 import { NODE_TYPE_CONST } from '../const'
-import { extractState, parseFunctionStr } from '../utils'
+import { getState, parseFunctionStr } from '../utils'
 import { checkOn } from './on'
 import { checkProps } from './props'
 
@@ -28,8 +28,8 @@ export function onEach(iterateNode: Node | HTMLElement, loopFactor: string, cont
           if (a.value === undefined) return 'undefined'
           if (a.value === null) return 'null'
           if (a.type === 'value') return typeof a.value === 'string' ? `'` + a.value + `'` : a.value
-          const itemValue = extractState(item, <string>a.value)
-          const stateValue = extractState(context, <string>a.value)
+          const itemValue = getState(item, <string>a.value)
+          const stateValue = getState(context, <string>a.value)
           const v = itemValue ? itemValue : stateValue
           return typeof v === 'string' ? `'` + v + `'` : v
         })
@@ -55,6 +55,6 @@ function replaceNodeValueByLoopFactor(value: string, loopFactor: string, state: 
       return state as unknown as string
     }
     const statePath = matchedStr.split('.').slice(1).join('.')
-    return extractState(state, statePath)
+    return getState(state, statePath)
   })
 }

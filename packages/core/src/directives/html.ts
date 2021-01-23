@@ -1,9 +1,9 @@
-import { extractState } from '../utils'
+import { getState } from '../utils'
 
 export function checkHTML(node: HTMLElement, context: object) {
   if (node.getAttribute('html')) {
     const statePath = node.getAttribute('html')
-    node.innerHTML = extractState(context, statePath)
+    node.innerHTML = getState(context, statePath)
     node.removeAttribute('html')
     return
   }
