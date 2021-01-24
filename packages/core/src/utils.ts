@@ -6,6 +6,10 @@ export function setState(obj: any, path: string | string[], value: any) {
   return manipulateState(obj, path, false, value)
 }
 
+export function includes(arr: Array<any>, id: string | number) {
+  return arr.indexOf(id) !== -1
+}
+
 function manipulateState(obj: any, is: string | string[], extractWrapper = true, value?: any): any {
   if (!(obj instanceof Object)) {
     return obj

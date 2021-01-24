@@ -1,26 +1,26 @@
-import { reactive, readonly } from '@reactif/core'
+import { reactive, readonly } from '@reactif/core';
 
 const state = reactive({
   limit: 30,
   isLoading: false,
-  data: []
-})
+  data: [],
+});
 
 const mutations = {
   setLimit(limit) {
-    state.limit = limit
+    state.limit = limit;
   },
   setIsLoading(isLoading) {
-    state.isLoading = isLoading
+    state.isLoading = isLoading;
   },
   setData(data) {
-    state.data = data
-  }
-}
+    state.data = data;
+  },
+};
 
 export default function useStore() {
   return {
     state: readonly(state),
-    mutations
-  }
+    mutations,
+  };
 }

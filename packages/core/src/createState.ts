@@ -1,6 +1,7 @@
 import { asyncUpdateQueue } from './asyncUpdateQueue'
 import { useDependency } from './dependency'
 import { globalState } from './globalState'
+import { includes } from './utils'
 
 export function createState<T extends object>(state: T): T {
   if (globalState.currentRuntime && globalState.currentComponent) {
@@ -27,30 +28,26 @@ export function createRef(value: Primitive): Ref {
 
 export function createReactiveState<T extends object>(state: T) {
   const dep = useDependency()
-  
+
+  // Reflect.get/set to forward the operation to original object
   const handler = {
     get(target: object, p: PropertyKey, receiver: any): any {
-      // For nested state update
-      // @ts-ignore
-      if (['[object Object]', '[object Array]'].indexOf(Object.prototype.toString.call(target[p])) > -1) {
-        // @ts-ignore
-        return new Proxy(target[p], handler)
+      const value = Reflect.get(target, p, receiver);
+      if (includes(['object', 'array'], typeof value)) {
+        return new Proxy(value, handler)
       }
       
       dep.depend()
-      return Reflect.get(target, p, receiver)
+      return value;
     },
     set(target: object, p: PropertyKey, value: any, receiver: any): boolean {
-      const set = Reflect.set(target, p, value, receiver)
       asyncUpdateQueue.add(dep.notify)
-      return set
+      return Reflect.set(target, p, value, receiver)
     }
   }
-  
-  const _state = new Proxy<T>(state, handler)
-  
+
   return {
-    state: _state,
+    state: new Proxy<T>(state, handler),
     dep
   }
 }
