@@ -17,6 +17,8 @@
   "dependencies": {
     "@ractix/router": "^0.3.1",
     "@reactif/core": "^0.0.2",
-    "@reactif/router": "^0.0.2"
+    "@reactif/router": "^0.0.2",
+    "hooks": "^0.3.2",
+    "vue": "^2.6.12"
   }
 }

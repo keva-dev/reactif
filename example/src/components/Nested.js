@@ -1,7 +1,7 @@
 import { reactive, ref, onMounted, onUnmounted } from '@reactif/core'
 
 const Child = {
-  setup(props) {
+  setup (props) {
     const state = reactive({
       count: 0,
       text: ''
@@ -24,7 +24,7 @@ const Child = {
       coin: props.coin
     }
   },
-  render() {
+  render () {
     return `
       <div style="margin: 1rem; padding: 1rem; border: 1px solid black;">
         <h3>{{ heading }}</h3>
@@ -40,15 +40,15 @@ const Parent = {
   components: {
     'child-component': Child
   },
-  setup() {
+  setup () {
     const state = reactive({
-      childToggle: true,
+      childToggle: true
     })
 
-    const toggleChild = () => state.childToggle = !state.childToggle
+    const toggleChild = () => (state.childToggle = !state.childToggle)
 
     const coin = ref(0)
-    const increaseCoin = () => coin.value += 1000
+    const increaseCoin = () => (coin.value += 1000)
 
     return {
       state,
@@ -57,13 +57,15 @@ const Parent = {
       increaseCoin
     }
   },
-  render() {
+  render () {
     return `
       <div>
         <h2>Parent Component</h2>
         <button @click="increaseCoin">+1000 coin</button>
         <p>This is parent component</p>
         <button @click="toggleChild">Toggle Child</button>
+
+        <div>{{ coin }}</div>
         <child-component if="state.childToggle" heading="This is child" :coin="coin">
           <p>Slot</p>
         </child-component>

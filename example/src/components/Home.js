@@ -1,58 +1,53 @@
-import { onMounted, onUnmounted, watchEffect } from '@reactif/core'
-import { getAllArticles } from '../services/fuhcm'
-import sleep from '../utils/sleep'
-
+import { onMounted, onUnmounted } from '@reactif/core'
 import useStore from '../store/store'
+import usePost from '/hooks/usePost'
+import Loading from './Loading'
 
 export default {
-  setup() {
+  components: {
+    'base-loading': Loading
+  },
+  setup () {
     const { state, mutations } = useStore()
-    const { setLimit, setIsLoading, setData } = mutations
+    const { getAllArticles } = usePost()
+    const { setLimit, setData } = mutations
 
     onMounted(() => {
       if (!state.data.length) {
-        loadData().catch(err => console.error(err))
+        loadData().catch((err) => console.error(err))
       }
-      window.addEventListener("scroll", onScroll, false)
+      window.addEventListener('scroll', onScroll, false)
     })
 
     onUnmounted(() => {
-      window.removeEventListener("scroll", onScroll)
+      window.removeEventListener('scroll', onScroll)
     })
 
-    watchEffect(() => {
-      console.log(state.isLoading)
-    })
-
-    async function loadData() {
-      setIsLoading(true)
-      await sleep(500)
+    async function loadData () {
       const data = await getAllArticles(state.limit)
-      data.forEach(e => e.guid = e.guid.replace('https://daihoc.fpt.edu.vn/?p=', ''))
+      data.forEach((e) => {
+        e.guid = e.guid.replace('https://daihoc.fpt.edu.vn/?p=', '')
+      })
       setData(data)
-      setIsLoading(false)
       document.title = 'Reactif Demo Homepage'
     }
 
-    async function loadMore() {
+    async function loadMore () {
       setLimit(state.limit + 10)
       await loadData()
     }
 
-    function onScroll() {
+    function onScroll () {
       const scrollTop =
-        (document.documentElement && document.documentElement.scrollTop) ||
-        document.body.scrollTop
+        (document.documentElement && document.documentElement.scrollTop) || document.body.scrollTop
       const scrollHeight =
         (document.documentElement && document.documentElement.scrollHeight) ||
         document.body.scrollHeight
-      const clientHeight =
-        document.documentElement.clientHeight || window.innerHeight
-      const scrolledToBottom =
-        Math.ceil(scrollTop + clientHeight) >= scrollHeight
+      const clientHeight = document.documentElement.clientHeight || window.innerHeight
+      const scrolledToBottom = Math.ceil(scrollTop + clientHeight) >= scrollHeight
 
       if (scrolledToBottom && !state.isLoading) {
-        loadMore().catch(err => console.error(err))
+        loadMore().catch((err) => console.error(err))
       }
     }
 
@@ -62,9 +57,8 @@ export default {
       loadMore
     }
   },
-  render() {
+  render () {
     return `
-      <div show="state.isLoading" class="loading-overlay"></div>
       <h2>FUHCM RSS ({{ state.limit }})</h2>
       <button @click="reload">Reload</button> <span show="state.isLoading">Loading</span>
       <ul>
@@ -72,6 +66,7 @@ export default {
       <div>
         <button @click="loadMore">Load more...</button> <span show="state.isLoading">Loading</span>
       </div>
+      <base-loading />
     `
   }
 }

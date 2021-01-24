@@ -21,3 +21,9 @@ export interface RouterInstance {
     go: (path: string) => void
   }
 }
+
+export type Primitive = number | string | boolean
+
+export interface Ref {
+  value: Primitive
+}

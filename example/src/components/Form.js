@@ -1,7 +1,7 @@
 import { reactive, onMounted, onUnmounted, computed, ref } from '@reactif/core'
 
 export default {
-  setup() {
+  setup () {
     const state = reactive({
       count: 0,
       form: {
@@ -38,7 +38,7 @@ export default {
 
     const submit = (e) => {
       e.preventDefault()
-      if (isValidated.value){
+      if (isValidated.value) {
         isSubmitted.value = true
       }
     }
@@ -51,7 +51,7 @@ export default {
       submit
     }
   },
-  render() {
+  render () {
     return `
       <div if="!isSubmitted" class="form">
         <a to="/home"><button>Back to home</button></a>

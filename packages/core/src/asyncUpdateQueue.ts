@@ -24,9 +24,7 @@ export function useAsyncUpdateQueue() {
   
   function nextTick(callback?: () => void): Promise<void> | void {
     if (!callback) {
-      return new Promise<void>((resolve) => {
-        setTimeout(resolve, 0)
-      })
+      return new Promise<void>((resolve) => setTimeout(resolve, 0))
     }
     setTimeout(callback, 0)
   }

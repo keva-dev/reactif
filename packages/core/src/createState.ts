@@ -2,28 +2,23 @@ import { asyncUpdateQueue } from './asyncUpdateQueue'
 import { useDependency } from './dependency'
 import { globalState } from './globalState'
 import { includes } from './utils'
+import { Ref, Primitive } from './types'
 
-export function createState<T extends object>(state: T): T {
+function getCurrentState<T extends object>(_state: T) {
   if (globalState.currentRuntime && globalState.currentComponent) {
-    return globalState.currentRuntime.addState(state, globalState.currentComponent)
+    return globalState.currentRuntime.addState(_state, globalState.currentComponent)
   }
-  return createReactiveState(state).state
+  return null;
 }
 
-type Primitive = number | string | boolean
-
-interface Ref {
-  value: Primitive
+// create new state or get existing one to add
+export function createState<T extends object>(state: T): T {
+  return getCurrentState(state) || createReactiveState(state).state
 }
 
 export function createRef(value: Primitive): Ref {
-  const ref = {
-    value
-  }
-  if (globalState.currentRuntime && globalState.currentComponent) {
-    return globalState.currentRuntime.addState(ref, globalState.currentComponent)
-  }
-  return createReactiveState(ref).state
+  const ref = { value }
+  return getCurrentState(ref) || createReactiveState(ref).state
 }
 
 export function createReactiveState<T extends object>(state: T) {

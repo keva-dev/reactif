@@ -1,9 +1,9 @@
 import { reactive, computed, onMounted, onUnmounted } from '@reactif/core'
+import useDebug from '/hooks/common/useDebug'
 import './WhacAMole.scss'
-import useDebug from '../hooks/useDebug'
 
 export default {
-  setup() {
+  setup () {
     useDebug('WhacAMole')
     let interval = null
 
@@ -18,11 +18,11 @@ export default {
       codepen: codepen === 'false'
     })
 
-    function getRandomInt(min, max) {
+    function getRandomInt (min, max) {
       return Math.floor(Math.random() * (max - min)) + min
     }
 
-    function won() {
+    function won () {
       if (state.hasWon) {
         return true
       }
@@ -42,11 +42,11 @@ export default {
       document.title = 'Ractix Game Demo: Whac a Mole!'
     })
 
-    function circleClick(i) {
+    function circleClick (i) {
       state.moleGrid[i] = 'zero'
     }
 
-    function startGameInterval() {
+    function startGameInterval () {
       state.hasWon = false
       state.level += 1
       state.initTime = new Date().getTime()
@@ -56,12 +56,12 @@ export default {
           state.moleGrid = initMoles
         }
         state.moleGrid[getRandomInt(0, state.moleGrid.length)] = 'one'
-      }, 500 - ((state.level - 1) * 100))
+      }, 500 - (state.level - 1) * 100)
     }
 
     onUnmounted(() => {
       clearInterval(interval)
-      document.title = 'Ractix Demo'
+      document.title = 'Reactif Demo'
     })
 
     const time = computed(() => {
@@ -79,7 +79,7 @@ export default {
       next: startGameInterval
     }
   },
-  render() {
+  render () {
     return `
       <button to="/home">← Back to home</button>
       <div class="container">
