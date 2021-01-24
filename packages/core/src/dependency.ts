@@ -3,11 +3,11 @@ import { HandlerFunc, MemoizedHandlerFunc } from './types'
 
 export function useDependency() {
   const dependants: Set<HandlerFunc | MemoizedHandlerFunc> = new Set()
-  
+
   function depend(): void {
     dependants.add(globalState.currentFn)
   }
-  
+
   function notify(): void {
     dependants.forEach(fn => {
       if (typeof fn === 'function') {
@@ -19,10 +19,10 @@ export function useDependency() {
       }
     })
   }
-  
+
   function destroy(): void {
     dependants.clear()
   }
-  
-  return { depend, notify, destroy }
+
+  return {depend, notify, destroy}
 }

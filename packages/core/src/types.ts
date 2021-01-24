@@ -15,9 +15,16 @@ export interface Data {
 }
 
 export interface RouterInstance {
-  renderer(render: (c: ComponentObject) => void, forceUnmount: (c: ComponentObject) => void): void
   routerContextFn: () => {
     params: () => Record<string, string>,
     go: (path: string) => void
   }
+
+  renderer(render: (c: ComponentObject) => void, forceUnmount: (c: ComponentObject) => void): void
+}
+
+export type Primitive = number | string | boolean
+
+export interface Ref {
+  value: Primitive
 }

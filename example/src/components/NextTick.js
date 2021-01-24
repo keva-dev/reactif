@@ -1,4 +1,4 @@
-import { reactive, onMounted, nextTick } from '@reactif/core'
+import { nextTick, onMounted, reactive } from '@reactif/core'
 
 export default {
   setup() {
@@ -11,13 +11,13 @@ export default {
     onMounted(() => {
       const el = document.querySelector('#nextTick')
       console.log(el.textContent)
-      state.a = 1;
+      state.a = 1
       nextTick(() => {
         console.log(el.textContent)
-        state.b = 2;
+        state.b = 2
       })
-      state.b = 3;
-      state.c = 4;
+      state.b = 3
+      state.c = 4
     })
 
     return {

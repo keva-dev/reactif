@@ -2,16 +2,12 @@ import { reactive, readonly } from '@reactif/core'
 
 const state = reactive({
   limit: 30,
-  isLoading: false,
   data: []
 })
 
 const mutations = {
   setLimit(limit) {
     state.limit = limit
-  },
-  setIsLoading(isLoading) {
-    state.isLoading = isLoading
   },
   setData(data) {
     state.data = data

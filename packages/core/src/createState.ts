@@ -1,56 +1,48 @@
 import { asyncUpdateQueue } from './asyncUpdateQueue'
 import { useDependency } from './dependency'
 import { globalState } from './globalState'
+import { includes } from './utils'
+import { Primitive, Ref } from './types'
 
-export function createState<T extends object>(state: T): T {
+function getCurrentState<T extends object>(_state: T) {
   if (globalState.currentRuntime && globalState.currentComponent) {
-    return globalState.currentRuntime.addState(state, globalState.currentComponent)
+    return globalState.currentRuntime.addState(_state, globalState.currentComponent)
   }
-  return createReactiveState(state).state
+  return null;
 }
 
-type Primitive = number | string | boolean
-
-interface Ref {
-  value: Primitive
+// create new state or get existing one to add
+export function createState<T extends object>(state: T): T {
+  return getCurrentState(state) || createReactiveState(state).state
 }
 
 export function createRef(value: Primitive): Ref {
-  const ref = {
-    value
-  }
-  if (globalState.currentRuntime && globalState.currentComponent) {
-    return globalState.currentRuntime.addState(ref, globalState.currentComponent)
-  }
-  return createReactiveState(ref).state
+  const ref = {value}
+  return getCurrentState(ref) || createReactiveState(ref).state
 }
 
 export function createReactiveState<T extends object>(state: T) {
   const dep = useDependency()
-  
+
+  // Reflect.get/set to forward the operation to original object
   const handler = {
     get(target: object, p: PropertyKey, receiver: any): any {
-      // For nested state update
-      // @ts-ignore
-      if (['[object Object]', '[object Array]'].indexOf(Object.prototype.toString.call(target[p])) > -1) {
-        // @ts-ignore
-        return new Proxy(target[p], handler)
+      const value = Reflect.get(target, p, receiver);
+      if (includes(['object', 'array'], typeof value)) {
+        return new Proxy(value, handler)
       }
-      
+
       dep.depend()
-      return Reflect.get(target, p, receiver)
+      return value;
     },
     set(target: object, p: PropertyKey, value: any, receiver: any): boolean {
-      const set = Reflect.set(target, p, value, receiver)
       asyncUpdateQueue.add(dep.notify)
-      return set
+      return Reflect.set(target, p, value, receiver)
     }
   }
-  
-  const _state = new Proxy<T>(state, handler)
-  
+
   return {
-    state: _state,
+    state: new Proxy<T>(state, handler),
     dep
   }
 }

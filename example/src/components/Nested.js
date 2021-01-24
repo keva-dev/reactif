@@ -1,4 +1,4 @@
-import { reactive, ref, onMounted, onUnmounted } from '@reactif/core'
+import { onMounted, onUnmounted, reactive, ref } from '@reactif/core'
 
 const Child = {
   setup(props) {
@@ -42,13 +42,13 @@ const Parent = {
   },
   setup() {
     const state = reactive({
-      childToggle: true,
+      childToggle: true
     })
 
-    const toggleChild = () => state.childToggle = !state.childToggle
+    const toggleChild = () => (state.childToggle = !state.childToggle)
 
     const coin = ref(0)
-    const increaseCoin = () => coin.value += 1000
+    const increaseCoin = () => (coin.value += 1000)
 
     return {
       state,
@@ -64,6 +64,8 @@ const Parent = {
         <button @click="increaseCoin">+1000 coin</button>
         <p>This is parent component</p>
         <button @click="toggleChild">Toggle Child</button>
+
+        <div>{{ coin }}</div>
         <child-component if="state.childToggle" heading="This is child" :coin="coin">
           <p>Slot</p>
         </child-component>

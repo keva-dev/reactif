@@ -2,7 +2,7 @@ import { NODE_TYPE_CONST } from './const'
 import { checkChildComponent } from './directives/component'
 import { checkIf } from './directives/if'
 import { checkModel } from './directives/model'
-import { checkTo, checkRouterView } from './directives/router'
+import { checkRouterView, checkTo } from './directives/router'
 import { onText } from './directives/text'
 import { globalState } from './globalState'
 import { ComponentObject, RouterInstance } from './types'
@@ -41,19 +41,19 @@ function nodeTraversal(nodes: NodeListOf<ChildNode>, compilerObj: CompilerObject
 export function compileDirectives(node: HTMLElement, compilerObj: CompilerObject) {
   const runtime = globalState.currentRuntime
   if (!runtime) return
-  
-  const { context, currentComponent, routerInstance } = compilerObj
-  
+
+  const {context, currentComponent, routerInstance} = compilerObj
+
   if (node.nodeType === NODE_TYPE_CONST.TEXT_NODE) {
     onText(node, context)
     return
   }
-  
+
   if (node.nodeType !== NODE_TYPE_CONST.ELEMENT_NODE) return
-  
+
   checkRouterView(node, routerInstance, runtime)
   checkIf(node, context)
-  
+
   if (node.getAttribute('each')) {
     let statePath = node.getAttribute('each')
     const loopFactors = statePath.split(' in ')
@@ -68,7 +68,7 @@ export function compileDirectives(node: HTMLElement, compilerObj: CompilerObject
     })
     node.replaceWith(fragment)
   }
-  
+
   checkChildComponent(node, context, currentComponent, runtime)
   checkTo(node, routerInstance)
   checkOn(node, context)

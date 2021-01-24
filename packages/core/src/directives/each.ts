@@ -8,21 +8,21 @@ export function onEach(iterateNode: Node | HTMLElement, loopFactor: string, cont
     iterateNode.nodeValue = replaceNodeValueByLoopFactor(iterateNode.nodeValue, loopFactor, item)
     iterateNode.nodeValue = replaceNodeValueByLoopFactor(iterateNode.nodeValue, 'index', index)
   }
-  
+
   if (iterateNode.nodeType === NODE_TYPE_CONST.ELEMENT_NODE) {
     if ('attributes' in iterateNode) {
       Array.from(iterateNode.attributes).forEach(attr => {
         attr.nodeValue = replaceNodeValueByLoopFactor(attr.nodeValue, loopFactor, item)
       })
-      
+
       checkProps(iterateNode, item)
       checkProps(iterateNode, <object><unknown>index)
-      
+
       const onDirectives = iterateNode.getAttributeNames()?.filter(e => e.startsWith('@'))
       onDirectives.forEach(o => {
         const directive = o.substring(1)
         const methodStr = iterateNode.getAttribute(o)
-        const { fnName, argsArr } = parseFunctionStr(methodStr)
+        const {fnName, argsArr} = parseFunctionStr(methodStr)
         const args = argsArr.map(a => {
           if (a.value === 'index') return index
           if (a.value === undefined) return 'undefined'
@@ -39,7 +39,7 @@ export function onEach(iterateNode: Node | HTMLElement, loopFactor: string, cont
       })
     }
   }
-  
+
   // Recursive
   if (iterateNode.childNodes.length) {
     iterateNode.childNodes.forEach(child => {

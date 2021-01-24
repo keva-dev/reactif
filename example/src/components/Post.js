@@ -1,44 +1,41 @@
-import { reactive, onMounted } from '@reactif/core'
-import { getArticle } from '../services/fuhcm'
-import useStore from '../store/store'
-import sleep from '../utils/sleep'
+import { onMounted, reactive } from '@reactif/core'
+import usePost from '/hooks/usePost'
+import Loading from './Loading'
 
 export default {
+  components: {
+    'base-loading': Loading
+  },
   setup(props, context) {
-    const store = useStore()
-    const { mutations } = store
+    const {getArticle} = usePost()
     const state = reactive({
-      data: null,
+      data: null
     })
 
-    onMounted(() => {
-      loadData().catch(err => console.error(err))
+    onMounted(async () => {
+      await loadData()
     })
 
     async function loadData() {
-      mutations.setIsLoading(true)
-      const { id } = context.$router.params
-      await sleep(500)
+      const {id} = context.$router.params
       state.data = await getArticle(id)
-      mutations.setIsLoading(false)
       document.title = state.data.title
     }
 
     return {
       state,
-      store,
       loadData
     }
   },
   render() {
     return `
-      <div show="store.state.isLoading" class="loading-overlay"></div>
       <a to="/home"><button>Back to home</button></a>
       <button @click="loadData" style="float: right;">Reload</button> <span show="state.isLoading">Loading</span>
       <div if="state.data">
         <h2>{{ state.data.title }}</h2>
         <div html="state.data.content"></div>
       </div>
+      <base-loading />
     `
   }
 }

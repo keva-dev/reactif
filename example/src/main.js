@@ -15,19 +15,18 @@ import Copyright from './components/Copyright'
 import App from './App'
 
 const routes = [
-  { path: '/', component: WhacAMole },
-  { path: '/home', component: Home },
-  { path: '/posts/:id', component: Post },
-  { path: '/form', component: Form },
-  { path: '/todo', component: TodoList },
-  { path: '/nextTick', component: NextTickDemo },
-  { path: '/list', component: List },
-  { path: '/computed', component: Computed },
-  { path: '/nested', component: Nested }
+  {path: '/', component: WhacAMole},
+  {path: '/home', component: Home},
+  {path: '/posts/:id', component: Post},
+  {path: '/form', component: Form},
+  {path: '/todo', component: TodoList},
+  {path: '/nextTick', component: NextTickDemo},
+  {path: '/list', component: List},
+  {path: '/computed', component: Computed},
+  {path: '/nested', component: Nested}
 ]
 const router = createRouter(routes)
 
-createApp(App).use(router)
-  .mount('#app')
+createApp(App).use(router).mount('#app')
 
 createApp(Copyright).mount('#copyright')

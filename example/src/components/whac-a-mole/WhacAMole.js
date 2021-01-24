@@ -1,6 +1,6 @@
-import { reactive, computed, onMounted, onUnmounted } from '@reactif/core'
+import { computed, onMounted, onUnmounted, reactive } from '@reactif/core'
+import useDebug from '/hooks/common/useDebug'
 import './WhacAMole.scss'
-import useDebug from '../hooks/useDebug'
 
 export default {
   setup() {
@@ -56,12 +56,12 @@ export default {
           state.moleGrid = initMoles
         }
         state.moleGrid[getRandomInt(0, state.moleGrid.length)] = 'one'
-      }, 500 - ((state.level - 1) * 100))
+      }, 500 - (state.level - 1) * 100)
     }
 
     onUnmounted(() => {
       clearInterval(interval)
-      document.title = 'Ractix Demo'
+      document.title = 'Reactif Demo'
     })
 
     const time = computed(() => {

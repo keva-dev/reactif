@@ -1,4 +1,4 @@
-import { reactive, onMounted, onUnmounted, computed, ref } from '@reactif/core'
+import { computed, onMounted, onUnmounted, reactive, ref } from '@reactif/core'
 
 export default {
   setup() {
@@ -10,8 +10,8 @@ export default {
         country: ''
       },
       countries: [
-        { name: 'Vietnam', code: 'VN' },
-        { name: 'Singapore', code: 'SG' }
+        {name: 'Vietnam', code: 'VN'},
+        {name: 'Singapore', code: 'SG'}
       ]
     })
 
@@ -38,7 +38,7 @@ export default {
 
     const submit = (e) => {
       e.preventDefault()
-      if (isValidated.value){
+      if (isValidated.value) {
         isSubmitted.value = true
       }
     }

@@ -1,91 +1,91 @@
 * {
-    font-family: Montserrat, sans-serif;
+  font-family: Montserrat, sans-serif;
 }
 
 a {
-    text-decoration: none;
-    color: black;
+  text-decoration: none;
+  color: black;
 }
 
 a:hover {
-    color: red;
-    text-decoration: underline;
+  color: red;
+  text-decoration: underline;
 }
 
 button {
-    background-color: #03BA00;
-    color: white;
-    font-size: 1rem;
-    padding: 0.5rem 1rem;
-    border: 0;
-    border-radius: 0.25rem;
-    cursor: pointer;
+  background-color: #03BA00;
+  color: white;
+  font-size: 1rem;
+  padding: 0.5rem 1rem;
+  border: 0;
+  border-radius: 0.25rem;
+  cursor: pointer;
 }
 
 img {
-    width: unset;
-    height: unset;
-    max-width: 100%;
-    margin: auto;
+  width: unset;
+  height: unset;
+  max-width: 100%;
+  margin: auto;
 }
 
 ul {
-    list-style-type: none;
-    padding: 0 0;
+  list-style-type: none;
+  padding: 0 0;
 }
 
 li {
-    padding: 0.5rem 0;
+  padding: 0.5rem 0;
 }
 
 #app {
-    max-width: 1280px;
-    margin: auto;
+  max-width: 1280px;
+  margin: auto;
 }
 
 .copyright-text {
-    text-align: center;
-    padding: 1rem;
+  text-align: center;
+  padding: 1rem;
 
-    strong {
-        color: red;
-        font-weight: bolder;
-    }
+  strong {
+    color: red;
+    font-weight: bolder;
+  }
 
-    img {
-        max-width: 24px;
-    }
+  img {
+    max-width: 24px;
+  }
 }
 
 .form {
-    input[type=text], select {
-        width: 100%;
-        padding: 12px 20px;
-        margin: 8px 0;
-        display: inline-block;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        box-sizing: border-box;
-    }
+  input[type=text], select {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+  }
 
-    input[type=submit] {
-        width: 100%;
-        background-color: #4CAF50;
-        color: white;
-        padding: 14px 20px;
-        margin: 8px 0;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-    }
+  input[type=submit] {
+    width: 100%;
+    background-color: #4CAF50;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
 
-    input[type=submit]:hover {
-        background-color: #45a049;
-    }
+  input[type=submit]:hover {
+    background-color: #45a049;
+  }
 
-    div {
-        border-radius: 5px;
-        background-color: #f2f2f2;
-        padding: 20px;
-    }
+  div {
+    border-radius: 5px;
+    background-color: #f2f2f2;
+    padding: 20px;
+  }
 }

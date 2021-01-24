@@ -5,8 +5,8 @@ export function checkOn(node: HTMLElement, context: object) {
   onDirectives.forEach(o => {
     const directive = o.startsWith('@') ? o.substring(1) : o.substring(5)
     const methodStr = node.getAttribute(o)
-    
-    const { fnName, argsArr } = parseFunctionStr(methodStr)
+
+    const {fnName, argsArr} = parseFunctionStr(methodStr)
     const args = argsArr.map(a => {
       if (a.type === 'value') {
         return a.value

@@ -1,18 +1,19 @@
-import { reactive, computed } from '@reactif/core'
+import { computed, reactive } from '@reactif/core'
 
 export default {
   setup() {
-    const state = reactive({
-      count: 1
-    })
-    const increase = () => {
+    const state = reactive({count: 1})
+    const double = computed(() => state.count * 2)
+
+    function increase() {
       state.count++
     }
-    const double = computed(() => state.count * 2)
+
     function callWithArgs(computedVal, a, b, c, event) {
       console.log(event)
       console.log(`${computedVal.value} - ${a} - ${b} - ${c}`)
     }
+
     return {
       state,
       double,
