@@ -24,5 +24,5 @@ export function useDependency() {
     dependants.clear()
   }
 
-  return {depend, notify, destroy}
+  return { depend, notify, destroy }
 }

@@ -2,7 +2,7 @@ import { computed, reactive } from '@reactif/core'
 
 export default {
   setup() {
-    const state = reactive({count: 1})
+    const state = reactive({ count: 1 })
     const double = computed(() => state.count * 2)
 
     function increase() {

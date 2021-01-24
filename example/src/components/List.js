@@ -3,7 +3,7 @@ import { reactive } from '@reactif/core'
 export default {
   setup() {
     const state = reactive({
-      dogs: [{name: 'Dog1'}, {name: 'Dog2'}, {name: 'Dog3'}],
+      dogs: [{ name: 'Dog1' }, { name: 'Dog2' }, { name: 'Dog3' }],
       toggle: true
     })
 

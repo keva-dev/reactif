@@ -6,7 +6,7 @@ export function checkProps(node: HTMLElement, context: object) {
   extractDirectives.forEach(d => {
     const attributeName = d.substring(1)
     const statePathOrig = node.getAttribute(d)
-    const {statePath, isPositive} = extractBooleanState(statePathOrig)
+    const { statePath, isPositive } = extractBooleanState(statePathOrig)
     const state = getState(context, statePath)
     if (DYNAMIC_ATTRIBUTES.includes(attributeName)) {
       if (isPositive ? state : !state) {

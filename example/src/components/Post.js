@@ -7,7 +7,7 @@ export default {
     'base-loading': Loading
   },
   setup(props, context) {
-    const {getArticle} = usePost()
+    const { getArticle } = usePost()
     const state = reactive({
       data: null
     })
@@ -17,7 +17,7 @@ export default {
     })
 
     async function loadData() {
-      const {id} = context.$router.params
+      const { id } = context.$router.params
       state.data = await getArticle(id)
       document.title = state.data.title
     }

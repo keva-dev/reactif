@@ -1,21 +1,19 @@
-import { onMounted, onUnmounted, reactive, ref } from '@reactif/core'
+import { onMounted, reactive, ref } from '@reactif/core'
+import useDebug from '../hooks/common/useDebug'
 
 const Child = {
   setup(props) {
+    useDebug('Child')
+
     const state = reactive({
       count: 0,
       text: ''
     })
 
     onMounted(() => {
-      console.log('Child mounted')
       setInterval(() => {
         state.count++
       }, 1000)
-    })
-
-    onUnmounted(() => {
-      console.log('Child unMounted')
     })
 
     return {
@@ -41,6 +39,8 @@ const Parent = {
     'child-component': Child
   },
   setup() {
+    useDebug('Parent')
+
     const state = reactive({
       childToggle: true
     })
@@ -63,12 +63,14 @@ const Parent = {
         <h2>Parent Component</h2>
         <button @click="increaseCoin">+1000 coin</button>
         <p>This is parent component</p>
+        
         <button @click="toggleChild">Toggle Child</button>
 
-        <div>{{ coin }}</div>
         <child-component if="state.childToggle" heading="This is child" :coin="coin">
           <p>Slot</p>
         </child-component>
+        <div>{{ coin }}</div>
+        
         <div else>Child is unmounted, click "Toggle Child" to re-mount it</div>
       </div>
     `

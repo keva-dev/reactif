@@ -10,8 +10,8 @@ export default {
         country: ''
       },
       countries: [
-        {name: 'Vietnam', code: 'VN'},
-        {name: 'Singapore', code: 'SG'}
+        { name: 'Vietnam', code: 'VN' },
+        { name: 'Singapore', code: 'SG' }
       ]
     })
 

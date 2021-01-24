@@ -29,7 +29,7 @@ export function useAsyncUpdateQueue() {
     setTimeout(callback, 0)
   }
 
-  return {add, nextTick}
+  return { add, nextTick }
 }
 
 export const asyncUpdateQueue = useAsyncUpdateQueue()

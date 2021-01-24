@@ -8,9 +8,9 @@ export default {
     'base-loading': Loading
   },
   setup() {
-    const {state, mutations} = useStore()
-    const {getAllArticles} = usePost()
-    const {setLimit, setData} = mutations
+    const { state, mutations } = useStore()
+    const { getAllArticles } = usePost()
+    const { setLimit, setData } = mutations
 
     onMounted(() => {
       if (!state.data.length) {

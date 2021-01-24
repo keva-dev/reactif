@@ -42,7 +42,7 @@ export function compileDirectives(node: HTMLElement, compilerObj: CompilerObject
   const runtime = globalState.currentRuntime
   if (!runtime) return
 
-  const {context, currentComponent, routerInstance} = compilerObj
+  const { context, currentComponent, routerInstance } = compilerObj
 
   if (node.nodeType === NODE_TYPE_CONST.TEXT_NODE) {
     onText(node, context)
@@ -63,7 +63,7 @@ export function compileDirectives(node: HTMLElement, compilerObj: CompilerObject
     state?.forEach((item: object, index: number) => {
       const iterateNode = node.cloneNode(true)
       onEach(iterateNode, loopFactors[0], context, item, index)
-      compileDirectives(<HTMLElement>iterateNode, compilerObj)
+      compileDirectives(<HTMLElement> iterateNode, compilerObj)
       fragment.appendChild(iterateNode)
     })
     node.replaceWith(fragment)

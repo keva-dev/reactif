@@ -4,7 +4,7 @@ export default {
   setup() {
     const state = reactive({
       todos: [
-        {text: 'Sample Todo', done: false}
+        { text: 'Sample Todo', done: false }
       ],
       text: '',
       test: 'Count'
@@ -14,7 +14,7 @@ export default {
 
     function add() {
       if (!state.text.length) return
-      state.todos.push({text: state.text, done: false})
+      state.todos.push({ text: state.text, done: false })
       state.text = ''
     }
 

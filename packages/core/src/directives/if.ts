@@ -3,7 +3,7 @@ import { extractBooleanState, getState } from '../utils'
 export function checkIf(node: HTMLElement, context: object) {
   if (node.getAttribute('if')) {
     const statePathOrig = node.getAttribute('if')
-    const {statePath, isPositive} = extractBooleanState(statePathOrig)
+    const { statePath, isPositive } = extractBooleanState(statePathOrig)
     node.removeAttribute('if')
     const state = getState(context, statePath)
     if (isPositive ? !state : state) {
@@ -17,7 +17,7 @@ export function checkIf(node: HTMLElement, context: object) {
     }
   } else if (node.getAttribute('show')) {
     const statePathOrig = node.getAttribute('show')
-    const {statePath, isPositive} = extractBooleanState(statePathOrig)
+    const { statePath, isPositive } = extractBooleanState(statePathOrig)
     node.removeAttribute('show')
     const state = getState(context, statePath)
     if (isPositive ? !state : state) {

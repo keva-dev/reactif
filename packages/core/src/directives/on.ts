@@ -6,12 +6,12 @@ export function checkOn(node: HTMLElement, context: object) {
     const directive = o.startsWith('@') ? o.substring(1) : o.substring(5)
     const methodStr = node.getAttribute(o)
 
-    const {fnName, argsArr} = parseFunctionStr(methodStr)
+    const { fnName, argsArr } = parseFunctionStr(methodStr)
     const args = argsArr.map(a => {
       if (a.type === 'value') {
         return a.value
       }
-      return getState(context, <string>a.value, false)
+      return getState(context, <string> a.value, false)
     })
     args.push(null)
 

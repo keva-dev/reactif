@@ -16,20 +16,20 @@ export function onEach(iterateNode: Node | HTMLElement, loopFactor: string, cont
       })
 
       checkProps(iterateNode, item)
-      checkProps(iterateNode, <object><unknown>index)
+      checkProps(iterateNode, <object> <unknown> index)
 
       const onDirectives = iterateNode.getAttributeNames()?.filter(e => e.startsWith('@'))
       onDirectives.forEach(o => {
         const directive = o.substring(1)
         const methodStr = iterateNode.getAttribute(o)
-        const {fnName, argsArr} = parseFunctionStr(methodStr)
+        const { fnName, argsArr } = parseFunctionStr(methodStr)
         const args = argsArr.map(a => {
           if (a.value === 'index') return index
           if (a.value === undefined) return 'undefined'
           if (a.value === null) return 'null'
           if (a.type === 'value') return typeof a.value === 'string' ? `'` + a.value + `'` : a.value
-          const itemValue = getState(item, <string>a.value)
-          const stateValue = getState(context, <string>a.value)
+          const itemValue = getState(item, <string> a.value)
+          const stateValue = getState(context, <string> a.value)
           const v = itemValue ? itemValue : stateValue
           return typeof v === 'string' ? `'` + v + `'` : v
         })

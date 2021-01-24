@@ -99,7 +99,7 @@ export function useRuntime(component: ComponentObject): Runtime {
   }
 
   function addState<T extends object>(_state: T, component: ComponentObject): T {
-    const {state, dep} = createReactiveState(_state)
+    const { state, dep } = createReactiveState(_state)
     const instance = pickComponent(component)
     instance.dependencies.push(dep.destroy)
     return state
@@ -125,7 +125,7 @@ export function useRuntime(component: ComponentObject): Runtime {
   }
 
   function mount(selector: string | HTMLElement = 'body', component: ComponentObject, props: Data, parentInstance?: ComponentInstance): void {
-    const elem: HTMLElement = typeof selector === 'string' ? <HTMLElement>document.querySelector(selector) : selector
+    const elem: HTMLElement = typeof selector === 'string' ? <HTMLElement> document.querySelector(selector) : selector
     const instance = pickComponent(component)
 
     const routerCtx = routerInstance ? routerInstance.routerContextFn() : Object.create(null)
@@ -141,7 +141,7 @@ export function useRuntime(component: ComponentObject): Runtime {
 
     globalState.currentComponent = component
     globalState.currentRuntime = runtimeInstance
-    const contextBinder = component.setup ? <object>component.setup(props, context) : <object>Object.create(null)
+    const contextBinder = component.setup ? <object> component.setup(props, context) : <object> Object.create(null)
     globalState.currentRuntime = undefined
     globalState.currentComponent = undefined
 

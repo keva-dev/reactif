@@ -17,7 +17,7 @@ export function createState<T extends object>(state: T): T {
 }
 
 export function createRef(value: Primitive): Ref {
-  const ref = {value}
+  const ref = { value }
   return getCurrentState(ref) || createReactiveState(ref).state
 }
 
