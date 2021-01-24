@@ -1,7 +1,7 @@
-import { reactive, ref, onMounted, onUnmounted } from '@reactif/core'
+import { onMounted, onUnmounted, reactive, ref } from '@reactif/core'
 
 const Child = {
-  setup (props) {
+  setup(props) {
     const state = reactive({
       count: 0,
       text: ''
@@ -24,7 +24,7 @@ const Child = {
       coin: props.coin
     }
   },
-  render () {
+  render() {
     return `
       <div style="margin: 1rem; padding: 1rem; border: 1px solid black;">
         <h3>{{ heading }}</h3>
@@ -40,7 +40,7 @@ const Parent = {
   components: {
     'child-component': Child
   },
-  setup () {
+  setup() {
     const state = reactive({
       childToggle: true
     })
@@ -57,7 +57,7 @@ const Parent = {
       increaseCoin
     }
   },
-  render () {
+  render() {
     return `
       <div>
         <h2>Parent Component</h2>

@@ -3,12 +3,12 @@ import { computed, ref } from '@reactif/core'
 const initialValue = false
 const _loading = ref(initialValue)
 
-export default function useLoading () {
-  function resetLoading () {
+export default function useLoading() {
+  function resetLoading() {
     _loading.value = initialValue
   }
 
-  function setLoading (loading) {
+  function setLoading(loading) {
     _loading.value = loading
   }
 

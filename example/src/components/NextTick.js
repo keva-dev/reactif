@@ -1,7 +1,7 @@
-import { reactive, onMounted, nextTick } from '@reactif/core'
+import { nextTick, onMounted, reactive } from '@reactif/core'
 
 export default {
-  setup () {
+  setup() {
     const state = reactive({
       a: 0,
       b: 0,
@@ -24,7 +24,7 @@ export default {
       state
     }
   },
-  render () {
+  render() {
     return `
       <div id="nextTick">
           {{ state.a }} -- {{ state.b }} -- {{ state.c }}

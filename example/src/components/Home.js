@@ -7,10 +7,10 @@ export default {
   components: {
     'base-loading': Loading
   },
-  setup () {
-    const { state, mutations } = useStore()
-    const { getAllArticles } = usePost()
-    const { setLimit, setData } = mutations
+  setup() {
+    const {state, mutations} = useStore()
+    const {getAllArticles} = usePost()
+    const {setLimit, setData} = mutations
 
     onMounted(() => {
       if (!state.data.length) {
@@ -23,7 +23,7 @@ export default {
       window.removeEventListener('scroll', onScroll)
     })
 
-    async function loadData () {
+    async function loadData() {
       const data = await getAllArticles(state.limit)
       data.forEach((e) => {
         e.guid = e.guid.replace('https://daihoc.fpt.edu.vn/?p=', '')
@@ -32,12 +32,12 @@ export default {
       document.title = 'Reactif Demo Homepage'
     }
 
-    async function loadMore () {
+    async function loadMore() {
       setLimit(state.limit + 10)
       await loadData()
     }
 
-    function onScroll () {
+    function onScroll() {
       const scrollTop =
         (document.documentElement && document.documentElement.scrollTop) || document.body.scrollTop
       const scrollHeight =
@@ -57,7 +57,7 @@ export default {
       loadMore
     }
   },
-  render () {
+  render() {
     return `
       <h2>FUHCM RSS ({{ state.limit }})</h2>
       <button @click="reload">Reload</button> <span show="state.isLoading">Loading</span>

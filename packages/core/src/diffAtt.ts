@@ -8,7 +8,7 @@ interface Attribute {
 export function diffAtts(template: HTMLElement, el: HTMLElement): void {
   const templateAtts = getAttributes(template, true)
   const elAtts = getAttributes(el)
-  
+
   const remove = elAtts.filter((att: Attribute) => {
     if (DYNAMIC_ATTRIBUTES.indexOf(att.att) > -1) return false
     const getAtt = templateAtts.find((newAtt: Attribute) => {
@@ -16,14 +16,14 @@ export function diffAtts(template: HTMLElement, el: HTMLElement): void {
     })
     return getAtt === undefined
   })
-  
+
   const change = templateAtts.filter((att: Attribute) => {
     const getAtt = elAtts.find((elAtt: Attribute) => {
       return att.att === elAtt.att
     })
     return getAtt === undefined || getAtt?.value !== att.value
   })
-  
+
   addAttributes(el, change)
   removeAttributes(el, remove)
 }
@@ -95,7 +95,7 @@ function addAttributes(el: HTMLElement, atts: Attribute[]) {
 export function addDefaultAtts(node: HTMLElement): void {
   // Only run on elements
   if (node.nodeType !== 1) return
-  
+
   // Check for default attributes
   // Add/remove as needed
   Array.prototype.forEach.call(node.attributes, (attribute: any) => {
@@ -103,7 +103,7 @@ export function addDefaultAtts(node: HTMLElement): void {
     addAttributes(node, [getAttribute(attribute.name.slice(7).toLowerCase(), attribute.value)])
     removeAttributes(node, [getAttribute(attribute.name, attribute.value)])
   })
-  
+
   // If there are child nodes, recursively check them
   if (node.childNodes) {
     node.childNodes.forEach((childNode: HTMLElement) => {
@@ -138,7 +138,7 @@ function removeAttributes(el: HTMLElement, atts: Attribute[]) {
 function diffStyles(el: HTMLElement, styles: string) {
   // Get style map
   const styleMap = getStyleMap(styles)
-  
+
   // Get styles to remove
   const remove = Array.prototype.filter.call(el.style, (style: any) => {
     const findStyle = styleMap.find((newStyle: any) => {
@@ -146,7 +146,7 @@ function diffStyles(el: HTMLElement, styles: string) {
     })
     return findStyle === undefined
   })
-  
+
   // Add and remove styles
   removeStyles(el, remove)
   changeStyles(el, styleMap)

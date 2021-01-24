@@ -1,13 +1,13 @@
 import { reactive } from '@reactif/core'
 
 export default {
-  setup () {
+  setup() {
     const state = reactive({
-      dogs: [{ name: 'Dog1' }, { name: 'Dog2' }, { name: 'Dog3' }],
+      dogs: [{name: 'Dog1'}, {name: 'Dog2'}, {name: 'Dog3'}],
       toggle: true
     })
 
-    function toggle () {
+    function toggle() {
       state.toggle = !state.toggle
     }
 
@@ -17,7 +17,7 @@ export default {
     }
   },
 
-  render () {
+  render() {
     return `
       <div>
         <h2>List Dogs</h2>

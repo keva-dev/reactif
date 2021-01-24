@@ -6,15 +6,15 @@ const state = reactive({
 })
 
 const mutations = {
-  setLimit (limit) {
+  setLimit(limit) {
     state.limit = limit
   },
-  setData (data) {
+  setData(data) {
     state.data = data
   }
 }
 
-export default function useStore () {
+export default function useStore() {
   return {
     state: readonly(state),
     mutations

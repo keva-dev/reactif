@@ -1,7 +1,7 @@
-import { reactive, onMounted, onUnmounted, computed, ref } from '@reactif/core'
+import { computed, onMounted, onUnmounted, reactive, ref } from '@reactif/core'
 
 export default {
-  setup () {
+  setup() {
     const state = reactive({
       count: 0,
       form: {
@@ -10,8 +10,8 @@ export default {
         country: ''
       },
       countries: [
-        { name: 'Vietnam', code: 'VN' },
-        { name: 'Singapore', code: 'SG' }
+        {name: 'Vietnam', code: 'VN'},
+        {name: 'Singapore', code: 'SG'}
       ]
     })
 
@@ -51,7 +51,7 @@ export default {
       submit
     }
   },
-  render () {
+  render() {
     return `
       <div if="!isSubmitted" class="form">
         <a to="/home"><button>Back to home</button></a>

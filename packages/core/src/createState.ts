@@ -2,7 +2,7 @@ import { asyncUpdateQueue } from './asyncUpdateQueue'
 import { useDependency } from './dependency'
 import { globalState } from './globalState'
 import { includes } from './utils'
-import { Ref, Primitive } from './types'
+import { Primitive, Ref } from './types'
 
 function getCurrentState<T extends object>(_state: T) {
   if (globalState.currentRuntime && globalState.currentComponent) {
@@ -17,7 +17,7 @@ export function createState<T extends object>(state: T): T {
 }
 
 export function createRef(value: Primitive): Ref {
-  const ref = { value }
+  const ref = {value}
   return getCurrentState(ref) || createReactiveState(ref).state
 }
 
@@ -31,7 +31,7 @@ export function createReactiveState<T extends object>(state: T) {
       if (includes(['object', 'array'], typeof value)) {
         return new Proxy(value, handler)
       }
-      
+
       dep.depend()
       return value;
     },

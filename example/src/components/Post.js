@@ -1,4 +1,4 @@
-import { reactive, onMounted } from '@reactif/core'
+import { onMounted, reactive } from '@reactif/core'
 import usePost from '/hooks/usePost'
 import Loading from './Loading'
 
@@ -6,8 +6,8 @@ export default {
   components: {
     'base-loading': Loading
   },
-  setup (props, context) {
-    const { getArticle } = usePost()
+  setup(props, context) {
+    const {getArticle} = usePost()
     const state = reactive({
       data: null
     })
@@ -16,8 +16,8 @@ export default {
       await loadData()
     })
 
-    async function loadData () {
-      const { id } = context.$router.params
+    async function loadData() {
+      const {id} = context.$router.params
       state.data = await getArticle(id)
       document.title = state.data.title
     }
@@ -27,7 +27,7 @@ export default {
       loadData
     }
   },
-  render () {
+  render() {
     return `
       <a to="/home"><button>Back to home</button></a>
       <button @click="loadData" style="float: right;">Reload</button> <span show="state.isLoading">Loading</span>

@@ -14,7 +14,7 @@ function manipulateState(obj: any, is: string | string[], extractWrapper = true,
   if (!(obj instanceof Object)) {
     return obj
   }
-  
+
   try {
     if (typeof is === 'string')
       return manipulateState(obj, is.split('.'), extractWrapper, value)
@@ -63,7 +63,7 @@ export function parseFunctionStr(str: string): { fnName: string, argsArr: FuncAr
       s = ''
       continue
     }
-    
+
     if (fnName) {
       if (str[i] === ',') {
         argsArr.push(resolveType(s))
@@ -77,12 +77,12 @@ export function parseFunctionStr(str: string): { fnName: string, argsArr: FuncAr
       }
       continue
     }
-    
+
     s += str[i]
   }
-  
+
   if (!fnName) fnName = s
-  
+
   return {
     fnName,
     argsArr
@@ -97,7 +97,7 @@ function resolveType(str: string): FuncArg {
       value: str.substring(1).slice(0, -1)
     }
   }
-  
+
   if (!isNaN(Number(str))) {
     return {
       type: 'value',

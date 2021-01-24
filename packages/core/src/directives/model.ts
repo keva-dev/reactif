@@ -13,7 +13,7 @@ export function checkModel(node: HTMLElement, context: object) {
         node.setAttribute('value', v)
       }
       makeFuncReactiveAndExecuteIt(updateInput)
-      
+
       node.addEventListener('input', e => {
         // @ts-ignore
         setState(context, statePath, e.target.value)
@@ -28,7 +28,7 @@ export function checkModel(node: HTMLElement, context: object) {
         }
         makeFuncReactiveAndExecuteIt(updateInput)
       }, 0)
-      
+
       node.addEventListener('change', e => {
         // @ts-ignore
         setState(context, statePath, e.target.value)

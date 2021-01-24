@@ -1,5 +1,5 @@
 export default {
-  render () {
+  render() {
     return `
       <router-view></router-view>
     `

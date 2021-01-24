@@ -1,10 +1,10 @@
 import { computed, reactive } from '@reactif/core'
 
 export default {
-  setup () {
+  setup() {
     const state = reactive({
       todos: [
-        { text: 'Sample Todo', done: false }
+        {text: 'Sample Todo', done: false}
       ],
       text: '',
       test: 'Count'
@@ -12,18 +12,18 @@ export default {
 
     const todoLength = computed(() => state.todos.length)
 
-    function add () {
+    function add() {
       if (!state.text.length) return
-      state.todos.push({ text: state.text, done: false })
+      state.todos.push({text: state.text, done: false})
       state.text = ''
     }
 
-    function submit (e) {
+    function submit(e) {
       e.preventDefault()
       add()
     }
 
-    function done (e, index) {
+    function done(e, index) {
       state.todos[index].done = true
     }
 
@@ -35,7 +35,7 @@ export default {
       done
     }
   },
-  render () {
+  render() {
     return `
       <form @submit="submit">
         <div>Todo ({{ todoLength }})</div>
