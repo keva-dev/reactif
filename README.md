@@ -43,7 +43,7 @@ Reactif.createApp(HelloWorld).mount()
 
 ## Quick Start
 
-[Get started in 5 minutes.](https://reactif.dev)
+[Get started in 5 minutes.](https://reactif.keva.dev)
 
 ## Changelogs
 
